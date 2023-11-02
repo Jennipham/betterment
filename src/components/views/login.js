@@ -26,7 +26,7 @@ const Login = () => {
                         <input type="password" placeholder="Password" />
                         <button className="submit" type="submit">Sign In</button>
                     </form>
-                    <p>New to CoachConnect? <a href="/signup">Sign Up</a></p>
+                    <p>New to BetterMent? <a href="/signup">Sign Up</a></p>
                 </div>
             </div>
         </div>

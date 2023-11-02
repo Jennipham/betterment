@@ -42,7 +42,7 @@ const SignUp = () => {
                     <input type="password" placeholder="Confirm Password" />
                     <button className="submit" type="submit">Sign Up</button>
                 </form>
-                <p>Already on CoachConnect? <a href="/login">Log In</a></p>
+                <p>Already on BetterMent? <a href="/login">Log In</a></p>
             </div>
             </div>
         </div>
