@@ -1,0 +1,7 @@
+@font-face {
+    font-family: 'Agrandir Wide Light';
+    src: url('Agrandir-WideLight.otf') format('opentype');
+    /* Add additional font formats (e.g., format('ttf')) if necessary */
+    font-weight: normal;
+    font-style: normal;
+}

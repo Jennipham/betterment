@@ -1,0 +1,51 @@
+.scroll-to-section {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    color: #3BBED1;
+    cursor: pointer;
+}
+
+.scroll-to-section:hover {
+    background-color: #3BBED1;
+    color: #fff;
+    transition: background-color 0.3s, color 0.3s;
+    
+}
+
+
+.scroll-to-section span {
+    font-family: 'agrandir wide light', sans-serif;
+    font-size: 20px;
+    font-weight: bolder;
+}
+
+.down-image img {
+    height: 20px;
+    padding: 10px;
+
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+        }
+    
+        @keyframes bounce {
+    
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+    
+            50% {
+                transform: translateY(-2px);
+            
+        }
+}
+
+.hidden {
+    display: none;
+}

@@ -1,0 +1,30 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #3BBED1;
+    color: white;
+}
+
+.logo img {
+    height: 100px;
+}
+
+.nav-links {
+    display: flex;
+    gap: 30px;
+}
+
+.nav-links a {
+    font-family: 'agrandir wide light', sans-serif;
+    text-decoration: none;
+    color: white;
+    font-size: larger;
+    font-weight: bolder;
+}
+
+.nav-links a:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
