@@ -1,7 +1,8 @@
 import React from 'react';
 import '../styles/SignUp.css';
 import signUpEmployee from '../images/sign-up1.png';
-import signUpCoach from '../images/sign-up2.png'
+import signUpCoach from '../images/sign-up2.png';
+
 
 import Header from './header';
 import { useState } from 'react';
@@ -20,20 +21,28 @@ const SignUp = () => {
         <div className="sign-up-container">
                 <div className="left-section">
                     {userType === 'find-a-coach' ? (
-                        <h7>Searching for a Mentor?</h7>) : (<h7>Looking for a Mentee?</h7>)} 
-                <h8>Look no further with BetterMent!</h8>
+                        <h7>Searching for a Mentor?</h7>
+                    ) : userType === 'i-am-an-admin' ? (
+                            <h7>Launching a mentoring program?</h7>
+                    ) : (
+                        <h7>Looking for a Mentee?</h7>
+                    )}
+                    <h8>Look no further with BetterMent!</h8>
                     {userType === 'find-a-coach' ? (
                         <img src={signUpEmployee} alt="Find a Coach" className="bottom" />
+                    ) : userType === 'i-am-an-admin' ? (
+                        <img src={signUpEmployee} alt="I am an Admin" className="bottom" />
                     ) : (
                         <img src={signUpCoach} alt="I am a Coach" className="bottom" />
                     )}
+
             </div>
                 <div className="right-section">
                     <h9>Please Select:</h9>
-                <div className="buttons">
-                        <button onClick={() => handleUserType('find-a-coach')}>Find a Mentor</button>
-                        <button onClick={() => handleUserType('i-am-a-coach')}>I am a Mentor</button>
-                        <button onClick={() => handleUserType('i-am-a-coach')}>I am an Admin</button>
+                <div className="signButtons">
+                        <button className="signUpbutton" onClick={() => handleUserType('find-a-coach')}>Find a Mentor</button>
+                        <button className="signUpbutton" onClick={() => handleUserType('i-am-a-coach')}>I am a Mentor</button>
+                        <button className="signUpbutton" onClick={() => handleUserType('i-am-an-admin')}>I am an Admin</button>
 
                 </div>
                 <h2>Sign Up</h2>
