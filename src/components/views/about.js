@@ -17,6 +17,10 @@ const About = () => {
         setActiveButton('I am a Coach');
     };
 
+    const handleIAmAdminClick = () => {
+        setActiveButton('I am an Admin');
+    };
+
     return (
         <div className="about-container" id="about-section">
             <div>
@@ -36,10 +40,19 @@ const About = () => {
                         onClick={() => {
                             handleIAmCoachClick();
                         }}
-                        className={`i-am-coach-button ${activeButton === 'I am a Coach' ? 'active' : ''
+                        className={`i-am-coach-button ${activeButton === 'I am a Mentor' ? 'active' : ''
                             }`}
                     >
-                        I am a Coach
+                        I am a Mentor
+                    </button>
+                    <button
+                        onClick={() => {
+                            handleIAmAdminClick();
+                        }}
+                        className={`find-coach-button ${activeButton === 'I am an Admin' ? 'active' : ''
+                            }`}
+                    >
+                        I am an Admin
                     </button>
                 </div>
                 <div className="card-container">
@@ -49,7 +62,7 @@ const About = () => {
                                 <p>1. Create Your Profile</p>
                                 <img src={createProfile} alt="create-profile" />
                                 <h3>
-                                    Sign Up to join the network of employees to find a coach
+                                    Sign Up to join the network of employees to find a mentor
                                 </h3>
                             </div>
                             <div className="card">
@@ -57,7 +70,7 @@ const About = () => {
                                 <img src={preferences} alt="preferences" />
                                 <h3>
                                     Let us know all about your development goals and learning
-                                    preferences so that we can find you an appropriate coach
+                                    preferences so that we can find you an appropriate mentor
                                 </h3>
                             </div>
                             <div className="card">
@@ -65,7 +78,7 @@ const About = () => {
                                 <img src={handshake} alt="get-connected" />
                                 <h3>
                                     Our matching algorithm will provide you with a list of the
-                                    most compatible coaches for you to get in touch with!
+                                    most compatible mentors for you to get in touch with!
                                 </h3>
                             </div>
                         </>
@@ -77,7 +90,7 @@ const About = () => {
                                 <p>1. Create Your Profile</p>
                                 <img src={createProfile} alt="create-profile" />
                                 <h3>
-                                    Sign Up to join the network of coaches looking to match to an
+                                    Sign Up to join the network of mentors looking to match to an
                                     employee
                                 </h3>
                             </div>
@@ -87,7 +100,7 @@ const About = () => {
                                 <h3>
                                     Let us know all about your development specialities,
                                     qualifications, and preferences so that we can find you an
-                                    appropriate employee to coach
+                                    appropriate employee to mentor
                                 </h3>
                             </div>
                             <div className="card-coach">
@@ -96,6 +109,31 @@ const About = () => {
                                 <h3>
                                     Our matching algorithm will provide you with a list of the
                                     most compatible employees for you to get in touch with!
+                                </h3>
+                            </div>
+                        </>
+                    )}
+                    {activeButton === 'I am an Admin' && (
+                        <>
+                            <div className="card">
+                                <p>1. Create Your Profile</p>
+                                <img src={createProfile} alt="create-profile" />
+                                <h3>
+                                    Sign Up to join BetterMent's network of organisations
+                                </h3>
+                            </div>
+                            <div className="card">
+                                <p>2. Set your Preferences</p>
+                                <img src={preferences} alt="preferences" />
+                                <h3>
+                                    Let us know all about your organisation's matching preferences and preferred practices
+                                </h3>
+                            </div>
+                            <div className="card">
+                                <p>3. Gain insights into the Mentoring Program</p>
+                                <img src={handshake} alt="get-connected" />
+                                <h3>
+                                    Invite mentors and mentees within your organisation, monitor their progress and the performance of the mentoring program
                                 </h3>
                             </div>
                         </>

@@ -43,12 +43,12 @@ function Home() {
 
     const faqData = [
         {
-            question: "What is Coach Connect?",
-            answer: "Coach Connect is a platform that uses a machine learning to match employees with development coaches to help them reach their professional goals, overcome challenges, and maximize wellness. "
+            question: "What is BetterMent?",
+            answer: "BetterMent is a platform that..."
         },
         {
             question: "How do I get started?",
-            answer: "To sign up as a coach, go to our registration page and fill out the necessary information."
+            answer: "To sign up as a mentor, go to our registration page and fill out the necessary information."
         },
         {
             question: "How does the matching algorithm work?",

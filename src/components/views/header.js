@@ -14,7 +14,7 @@ const Header = () => {
         <div className="header">
             <div className="logo">
                 <RouterLink to="/">
-                    <img src={logo} alt="Coach Connect Logo" />
+                    <img src={logo} alt="BetterMent Logo" />
                 </RouterLink>
             </div>
             <div className="nav-links">
