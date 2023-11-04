@@ -1,6 +1,5 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
-console.log(process.env.TEST_VARIABLE);
 
 console.log(process.env.URI);
 const uri = process.env.URI;
