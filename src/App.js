@@ -5,7 +5,6 @@ import Home from './components/views/home';
 import SignUp from './components/views/signUp';
 import Login from './components/views/login';
 
-
 function App() {
 
   return (
