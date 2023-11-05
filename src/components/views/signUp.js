@@ -19,13 +19,16 @@ const SignUp = () => {
     });
 
     const [confirmPassword, setConfirmPassword] = useState('');
+   
+    const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
     const [userTypeErrorMessage, setUserTypeErrorMessage] = useState('');
-
+    const [emptyFieldErrorMessage, setEmptyFieldErrorMessage] = useState('');
 
     const handleUserType = (type) => {
         setUserType(type);
         setUserTypeErrorMessage('');
     };
+
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
@@ -48,12 +51,17 @@ const SignUp = () => {
         event.preventDefault();
         
         if (formData.password !== confirmPassword) {
-            alert('Passwords do not match');
+            setPasswordErrorMessage('Passwords do not match');
             return;
         }
 
         if (userType === '') {
             setUserTypeErrorMessage('Please indicate your profile type');
+            return;
+        }
+
+        if (Object.values(formData).some((value) => value === '')) {
+            setEmptyFieldErrorMessage("Please fill in all fields");
             return;
         }
         
@@ -102,7 +110,7 @@ const SignUp = () => {
                         <button className="signUpbutton" onClick={() => handleUserType('admin')}>I am an Admin</button>
 
                     </div>
-                    {userTypeErrorMessage && <p className="usertype-error">{userTypeErrorMessage}</p>}
+                    {userTypeErrorMessage && <p className="error-message">{userTypeErrorMessage}</p>}
 
                 <h2>Sign Up</h2>
                     <form className='form' onSubmit={handleSubmit} >
@@ -134,6 +142,7 @@ const SignUp = () => {
                             value={formData.password}
                             onChange={handleInputChange}
                         />
+
                         <input
                             type="password"
                             name="confirmPassword"
@@ -141,6 +150,9 @@ const SignUp = () => {
                             value={formData.confirmPassword}
                             onChange={handleInputChange}
                         />
+                        {emptyFieldErrorMessage && <p className="error-message">{emptyFieldErrorMessage}</p>}
+                        {passwordErrorMessage && <p className="error-message">{passwordErrorMessage}</p>}
+
                         <button className="submit" type="submit" onClick={handleSubmit}>
                             Sign Up
                         </button>

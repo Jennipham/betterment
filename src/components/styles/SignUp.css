@@ -115,9 +115,14 @@ h9 {
     color: #fff;
 }
 
-.usertype-error{
-    color: rgb(205, 34, 34);
-    font-weight: bolder;
+
+.error-message{
+    color: white;
+    background-color: rgb(167, 25, 25);
+    font-size: 0.9em;
+    padding: 0.4em 0.7em;
+    border-radius: 18px;
+    width: fit-content;
 }
 
 .submit:hover{
