@@ -3,7 +3,7 @@ const cors = require('cors'); // Import the cors middleware
 const bodyParser = require('body-parser');
 const app = express();
 const db = require('./db');
-const api = require('./api');
+const api = require('./registerApi');
 
 app.use(cors()); // Enable CORS for all routes
 

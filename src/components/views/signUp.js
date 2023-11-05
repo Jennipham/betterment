@@ -73,7 +73,7 @@ const SignUp = () => {
             dataToSend.userType = userType;
             const response = await axios.post('http://localhost:3001/signup', dataToSend); // Change the endpoint to match your server route
             if (response.status === 200) {
-                navigate.push("/signupSuccess")
+                navigate("/signupSuccess")
             } else {
                 // Handle errors and display appropriate error feedback
             }

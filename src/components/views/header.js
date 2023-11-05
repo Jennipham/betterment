@@ -1,4 +1,3 @@
-import React from 'react';
 import logo from '../images/CCLogo.png'
 import '../styles/Header.css';
 import '../styles/font.css';
@@ -7,7 +6,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 
 
-const Header = () => {
+const Header = ({loggedIn}) => {
     const location = useLocation();
 
     return (
@@ -41,7 +40,17 @@ const Header = () => {
                         <RouterLink to="/signup">Sign Up</RouterLink>
                         <RouterLink to="/login">Login</RouterLink>
                     </>
-                ) : (<>
+                ) : loggedIn ? ( //checks if logged in
+                        <>
+                            <RouterLink to="/help">Help</RouterLink>
+                            <RouterLink to="/">Log Out</RouterLink>
+
+                        </>
+                )
+                    
+                   : //not logged in and not on homepage (sign up/login pages)
+                    
+                    (<>
 
                     <RouterLink to="/">Home</RouterLink>
                     <RouterLink to="/signup">Sign Up</RouterLink>
