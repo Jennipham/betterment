@@ -16,17 +16,27 @@ const SignUp = () => {
         sname: '',
         email: '',
         password: '',
-        userType: userType,
     });
+
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [userTypeErrorMessage, setUserTypeErrorMessage] = useState('');
+
 
     const handleUserType = (type) => {
         setUserType(type);
+        setUserTypeErrorMessage('');
     };
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
-        if (name !== 'confirmPassword') {
-
+        if (name === 'password') {
+            setFormData({
+                ...formData,
+                [name]: value,
+            });
+        } else if (name === 'confirmPassword') {
+            setConfirmPassword(value);
+        } else {
             setFormData({
                 ...formData,
                 [name]: value,
@@ -37,13 +47,19 @@ const SignUp = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         
-        if (formData.password !== formData.confirmPassword) {
+        if (formData.password !== confirmPassword) {
             alert('Passwords do not match');
+            return;
+        }
+
+        if (userType === '') {
+            setUserTypeErrorMessage('Please indicate your profile type');
             return;
         }
         
         try {
             const { confirmPassword, ...dataToSend } = formData;
+            dataToSend.userType = userType;
             const response = await axios.post('http://localhost:3001/signup', dataToSend); // Change the endpoint to match your server route
             if (response.status === 200) {
                 // Registration successful, you can redirect or show a success message
@@ -85,7 +101,9 @@ const SignUp = () => {
                         <button className="signUpbutton" onClick={() => handleUserType('mentor')}>I am a Mentor</button>
                         <button className="signUpbutton" onClick={() => handleUserType('admin')}>I am an Admin</button>
 
-                </div>
+                    </div>
+                    {userTypeErrorMessage && <p className="usertype-error">{userTypeErrorMessage}</p>}
+
                 <h2>Sign Up</h2>
                     <form className='form' onSubmit={handleSubmit} >
                         <input
@@ -120,6 +138,7 @@ const SignUp = () => {
                             type="password"
                             name="confirmPassword"
                             placeholder="Confirm Password"
+                            value={formData.confirmPassword}
                             onChange={handleInputChange}
                         />
                         <button className="submit" type="submit" onClick={handleSubmit}>

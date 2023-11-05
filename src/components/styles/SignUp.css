@@ -115,6 +115,11 @@ h9 {
     color: #fff;
 }
 
+.usertype-error{
+    color: rgb(205, 34, 34);
+    font-weight: bolder;
+}
+
 .submit:hover{
     color: #007785;
     background-color: #fff;
