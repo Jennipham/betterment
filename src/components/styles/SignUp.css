@@ -59,6 +59,15 @@ button:focus {
     border: 2px solid #fff;
 }
 
+.name-inputs {
+    display: flex;
+}
+
+.half-width-input {
+    flex: 1;
+    margin: 2px;
+}
+
 h7 {
     font-family: 'agrandir wide light', sans-serif;
     font-weight: bolder;

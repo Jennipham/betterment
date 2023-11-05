@@ -114,20 +114,24 @@ const SignUp = () => {
 
                 <h2>Sign Up</h2>
                     <form className='form' onSubmit={handleSubmit} >
-                        <input
-                            type="text"
-                            name="fname"
-                            placeholder="First Name"
-                            value={formData.fname}
-                            onChange={handleInputChange}
-                        />
-                        <input
-                            type="text"
-                            name="sname"
-                            placeholder="Surname"
-                            value={formData.sname}
-                            onChange={handleInputChange}
-                        />
+                        <div className="name-inputs">
+                            <input
+                                type="text"
+                                name="fname"
+                                placeholder="First Name"
+                                value={formData.fname}
+                                onChange={handleInputChange}
+                                className="half-width-input"
+                            />
+                            <input
+                                type="text"
+                                name="sname"
+                                placeholder="Surname"
+                                value={formData.sname}
+                                onChange={handleInputChange}
+                                className="half-width-input"
+                            />
+                        </div>
                         <input
                             type="email"
                             name="email"
