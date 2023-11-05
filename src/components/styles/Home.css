@@ -16,6 +16,12 @@
     animation: bounce 1.5s infinite;
 }
 
+.divider{
+    height: 7em;
+    background-color: #3BBED1;
+}
+
+
 @keyframes bounce {
 
     0%,

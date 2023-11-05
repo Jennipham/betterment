@@ -1,17 +1,25 @@
-/* About.css */
+body,
+html {
+    margin: 0;
+    padding: 0;
+}
 .about-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 40px;
-    padding: 30px;
     background-color: #3BBED1;
+    display: flex;
+    flex-direction: column;
+    /* Change to column for responsiveness */
+    justify-content: center;
+    /* Center content vertically */
+    align-items: center;
+    /* Center content horizontally */
+    padding: 30px 40px;
+    /* padding: 30px; */
 }
 
-
-p{
+p {
     font-family: 'agrandir wide light', sans-serif;
-    font-size: 18px;
+    font-size: 16px;
+    /* Adjust font size for responsiveness */
     color: #fff;
     font-weight: bold;
     text-align: center;
@@ -19,54 +27,53 @@ p{
 
 .buttons {
     display: flex;
+    flex-wrap: wrap;
+    /* Allow buttons to wrap on smaller screens */
     justify-content: center;
     gap: 20px;
-    margin-top: -20px;
+    margin-top: 20px;
+    /* Increase top spacing for responsiveness */
     margin-bottom: 20px;
 }
 
-.find-coach-button  {
-    font-size: 20px;
-        padding: 10px 20px;
-        border-radius: 18px;
-                font-size: 15px;
-                font-family: 'agrandir wide light', sans-serif;
-                font-weight: bolder;
-                background-color: #007785;
-                color: #fff;
-                border: none;
-                cursor: pointer;
-                transition: background-color 0.3s, color 0.3s;
+.find-coach-button,
+.i-am-coach-button {
+    font-size: 16px;
+    /* Adjust font size for responsiveness */
+    padding: 10px 20px;
+    border-radius: 18px;
+    font-family: 'agrandir wide light', sans-serif;
+    font-weight: bolder;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
 
+.find-coach-button {
+    background-color: #007785;
+    color: #fff;
+    border: none;
 }
 
 .i-am-coach-button {
-    font-size: 15px;
-        padding: 10px 20px;
-        border-radius: 18px;
-            font-family: 'agrandir wide light', sans-serif;
-            font-weight: bolder;
-            background-color: #fff;
-            color: #007785;
-            border: none;
-            cursor: pointer;
-            transition: background-color 0.3s, color 0.3s;
+    background-color: #fff;
+    color: #007785;
+    border: none;
 }
 
-.find-coach-button:hover{
+.find-coach-button:hover {
     background-color: #fff;
     color: #007785;
 }
-
 
 .i-am-coach-button:hover {
     background-color: #007785;
     color: #fff;
 }
 
-.find-coach-button:focus{
-        border: 2px solid #fff;
+.find-coach-button:focus {
+    border: 2px solid #fff;
 }
+
 .i-am-coach-button:focus {
     border: 2px solid #007785;
 }
@@ -77,83 +84,70 @@ h4 {
     color: #fff;
     font-weight: bold;
     text-align: center;
-    margin: -20px 120px 20px 120px;
+    margin: 20px 0;
 }
 
 .card-container {
     display: flex;
-    justify-content: space-between;
-
+    flex-wrap: wrap;
+    /* Allow cards to wrap on smaller screens */
+    justify-content: center;
 }
 
-
-.card {
+.card,
+.card-coach {
     flex: 1;
+    max-width: 300px;
+    /* Limit the maximum width of the cards */
     background-color: #007785;
     border-radius: 20px;
     padding: 15px;
     color: #fff;
     font-weight: bolder;
     text-align: center;
-    margin: 0 10px;
-}
-
-.card img {
-    max-width: 100%;
-    height: auto;
-}
-
-.card p {
-    font-family: 'agrandir wide light', sans-serif;
-    font-size: 25px;
-    font-weight: bolder;
-    margin-top: 10px;
+    margin: 10px;
+    /* Add margin to separate cards */
 }
 
 .card-coach {
-    flex: 1;
     background-color: #fff;
-    border-radius: 20px;
-    padding: 15px;
     color: #007785;
-    font-weight: bolder;
-    text-align: center;
-    margin: 0 10px;
 }
 
+.card img,
 .card-coach img {
     max-width: 100%;
     height: auto;
 }
 
+.card p,
 .card-coach p {
     font-family: 'agrandir wide light', sans-serif;
-    font-size: 25px;
+    font-size: 18px;
+    /* Adjust font size for responsiveness */
     font-weight: bolder;
     margin-top: 10px;
-    color: #007785;
 }
 
 h2 {
-    text-align: center;
-    width: 100%;
     font-family: 'agrandir wide light', sans-serif;
-    font-size: 54px;
-    color: #fff;
+        font-size: 36px;
+        text-align: center;
+        color: #fff;
 }
 
+
+.card h3,
 .card-coach h3 {
     font-family: 'agrandir wide light', sans-serif;
+    font-size: 18px;
+    /* Adjust font size for responsiveness */
     text-align: center;
-    width: 100%;
-    font-size: 14px;
-    color: #007785;
+    color: #fff;
 }
 
-.card h3 {
-    font-family: 'agrandir wide light', sans-serif;
-    text-align: center;
-    width: 100%;
-    font-size: 14px;
+.card h3,
+.card-coach h3 {
     color: #fff;
+    /* Ensure the text is readable */
 }

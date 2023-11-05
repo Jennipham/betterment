@@ -14,9 +14,7 @@ const TopSection = () => {
             <div className="image">
                 <img src= {top} alt="Top Section" />
             </div>
-            <div className="top-section">
 
-            </div>
         </div>
     );
 };

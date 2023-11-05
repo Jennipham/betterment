@@ -65,30 +65,32 @@ function Home() {
     ];
 
     return (
-        
-            <div>
-                <Header />
-                <TopSection id='top-section' />
-            <div id='about-section'>
-                    <About />
-                </div>
-                <div id='faq-section'>
-                    <Faqs faqData={faqData} />
-                    <div className="center-button">
-                        <Link to="/signup">
-                            <button className="get-started">Get Started!</button>
-                        </Link>
-                    </div>
-                </div>
 
-                <ScrollToSection
-                    text={'Find Out More'}
-                    targetPage={currentTargetPage}
-                    updateTargetPage={updateTargetPage}
-                    hideScroll={hasScrolledToFaqs}
-                />
+        <div>
+            <Header />
+            <TopSection id='top-section' />
+            <div className="divider"></div>
+            <div id='about-section'>
+                <About />
             </div>
-  
+            <div className="divider"></div>
+            <div id='faq-section'>
+                <Faqs faqData={faqData} />
+                <div className="center-button">
+                    <Link to="/signup">
+                        <button className="get-started">Get Started!</button>
+                    </Link>
+                </div>
+            </div>
+
+            <ScrollToSection
+                text={'Find Out More'}
+                targetPage={currentTargetPage}
+                updateTargetPage={updateTargetPage}
+                hideScroll={hasScrolledToFaqs}
+            />
+        </div>
+
     );
 }
 

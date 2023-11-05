@@ -23,7 +23,6 @@ const About = () => {
 
     return (
         <div className="about-container" id="about-section">
-            <div>
                 <h2>How It Works</h2>
 
                 <div className="buttons">
@@ -139,7 +138,6 @@ const About = () => {
                         </>
                     )}
                 </div>
-            </div>
         </div>
     );
 };
