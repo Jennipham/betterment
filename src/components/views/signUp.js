@@ -24,7 +24,7 @@ const SignUp = () => {
    
     const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
     const [userTypeErrorMessage, setUserTypeErrorMessage] = useState('');
-    const [existingUserMessage, setExistingUserrMessage] = useState('');
+    const [existingUserMessage, setExistingUserMessage] = useState('');
 
     const [emptyFieldErrorMessage, setEmptyFieldErrorMessage] = useState('');
 
@@ -73,7 +73,7 @@ const SignUp = () => {
         const emailExists = await checkEmailExists(formData.email);
         
         if (emailExists) {
-            setExistingUserrMessage('This email is already registered');
+            setExistingUserMessage('This email is already registered');
             return;
         }
 
