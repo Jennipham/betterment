@@ -24,6 +24,8 @@ const SignUp = () => {
    
     const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
     const [userTypeErrorMessage, setUserTypeErrorMessage] = useState('');
+    const [existingUserMessage, setExistingUserrMessage] = useState('');
+
     const [emptyFieldErrorMessage, setEmptyFieldErrorMessage] = useState('');
 
 
@@ -50,8 +52,31 @@ const SignUp = () => {
         }
     };
 
+    const checkEmailExists = async (email) => {
+        try {
+            const response = await axios.get('http://localhost:3001/check-email', {
+                params: { email }, // Pass the email as a query parameter
+            });
+
+            return response.data.exists;
+        } catch (error) {
+            // Handle network or server errors
+            console.error('Error checking email:', error);
+            return false;
+        }
+    };
+
+
     const handleSubmit = async (event) => {
         event.preventDefault();
+
+        const emailExists = await checkEmailExists(formData.email);
+        
+        if (emailExists) {
+            setExistingUserrMessage('This email is already registered');
+            return;
+        }
+
         
         if (formData.password !== confirmPassword) {
             setPasswordErrorMessage('Passwords do not match');
@@ -142,6 +167,8 @@ const SignUp = () => {
                             value={formData.email}
                             onChange={handleInputChange}
                         />
+
+                        {existingUserMessage && <p className="error-message">{existingUserMessage}</p>}
                         <input
                             type="password"
                             name="password"
