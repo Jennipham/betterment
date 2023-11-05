@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import '../styles/SignUp.css';
+import { useNavigate } from 'react-router-dom';
 import signUpEmployee from '../images/sign-up1.png';
 import signUpCoach from '../images/sign-up2.png';
 
@@ -10,6 +11,7 @@ import { useState } from 'react';
 
 
 const SignUp = () => {
+    const navigate = useNavigate();
     const [userType, setUserType] = useState('');
     const [formData, setFormData] = useState({
         fname: '',
@@ -23,6 +25,7 @@ const SignUp = () => {
     const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
     const [userTypeErrorMessage, setUserTypeErrorMessage] = useState('');
     const [emptyFieldErrorMessage, setEmptyFieldErrorMessage] = useState('');
+
 
     const handleUserType = (type) => {
         setUserType(type);
@@ -70,7 +73,7 @@ const SignUp = () => {
             dataToSend.userType = userType;
             const response = await axios.post('http://localhost:3001/signup', dataToSend); // Change the endpoint to match your server route
             if (response.status === 200) {
-                // Registration successful, you can redirect or show a success message
+                navigate.push("/signupSuccess")
             } else {
                 // Handle errors and display appropriate error feedback
             }
