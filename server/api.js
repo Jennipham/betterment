@@ -28,4 +28,22 @@ router.get('/check-email', async (req, res) => {
     }
 });
 
+router.post('/login', async (req, res) => {
+    const { email, password } = req.body;
+
+    try {
+        // Check if a user with the provided email and password exists in the database
+        const user = await User.findOne({ email, password });
+
+        if (user) {
+            res.status(200).json({ loggedIn: true });
+        } else {
+            res.status(401).json({ loggedIn: false });
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Login failed' });
+    }
+});
+
 module.exports = router;
