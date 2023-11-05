@@ -2,9 +2,9 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
+    /* Use min-height to ensure it takes up at least the full viewport height */
     padding: 20px;
-    margin-top: -30px;
     background-color: #3BBED1;
 }
 
@@ -13,10 +13,14 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    padding: 20px;
+    /* Add padding for spacing on larger screens */
 }
 
 .left-section img {
     max-width: 100%;
+    height: auto;
+    /* Maintain aspect ratio of the image */
 }
 
 .bottom-image {
@@ -28,22 +32,22 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: auto;
+    padding: 20px;
+    /* Add padding for spacing on larger screens */
 }
 
 .signButtons {
     display: flex;
     gap: 10px;
-    width: 80%;
+    width: 100%;
+    /* Use 100% width for responsiveness */
     margin-top: 20px;
-        justify-content: center;
-        align-items: center;
+    justify-content: center;
+    align-items: center;
 }
 
-
 .signButtons .signUpbutton {
-        font-size: 16px;
-
+    font-size: 16px;
 }
 
 button:hover {
@@ -59,33 +63,43 @@ h7 {
     font-family: 'agrandir wide light', sans-serif;
     font-weight: bolder;
     text-align: right;
-    max-width: 60%;
-    padding-left: 200px;
-    font-size: 54px;
+    max-width: 100%;
+    /* Make sure text doesn't overflow */
+    font-size: 3.5vw;
+    /* Use viewport units for font size */
     color: #fff;
-
+    margin: 0;
+    /* Remove default margin */
+    padding-left: 2rem;
+    /* Use 'rem' units for padding */
 }
 
 form {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    width: 60%;
+    width: 100%;
+    /* Use 100% width for responsiveness */
 }
 
 input {
     font-family: 'agrandir wide light', sans-serif;
-    font-size: 14px;
-    font: bold;
-    padding: 10px 10px 10px 10px;
+    font-size: 1.6vw;
+    /* Use viewport units for font size */
+    font-weight: bold;
+    padding: 1rem;
+    /* Use 'rem' units for padding */
     border: 1px solid #ccc;
-    border-radius: 5px;
     border-radius: 18px;
 }
 
 button[type="submit"] {
     margin-top: 10px;
     background-color: #007785;
+    color: #fff;
+    /* Ensure the text is readable */
+    padding: 10px 20px;
+    /* Increase padding for larger screens */
 }
 
 p {
@@ -100,10 +114,12 @@ a {
 h8 {
     font-family: 'agrandir wide light', sans-serif;
     text-align: right;
-    max-width: 55%;
-    font-size: 20px;
+    max-width: 100%;
+    font-size: 2.5vw;
+    /* Use viewport units for font size */
     color: #fff;
-    margin-left: 260px;
+    margin-left: 4rem;
+    /* Use 'rem' units for margin */
 }
 
 h9 {
@@ -111,21 +127,23 @@ h9 {
     text-align: center;
     font-weight: bold;
     width: 100%;
-    font-size: 16px;
+    font-size: 1.6vw;
+    /* Use viewport units for font size */
     color: #fff;
 }
 
-
-.error-message{
+.error-message {
     color: white;
     background-color: rgb(167, 25, 25);
-    font-size: 0.9em;
-    padding: 0.4em 0.7em;
+    font-size: 1vw;
+    /* Use viewport units for font size */
+    padding: 0.4rem 0.7rem;
+    /* Use 'rem' units for padding */
     border-radius: 18px;
     width: fit-content;
 }
 
-.submit:hover{
+.submit:hover {
     color: #007785;
     background-color: #fff;
 }

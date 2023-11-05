@@ -85,20 +85,20 @@ const SignUp = () => {
         <Header />
         <div className="sign-up-container">
                 <div className="left-section">
-                    {userType === 'find-a-coach' ? (
+                    {userType === 'mentee' ? (
                         <h7>Searching for a Mentor?</h7>
-                    ) : userType === 'i-am-an-admin' ? (
+                    ) : userType === 'admin' ? (
                             <h7>Launching a mentoring program?</h7>
                     ) : (
                         <h7>Looking for a Mentee?</h7>
                     )}
                     <h8>Look no further with BetterMent!</h8>
-                    {userType === 'find-a-coach' ? (
-                        <img src={signUpEmployee} alt="Find a Coach" className="bottom" />
-                    ) : userType === 'i-am-an-admin' ? (
+                    {userType === 'mentee' ? (
+                        <img src={signUpEmployee} alt="Find a Mentor" className="bottom" />
+                    ) : userType === 'admin' ? (
                         <img src={signUpEmployee} alt="I am an Admin" className="bottom" />
                     ) : (
-                        <img src={signUpCoach} alt="I am a Coach" className="bottom" />
+                        <img src={signUpCoach} alt="I am a Mentor" className="bottom" />
                     )}
 
             </div>
