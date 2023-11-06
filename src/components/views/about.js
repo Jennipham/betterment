@@ -18,13 +18,12 @@ const About = () => {
     };
 
     const handleIAmAdminClick = () => {
-        setActiveButton('I am an Admin');
+        setActiveButton('I am a Manager');
     };
 
     return (
         <div className="about-container" id="about-section">
-                <h2>How It Works</h2>
-
+            <h2>How It Works</h2>
                 <div className="buttons">
                     <button
                         onClick={() => {
@@ -48,10 +47,10 @@ const About = () => {
                         onClick={() => {
                             handleIAmAdminClick();
                         }}
-                        className={`find-coach-button ${activeButton === 'I am an Admin' ? 'active' : ''
+                        className={`i-am-coach-button ${activeButton === 'I am a Manager' ? 'active' : ''
                             }`}
                     >
-                        I am an Admin
+                        I am a Manager
                     </button>
                 </div>
                 <div className="card-container">
@@ -112,7 +111,7 @@ const About = () => {
                             </div>
                         </>
                     )}
-                    {activeButton === 'I am an Admin' && (
+                    {activeButton === 'I am a Manager' && (
                         <>
                             <div className="card">
                                 <p>1. Create Your Profile</p>
