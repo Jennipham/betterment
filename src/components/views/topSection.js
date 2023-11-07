@@ -7,7 +7,7 @@ const TopSection = () => {
     return (
         <div className="top-section">
             <div className="text">
-                <h1>Connecting Employees to Development Coaches</h1>
+                <h1>Connecting Employees to Executive <span className='ment'>Ment</span>ors</h1>
                 <h5>Project by: Jennifer Pham 2023</h5>
 
             </div> 

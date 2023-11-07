@@ -7,6 +7,10 @@
     padding-top: 60px;
 }
 
+.ment{ 
+    color:black;
+}
+
 .text {
     flex: 1;
     display: flex;
