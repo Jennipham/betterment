@@ -2,6 +2,7 @@ import React from 'react';
 import Header from './header';
 import { useState, } from 'react';
 import '../styles/Welcome.css';
+import Footer from './footer';
 
 const Welcome = () => {
     const [user, setUser] = useState({ fname: '{username}' });
@@ -17,6 +18,7 @@ const Welcome = () => {
                     </div>
                 </div>
             </div>
+            <Footer />
         </>
     );
 };

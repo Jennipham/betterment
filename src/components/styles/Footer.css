@@ -3,7 +3,29 @@
     background-color: white;
     font-weight: bolder;
     font-size: 15px;
+    height: 3em;
+}
+
+.by {
     color: #3BBED1;
-    text-align: left;
-    padding: 10px 20px;
+    text-align:left;
+    padding: 0px 10px;
+    font-size: 1em;
+
+}
+
+.footer-text {
+    display: flex;
+    align-items: center;
+    background-color: white;
+}
+
+
+.supervisor {
+    color: #3BBED1;
+    text-align: right;
+    padding: 0px 10px;
+    font-size: 1em;
+    flex:content;
+
 }
