@@ -1,10 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const User = require('./models/user');
+const jwt = require('jsonwebtoken');
+
 require('dotenv').config();
 
 const secretKey = process.env.JWT_SECRET;
-const verifyToken = require('./verifyToken');
+const verifyToken = require('./authMiddleware');
 
 const bcrypt = require('bcrypt');
 const saltRounds = 10; // You can adjust the number of salt rounds for security
@@ -49,7 +51,7 @@ router.get('/check-email', async (req, res) => {
     }
 });
 
-router.post('/login', verifyToken, async (req, res) => {
+router.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
     try {
