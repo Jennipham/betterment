@@ -1,6 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const User = require('./models/user');
+require('dotenv').config();
+
+const secretKey = process.env.JWT_SECRET;
+const verifyToken = require('./verifyToken');
 
 const bcrypt = require('bcrypt');
 const saltRounds = 10; // You can adjust the number of salt rounds for security
@@ -45,7 +49,7 @@ router.get('/check-email', async (req, res) => {
     }
 });
 
-router.post('/login', async (req, res) => {
+router.post('/login', verifyToken, async (req, res) => {
     const { email, password } = req.body;
 
     try {
@@ -60,7 +64,8 @@ router.post('/login', async (req, res) => {
         const passwordMatch = await bcrypt.compare(password, user.password);
 
         if (passwordMatch) {
-            res.status(200).json({ loggedIn: true }); // Passwords match, user is logged in
+            const token = jwt.sign({ userId: user._id }, secretKey, { expiresIn: '1h' });
+            res.status(200).json({ loggedIn: true, token }); // Passwords match, user is logged in
         } else {
             res.status(401).json({ loggedIn: false }); // Passwords do not match
         }

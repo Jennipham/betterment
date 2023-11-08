@@ -23,6 +23,10 @@ const Login = () => {
             });
 
             if (response.data.loggedIn) {
+                const token = response.data.token;
+                localStorage.setItem('token', token);
+
+
                 navigate("/signupSuccess")
 
             } else {
