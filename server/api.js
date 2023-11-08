@@ -2,9 +2,26 @@ const express = require('express');
 const router = express.Router();
 const User = require('./models/user');
 
+const bcrypt = require('bcrypt');
+const saltRounds = 10; // You can adjust the number of salt rounds for security
+
 router.post('/signup', async (req, res) => {
     try {
-        const newUser = new User(req.body);
+        const { fname,sname, email, password, userType } = req.body;
+
+        // Generate a salt and hash the password
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+        // Create a new user with the hashed password
+        const newUser = new User({
+            fname,
+            sname,
+            email,
+            password: hashedPassword,
+            userType,
+    
+        });
+
         await newUser.save();
         res.status(200).json({ message: 'User registered successfully' });
     } catch (error) {
@@ -32,18 +49,26 @@ router.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        // Check if a user with the provided email and password exists in the database
-        const user = await User.findOne({ email, password });
+        // Find the user by email
+        const user = await User.findOne({ email });
 
-        if (user) {
-            res.status(200).json({ loggedIn: true });
+        if (!user) {
+            return res.status(401).json({ loggedIn: false }); // User not found
+        }
+
+        // Compare the provided password with the stored hashed password
+        const passwordMatch = await bcrypt.compare(password, user.password);
+
+        if (passwordMatch) {
+            res.status(200).json({ loggedIn: true }); // Passwords match, user is logged in
         } else {
-            res.status(401).json({ loggedIn: false });
+            res.status(401).json({ loggedIn: false }); // Passwords do not match
         }
     } catch (error) {
         console.error('Error:', error);
         res.status(500).json({ error: 'Login failed' });
     }
 });
+
 
 module.exports = router;
