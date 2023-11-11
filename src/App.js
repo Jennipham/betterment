@@ -5,6 +5,7 @@ import Home from './components/views/home';
 import SignUp from './components/views/signUp';
 import Login from './components/views/login';
 import Welcome from './components/views/welcome';
+import TermsOfUse from './components/views/termsOfUse';
 
 function App() {
 
@@ -16,6 +17,8 @@ function App() {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signupSuccess" element={<Welcome />} />
+          <Route path="/termsofuse" element={<TermsOfUse />} />
+
 
         </Routes>
       </div>
