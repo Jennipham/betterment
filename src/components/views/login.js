@@ -23,11 +23,20 @@ const Login = () => {
             });
 
             if (response.data.loggedIn) {
-                const token = response.data.token;
-                localStorage.setItem('token', token);
+                const { token, firstName, lastName, userType } = response.data;
 
+                // Store the token in sessionStorage instead of localStorage
+                sessionStorage.setItem('token', token);
 
-                navigate("/signupSuccess")
+                // Store user information in sessionStorage
+                sessionStorage.setItem('firstName', firstName);
+                sessionStorage.setItem('lastName', lastName);
+                sessionStorage.setItem('userType', userType);
+
+                // Set the token in the Axios headers for subsequent requests
+                axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+                navigate("/signupSuccess", { state: { user: { fname: firstName } } });
 
             } else {
                 setErrorMessage('Invalid email or password. Please try again.');
@@ -37,6 +46,7 @@ const Login = () => {
             setErrorMessage('An error occurred. Please try again later.');
         }
     };
+
 
     return (
         <div>
