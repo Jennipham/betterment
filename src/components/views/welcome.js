@@ -4,20 +4,33 @@ import '../styles/Welcome.css';
 import Footer from './footer';
 import Modal from './modal';
 import { useLocation } from 'react-router-dom';
-import TermsOfUse from './termsOfUse';
+import { useNavigate } from 'react-router-dom';
+
 
 const Welcome = () => {
+
+    const navigate = useNavigate();
 
     const location = useLocation(); // Use useLocation hook to access the state
     const user = location.state?.user || { fname: 'Guest' }; // Default to 'Guest' if user information is not available
 
-    const [agreed, setAgreed] = useState(false);
+    const userType = location.state?.userType || { fname: 'Guest' }; // Default to 'Guest' if user information is not available
+
+
     
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const handleTermsClick = () => {
-        setAgreed(true);
-        setIsModalOpen(true);
+        switch (userType) {
+            case 'mentee':
+                navigate("/menteeProfile");
+                break;
+            case 'mentor':
+                navigate("/mentorProfile");
+                break;
+            default:
+                navigate("/managerProfile");
+        }
     };
 
     const handleCloseModal = () => {
@@ -39,7 +52,6 @@ const Welcome = () => {
             {isModalOpen && (
                 <Modal onClose={handleCloseModal}>
                     <iframe title="Terms of Use" src="/termsofuse" width="100%" height="100%" />
-                    {/* <TermsOfUse /> */}
                 </Modal>
             )}
             <Footer />

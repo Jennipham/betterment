@@ -6,6 +6,10 @@ import SignUp from './components/views/signUp';
 import Login from './components/views/login';
 import Welcome from './components/views/welcome';
 import TermsOfUse from './components/views/termsOfUse';
+import MentorProfile from './components/views/mentorProfile';
+import MenteeProfile from './components/views/menteeProfile';
+import ManagerProfile from './components/views/managerProfile';
+
 
 function App() {
 
@@ -18,7 +22,9 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signupSuccess" element={<Welcome />} />
           <Route path="/termsofuse" element={<TermsOfUse />} />
-
+          <Route path="/mentorprofile" element={<MentorProfile />} />
+          <Route path="/menteeprofile" element={<MenteeProfile />} />
+          <Route path="/managerprofile" element={<ManagerProfile />} />
 
         </Routes>
       </div>
