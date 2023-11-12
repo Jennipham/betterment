@@ -1,0 +1,48 @@
+.help-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #3BBED1;
+    margin-top: -20px;
+}
+
+
+.help-header {
+    margin-top: 20px;
+}
+
+.form-container {
+    width: 700px;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+label {
+
+    font-family: 'agrandir wide light', sans-serif;
+    font-weight: bold;
+    text-align: center;
+}
+
+textarea {
+    width: 700px;
+    height: 300px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    font-family: 'agrandir wide light', sans-serif;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+}

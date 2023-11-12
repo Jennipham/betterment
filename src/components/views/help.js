@@ -1,8 +1,11 @@
+// Help.js
+
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import Header from './header';
 import Footer from './footer';
+import '../styles/Help.css';
 
 const Help = () => {
     const location = useLocation();
@@ -14,15 +17,19 @@ const Help = () => {
 
         try {
             const token = sessionStorage.getItem('token');
-            const response = await axios.post('http://localhost:3001/send-form', {
-                email: user.email,
-                formMessage,
-            }, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`,
+            const response = await axios.post(
+                'http://localhost:3001/send-form',
+                {
+                    email: user.email,
+                    formMessage,
                 },
-            });
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
 
             if (response.status === 200) {
                 alert('Form submitted successfully!');
@@ -36,18 +43,27 @@ const Help = () => {
     };
 
     return (
-        <div>
-            <Header loggedIn={true} />
-            <h2>Help</h2>
-            <form onSubmit={handleSubmit}>
-                <label>
-                    Message:
-                    <textarea value={formMessage} onChange={(e) => setFormMessage(e.target.value)} />
-                </label>
-                <button type="submit">Submit Form</button>
-            </form>
+        <>
+            <Header loggedIn={true} className="header" />
+
+        <div className="help-page">
+            <h2 className="help-header">Contact Us</h2>
+            <div className="form-container">
+                <form onSubmit={handleSubmit}>
+                    <label>
+                        Please leave any Feedback or Queries:
+                        <textarea
+                            value={formMessage}
+                            onChange={(e) => setFormMessage(e.target.value)}
+                        />
+                    </label>
+                    <button type="submit">Submit Form</button>
+                </form>
+            </div>
+            </div>
             <Footer />
-        </div>
+
+        </>
     );
 };
 
