@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const nodemailer = require('nodemailer');
 const User = require('./models/user');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
@@ -9,6 +10,9 @@ require('dotenv').config();
 
 const secretKey = process.env.JWT_SECRET;
 const saltRounds = 10; 
+
+const contactPass = process.env.CONTACT_PASS;
+
 
 router.post('/signup', async (req, res) => {
     try {
@@ -79,7 +83,7 @@ router.post('/login', async (req, res) => {
         const passwordMatch = await bcrypt.compare(password, user.password);
 
         if (passwordMatch) {
-            const token = jwt.sign({ userId: user._id }, secretKey, { expiresIn: '1h' });
+            const token = jwt.sign({ userId: user._id, email: user.email }, secretKey, { expiresIn: '1h' });
             res.status(200).json({
                 loggedIn: true,
                 token,
@@ -95,5 +99,37 @@ router.post('/login', async (req, res) => {
         res.status(500).json({ error: 'Login failed' });
     }
 });
+
+router.post('/send-form', async (req, res) => {
+    const { formMessage } = req.body;
+    const token = req.headers.authorization.split(' ')[1];
+    const decoded = jwt.verify(token, secretKey);
+
+    const userEmail = decoded.email;
+
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: 'betterment.fyp@gmail.com', 
+            pass: contactPass, 
+        },
+    });
+
+    const mailOptions = {
+        from: 'betterment.fyp@gmail.com',
+        to: 'jxp100@student.bham.ac.uk',
+        subject: 'Help Form Submission',
+        text: `User Email: ${userEmail}\n\nForm Message:\n${formMessage}`,
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        res.status(200).send('Form submitted successfully!');
+    } catch (error) {
+        console.error('Error submitting form:', error);
+        res.status(500).send('Failed to submit form. Please try again later.');
+    }
+});
+
 
 module.exports = router;
