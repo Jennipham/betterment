@@ -130,3 +130,7 @@ h12 {
     color: #007785;
     background-color: #fff;
 }
+
+.underline-signup {
+    text-decoration: underline;
+}

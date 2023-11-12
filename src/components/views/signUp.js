@@ -204,7 +204,7 @@ const SignUp = () => {
                             Sign Up
                         </button>
                 </form>
-                <p>Already on BetterMent? <a href="/login">Log In</a></p>
+                    <p>Already on BetterMent? <a href="/login" className='underline-login'>Log In</a></p>
             </div>
             </div>
             <Footer />
