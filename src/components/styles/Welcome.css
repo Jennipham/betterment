@@ -30,3 +30,12 @@
 .underline-link{
     text-decoration: underline;      
 }
+
+.accept{
+    background-color: #3BBED1;
+}
+
+.accept:hover {
+    background-color: #007785;
+    color: white;
+}
