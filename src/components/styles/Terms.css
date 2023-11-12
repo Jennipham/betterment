@@ -3,9 +3,11 @@
     /* justify-content: center; */ 
     background-color: #3BBED1;
     align-items: center;
-    height: 90vh;
+    height: 100vh;
 }
 
-/* .terms-message{
+.terms-message{
+        margin-top: 1em;
+        margin-left: 0.2em;
         background-color: #3BBED1;
-} */
+}
