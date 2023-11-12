@@ -21,11 +21,12 @@
 }
 
 
-.supervisor {
+.terms-footer {
     color: #3BBED1;
     text-align: right;
     padding: 0px 10px;
     font-size: 1em;
     flex:content;
+    text-decoration: underline;
 
 }

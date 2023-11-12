@@ -6,8 +6,8 @@ const Footer = () => {
     return (
         <div className="footer">
             <div className="footer-text">
-            <h1 className='by'>Project by Jennifer Pham 2023 </h1>
-            <h1 className='supervisor'>Supervisor: Matthew Leeke</h1>
+                <h1 className='by'>Jennifer Pham  |  Supervisor: Matthew Leeke</h1>
+            <a href="/termsofuse" className='terms-footer'>Terms of Use</a>
         </div>
 
         </div>
