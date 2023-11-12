@@ -14,7 +14,7 @@ const Welcome = () => {
             <div className="welcome-page">
                 <div className="welcome-box">
                     <h1 className="welcome-message">Welcome to BetterMent {user.fname}!</h1>
-                    <h1 className="terms-agree">Please accept if you agree to the <a href="/termsofuse">Terms and Conditions</a></h1>
+                    <h1 className="terms-agree">Please accept if you agree to the <a href="/termsofuse" className='underline-link'>Terms and Conditions</a></h1>
                     <div className='profile-button'>
                         <button>Accept</button>
                     </div>
