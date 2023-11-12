@@ -8,6 +8,7 @@ import signUpCoach from '../images/sign-up2.png';
 
 import Header from './header';
 import { useState } from 'react';
+import Footer from './footer';
 
 
 const SignUp = () => {
@@ -206,6 +207,7 @@ const SignUp = () => {
                 <p>Already on BetterMent? <a href="/login">Log In</a></p>
             </div>
             </div>
+            <Footer />
         </div>
     );
 };

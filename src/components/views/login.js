@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import '../styles/Login.css';
 import Header from './header';
+import Footer from './footer';
 import login from '../images/log-in.png';
 
 const Login = () => {
@@ -78,6 +79,7 @@ const Login = () => {
                     {errorMessage && <p className="error-message">{errorMessage}</p>}
                 </div>
             </div>
+            <Footer />
         </div>
     );
 };
