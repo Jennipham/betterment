@@ -174,6 +174,7 @@ const SignUp = () => {
                             />
                         </div>
                         <input
+                            className='input-field'
                             type="email"
                             name="email"
                             placeholder="Email Address"
@@ -183,6 +184,7 @@ const SignUp = () => {
 
                         {existingUserMessage && <p className="error-message">{existingUserMessage}</p>}
                         <input
+                            className='input-field'
                             type="password"
                             name="password"
                             placeholder="Password"
@@ -191,6 +193,7 @@ const SignUp = () => {
                         />
 
                         <input
+                            className='input-field'
                             type="password"
                             name="confirmPassword"
                             placeholder="Confirm Password"

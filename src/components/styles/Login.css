@@ -134,3 +134,7 @@ h12 {
 .underline-signup {
     text-decoration: underline;
 }
+
+.input-field{
+    width: 100%;
+}

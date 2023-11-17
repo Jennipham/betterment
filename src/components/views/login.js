@@ -61,13 +61,14 @@ const Login = () => {
                 <div className="right-section">
                     <h12>Login</h12>
                     <form className='form' onSubmit={handleLogin}>
-                        <input
+                        <input className='input-field'
                             type="email"
                             placeholder="Email Address"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                         />
                         <input
+                            className='input-field'
                             type="password"
                             placeholder="Password"
                             value={password}
