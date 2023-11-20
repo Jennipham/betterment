@@ -1,0 +1,51 @@
+/* Profile.css */
+
+.profile-page {
+    background-color: #3BBED1;
+}
+
+/* Centered text styles */
+.text-center {
+    text-align: center;
+}
+
+/* Profile heading styles */
+.profile-heading {
+    font-size: 20px;
+}
+
+/* Account type styles */
+.account-type {
+    font-size: 14px;
+}
+
+/* Container styles */
+.profile-container {
+    display: flex;
+    justify-content: space-around;
+}
+
+/* Box styles */
+.profile-box {
+    width: 45%;
+    padding: 20px;
+    border: 1px solid #ccc;
+}
+
+/* Editable attribute styles */
+.editable-attribute {
+    display: flex;
+    align-items: center;
+}
+
+/* Dropdown styles */
+.dropdown {
+    width: 100%;
+    padding: 5px;
+    margin-top: 5px;
+}
+
+/* Footer styles */
+.footer {
+    /* Add your footer styles here */
+}

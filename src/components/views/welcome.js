@@ -15,23 +15,13 @@ const Welcome = () => {
     const user = location.state?.user || { fname: 'Guest' }; // Default to 'Guest' if user information is not available
 
     const userType = location.state?.userType || { fname: 'Guest' }; // Default to 'Guest' if user information is not available
-
-
     
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const handleTermsClick = () => {
-        switch (userType) {
-            case 'mentee':
-                navigate("/menteeProfile");
-                break;
-            case 'mentor':
-                navigate("/mentorProfile");
-                break;
-            default:
-                navigate("/managerProfile");
-        }
+                navigate("/profile");
     };
+
 
     const handleCloseModal = () => {
         setIsModalOpen(false);

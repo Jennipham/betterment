@@ -9,6 +9,7 @@ const ManagerProfile = () => {
         <>
             <Header loggedIn={true} />
 
+            
             <Footer />
         </>
     );

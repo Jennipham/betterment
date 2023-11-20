@@ -36,7 +36,7 @@ router.post('/signup', async (req, res) => {
         });
 
         await newUser.save();
-        const token = jwt.sign({ userId: newUser._id }, secretKey, { expiresIn: '1h' });
+        const token = jwt.sign({ userId: newUser._id, userType: newUser.userType }, secretKey, { expiresIn: '1h' });
         res.status(201).json({
             message: 'User registered successfully',
             token,
@@ -83,7 +83,7 @@ router.post('/login', async (req, res) => {
         const passwordMatch = await bcrypt.compare(password, user.password);
 
         if (passwordMatch) {
-            const token = jwt.sign({ userId: user._id, email: user.email }, secretKey, { expiresIn: '1h' });
+            const token = jwt.sign({ userId: user._id, email: user.email, userType: user.userType }, secretKey, { expiresIn: '1h' });
             res.status(200).json({
                 loggedIn: true,
                 token,
