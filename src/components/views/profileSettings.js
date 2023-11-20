@@ -2,8 +2,26 @@ import React from 'react';
 import Header from './header';
 import Footer from './footer';
 import editIcon from '../images/EditIcon.png';
+import Select from 'react-select';
+
 
 import '../styles/Profile.css';
+
+const languageOptions = [
+    { value: 'english', label: 'English' },
+    { value: 'spanish', label: 'Spanish' },
+    // Add more options as needed
+];
+
+const developmentOptions = [
+    { value: 'communication', label: 'Communication' },
+    { value: 'timeManagement', label: 'Time Management' },
+]
+
+const methodOptions = [
+    { value: 'inPerson', label: 'In Person Sessions' },
+    { value: 'virtual', label: 'Virtual Sessions' },
+]
 
 const Profile = () => {
     const handleEditClick = (attribute) => {
@@ -12,12 +30,15 @@ const Profile = () => {
     };
 
     return (
+        <>
         <div className='profile-page'>
             <Header />
 
             <div className="text-center">
                 <h2 className="profile-heading">Profile Settings</h2>
-                <p className="account-type">Account Type:</p>
+                <div className='account-background'>
+                    <p className="account-type">Account Type:</p>
+                </div>
             </div>
 
             <div className="profile-container">
@@ -47,38 +68,32 @@ const Profile = () => {
 
                 {/* Right Box */}
                 <div className="profile-box">
-                    <p>
+                    <p className='dropdown-title'>
                         Language(s):
-                        {/* Add dropdown for selecting language(s) */}
-                        <select className="dropdown">
-                            <option>English</option>
-                            <option>Spanish</option>
-                            {/* Add more options as needed */}
-                        </select>
+                            <Select
+                                isMulti= {true}
+                                options={languageOptions}
+                            />
                     </p>
-                    <p>
+                    <p className='dropdown-title'>
                         Topics of Development:
-                        {/* Add dropdown for selecting topics of development */}
-                        <select className="dropdown">
-                            <option>Software Development</option>
-                            <option>Design</option>
-                            {/* Add more options as needed */}
-                        </select>
+                            <Select
+                                isMulti={true}
+                                options={developmentOptions}
+                            />
                     </p>
-                    <p>
+                        <p className='dropdown-title'>
                         Methods of Mentoring:
-                        {/* Add dropdown for selecting methods of mentoring */}
-                        <select className="dropdown">
-                            <option>Pair Programming</option>
-                            <option>Mentorship Sessions</option>
-                            {/* Add more options as needed */}
-                        </select>
+                            <Select
+                                isMulti={true}
+                                options={methodOptions}
+                            />
                     </p>
                 </div>
             </div>
-
-            <Footer />
         </div>
+                    <Footer />
+</>
     );
 };
 
