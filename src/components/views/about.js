@@ -24,7 +24,7 @@ const About = () => {
     return (
         <div className="about-container" id="about-section">
             <h2>How It Works</h2>
-                <div className="buttons">
+                <div className="buttons-about">
                     <button
                         onClick={() => {
                             handleFindCoachClick();

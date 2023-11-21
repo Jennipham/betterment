@@ -26,14 +26,10 @@ p {
     text-align: center;
 }
 
-.buttons {
+.buttons-about {
     display: flex;
-    flex-wrap: wrap;
-    /* Allow buttons to wrap on smaller screens */
     justify-content: center;
     gap: 20px;
-    margin-top: 20px;
-    /* Increase top spacing for responsiveness */
     margin-bottom: 20px;
 }
 
@@ -47,6 +43,7 @@ p {
     font-weight: bolder;
     cursor: pointer;
     transition: background-color 0.3s, color 0.3s;
+    white-space: nowrap;
 }
 
 .find-coach-button {
