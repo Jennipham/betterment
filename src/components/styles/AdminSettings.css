@@ -1,0 +1,89 @@
+/* Profile.css */
+
+.profile-page {
+    background-color: #3BBED1;
+    min-height: 100vh;
+}
+
+.edit-icon {
+    width: 20px;
+    /* Set the desired width */
+    height: 20px;
+    /* Set the desired height */
+    cursor: pointer;
+    float: right;
+}
+
+/* Centered text styles */
+.text-center {
+    text-align: center;
+}
+
+/* Profile heading styles */
+.profile-heading {
+    font-size: 3em;
+    margin-bottom: -20px;
+}
+
+/* Account type styles */
+.account-type {
+    font-size: 1em;
+    color: #3BBED1;
+    background: white;
+    display: inline-block;
+    padding: 5px 20px;
+    border-radius: 10px;
+}
+
+/* Container styles */
+.profile-container {
+    display: flex;
+    justify-content: space-around;
+}
+
+/* Box styles */
+.profile-box {
+    width: 45%;
+    padding: 20px;
+    border: none;
+    background-color: white;
+    border-radius: 10px;
+
+    display: flex;
+    flex-direction: column;
+
+}
+
+/* Editable attribute styles */
+.editable-attribute {
+    display: flex;
+    align-items: center;
+    color: white;
+    background-color: #3BBED1;
+    border-radius: 10px;
+    padding: 10px 20px;
+    justify-content: space-between;
+
+
+}
+
+.dropdown-title {
+    color: white;
+    background: #3BBED1;
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: 10px;
+
+}
+
+/* Dropdown styles */
+.dropdown {
+    width: 100%;
+    padding: 5px;
+    margin-top: 5px;
+}
+
+.custom-select .Select-option {
+    color: green;
+    /* Change the color of the dropdown options */
+}
