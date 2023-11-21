@@ -82,3 +82,7 @@
     padding: 5px;
     margin-top: 5px;
 }
+.custom-select .Select-option {
+    color: green;
+    /* Change the color of the dropdown options */
+}

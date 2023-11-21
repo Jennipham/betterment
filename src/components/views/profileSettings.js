@@ -8,20 +8,55 @@ import Select from 'react-select';
 import '../styles/Profile.css';
 
 const languageOptions = [
+    { value: 'afrikaans', label: 'Afrikaans' },
     { value: 'english', label: 'English' },
+    { value: 'french', label: 'French' },
+    { value: 'german', label: 'German' },
+    { value: 'hindi', label: 'Hindi' },
+    { value: 'hungarian', label: 'Hungarian' },
+    { value: 'italian', label: 'Italian' },
+    { value: 'marathi', label: 'Marathi' },
+    { value: 'italian', label: 'Italian' },
+    { value: 'portuguese', label: 'Portuguese' },
+    { value: 'romanian', label: 'Romanian' },
     { value: 'spanish', label: 'Spanish' },
-    // Add more options as needed
+    { value: 'swedish', label: 'Swedish' },
+    { value: 'turkish', label: 'Turkish' },
 ];
 
 const developmentOptions = [
+    { value: 'career', label: 'Career Decision' },
     { value: 'communication', label: 'Communication' },
-    { value: 'timeManagement', label: 'Time Management' },
+    { value: 'confidence', label: 'Confidence' },
+    { value: 'conflict', label: 'Conflict' },
+    { value: 'goals', label: 'Goal Setting' },
+    { value: 'obstacles', label: 'Obstacles' },
+    { value: 'resilience', label: 'Resilience' },
+    { value: 'stakeholders', label: 'Stakeholder Conversations' },
+    { value: 'time', label: 'Time Management' },
+    { value: 'wellbeing', label: 'Wellbeing' },
+    { value: 'balance', label: 'Work / Life Balance' },
 ]
 
 const methodOptions = [
     { value: 'inPerson', label: 'In Person Sessions' },
     { value: 'virtual', label: 'Virtual Sessions' },
 ]
+
+const customStyles = {
+    control: (provided) => ({
+        ...provided,
+        backgroundColor: 'white', // Change the background color of the control
+    }),
+    placeholder: (provided) => ({
+        ...provided,
+        color: 'black', // Change the color of the placeholder text
+    }),
+    option: (provided) => ({
+        ...provided,
+        color: 'black', // Change the color of the dropdown options
+    }),
+};
 
 const Profile = () => {
     const handleEditClick = (attribute) => {
@@ -73,20 +108,26 @@ const Profile = () => {
                             <Select
                                 isMulti= {true}
                                 options={languageOptions}
+                                placeholder="Select Languages"
+                                styles={customStyles}
                             />
                     </p>
                     <p className='dropdown-title'>
-                        Topics of Development:
+                        Areas of Development:
                             <Select
                                 isMulti={true}
+                                placeholder="Select Development Areas"
                                 options={developmentOptions}
+                                styles={customStyles}
                             />
                     </p>
                         <p className='dropdown-title'>
                         Methods of Mentoring:
                             <Select
                                 isMulti={true}
+                                placeholder="Select Mentoring Methods"
                                 options={methodOptions}
+                                styles={customStyles}
                             />
                     </p>
                 </div>
