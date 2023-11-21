@@ -19,19 +19,6 @@ const blindOptions = [
     { value: 'off', label: 'Off' },
 ]
 
-const methodOptions = [
-    { value: 'inPerson', label: 'In Person Sessions' },
-    { value: 'virtual', label: 'Virtual Sessions' },
-]
-
-const departmentOptions = [
-    { value: 'department', label: 'Department' },
-]
-
-const locationOptions = [
-    { value: 'location', label: 'Location' },
-]
-
 const customStyles = {
     control: (provided) => ({
         ...provided,

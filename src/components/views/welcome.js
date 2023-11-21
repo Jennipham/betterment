@@ -12,15 +12,24 @@ const Welcome = () => {
     const navigate = useNavigate();
 
     const location = useLocation(); // Use useLocation hook to access the state
-    const user = location.state?.user || { fname: 'Guest' }; // Default to 'Guest' if user information is not available
+    const user = location.state?.user || { fname: 'Guest' }; // Default to 'Guest' if user information is not available 
+    const userType = user.userType || '';
 
-    const userType = location.state?.userType || { fname: 'Guest' }; // Default to 'Guest' if user information is not available
-    
+    console.log(userType);
+
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const handleTermsClick = () => {
-                navigate("/profileSettings");
+        if (userType === 'mentee' || userType === 'mentor') {
+            navigate("/profileSettings");
+        } else if (userType === 'admin') {
+            navigate("/adminSettings");
+        } else {
+            // Default redirection, you can update this as needed
+            navigate("/profileSettings");
+        }
     };
+
 
 
     const handleCloseModal = () => {
