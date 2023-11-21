@@ -75,7 +75,7 @@ const Profile = () => {
     return (
         <>
         <div className='profile-page'>
-            <Header />
+            <Header loggedIn={true}/>
 
             <div className="text-center">
                 <h2 className="profile-heading">Profile Settings</h2>
