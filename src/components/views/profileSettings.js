@@ -43,6 +43,14 @@ const methodOptions = [
     { value: 'virtual', label: 'Virtual Sessions' },
 ]
 
+const departmentOptions = [
+    { value: 'department', label: 'Department' },
+]
+
+const locationOptions = [
+    { value: 'location', label: 'Location' },
+]
+
 const customStyles = {
     control: (provided) => ({
         ...provided,
@@ -86,18 +94,24 @@ const Profile = () => {
                         </span>
                     </p>
                     {/* Add input fields for editable attributes */}
-                    <p className="editable-attribute">
-                        Department:
-                        <span onClick={() => handleEditClick('Department')}>
-                            <img src={editIcon} alt="Edit" className="edit-icon" />
-                        </span>
+                    <p className="dropdown-title">
+                            Department:
+                            <Select
+                                isMulti={false}
+                                options={departmentOptions}
+                                placeholder="Select Department"
+                                styles={customStyles}
+                            />
                     </p>
                     {/* Add input fields for editable attributes */}
-                    <p className="editable-attribute">
-                        Office Location:
-                        <span onClick={() => handleEditClick('Office Location')}>
-                            <img src={editIcon} alt="Edit" className="edit-icon" />
-                        </span>
+                    <p className="dropdown-title">
+                            Office Location:
+                            <Select
+                                isMulti={false}
+                                options={locationOptions}
+                                placeholder="Select Office"
+                                styles={customStyles}
+                            />
                     </p>
                 </div>
 
