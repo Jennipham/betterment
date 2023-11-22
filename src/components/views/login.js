@@ -4,12 +4,14 @@ import { useNavigate } from 'react-router-dom';
 import '../styles/Login.css';
 import Header from './header';
 import Footer from './footer';
+import Loader from './loader';
 import login from '../images/log-in.png';
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
 
@@ -18,6 +20,7 @@ const Login = () => {
         e.preventDefault();
 
         try {
+            setLoading(true);
             const response = await axios.post('http://localhost:3001/login', {
                 email,
                 password
@@ -59,26 +62,34 @@ const Login = () => {
                     <img src={login} alt="login" className="bottom" />
                 </div>
                 <div className="right-section">
-                    <h12>Login</h12>
-                    <form className='form' onSubmit={handleLogin}>
-                        <input className='input-field'
-                            type="email"
-                            placeholder="Email Address"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                        />
-                        <input
-                            className='input-field'
-                            type="password"
-                            placeholder="Password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
-                        <button className="submit" type="submit">Sign In</button>
-                    </form>
-                    <p>New to BetterMent? <a href="/signup" className='underline-signup'>Sign Up</a></p>
-                    {errorMessage && <p className="error-message">{errorMessage}</p>}
-                </div>
+                    {loading ? (
+                        <Loader />
+                    ) : (
+                        <>
+                            <h12>Login</h12>
+                            <form className='form' onSubmit={handleLogin}>
+                                <input className='input-field'
+                                    type="email"
+                                    placeholder="Email Address"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                />
+                                <input
+                                    className='input-field'
+                                    type="password"
+                                    placeholder="Password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                />
+                                <button className="submit" type="submit">Sign In</button>
+                            </form>
+                    
+                            <p>New to BetterMent? <a href="/signup" className='underline-signup'>Sign Up</a></p>
+                            {errorMessage && <p className="error-message">{errorMessage}</p>}
+                        </>
+                    )}
+                        </div>
+                
             </div>
             <Footer />
         </div>

@@ -5,10 +5,10 @@ import { useNavigate } from 'react-router-dom';
 import signUpEmployee from '../images/sign-up1.png';
 import signUpCoach from '../images/sign-up2.png';
 
-
 import Header from './header';
 import { useState } from 'react';
 import Footer from './footer';
+import Loader from './loader';
 
 
 const SignUp = () => {
@@ -26,8 +26,10 @@ const SignUp = () => {
     const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
     const [userTypeErrorMessage, setUserTypeErrorMessage] = useState('');
     const [existingUserMessage, setExistingUserMessage] = useState('');
-
     const [emptyFieldErrorMessage, setEmptyFieldErrorMessage] = useState('');
+
+    const [loading, setLoading] = useState(false);
+
 
 
     const handleUserType = (type) => {
@@ -62,6 +64,7 @@ const SignUp = () => {
             return response.data.exists;
         } catch (error) {
             // Handle network or server errors
+            setLoading(false);
             console.error('Error checking email:', error);
             return false;
         }
@@ -74,27 +77,36 @@ const SignUp = () => {
         const emailExists = await checkEmailExists(formData.email);
         
         if (emailExists) {
+            setLoading(false);
+
             setExistingUserMessage('This email is already registered');
             return;
         }
 
         
         if (formData.password !== confirmPassword) {
+            setLoading(false);
+
             setPasswordErrorMessage('Passwords do not match');
             return;
         }
 
         if (userType === '') {
+            setLoading(false);
+
             setUserTypeErrorMessage('Please indicate your profile type');
             return;
         }
 
         if (Object.values(formData).some((value) => value === '')) {
+            setLoading(false);
             setEmptyFieldErrorMessage("Please fill in all fields");
             return;
         }
         
         try {
+            setLoading(true);
+
             const { confirmPassword, ...dataToSend } = formData;
             dataToSend.userType = userType;
             const response = await axios.post('http://localhost:3001/signup', dataToSend); // Change the endpoint to match your server route
@@ -113,7 +125,8 @@ const SignUp = () => {
                 axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
                 navigate("/signupSuccess", { state: { user: { fname: firstName } } })
             } else {
-                // Handle errors and display appropriate error feedback
+                setLoading(false);
+
             }
         } catch (error) {
             console.error('Error:', error);
@@ -153,61 +166,67 @@ const SignUp = () => {
                     </div>
                     {userTypeErrorMessage && <p className="error-message">{userTypeErrorMessage}</p>}
 
-                <h2>Sign Up</h2>
-                    <form className='form' onSubmit={handleSubmit} >
-                        <div className="name-inputs">
-                            <input
-                                type="text"
-                                name="fname"
-                                placeholder="First Name"
-                                value={formData.fname}
-                                onChange={handleInputChange}
-                                className="half-width-input"
-                            />
-                            <input
-                                type="text"
-                                name="sname"
-                                placeholder="Surname"
-                                value={formData.sname}
-                                onChange={handleInputChange}
-                                className="half-width-input"
-                            />
-                        </div>
-                        <input
-                            className='input-field'
-                            type="email"
-                            name="email"
-                            placeholder="Email Address"
-                            value={formData.email}
-                            onChange={handleInputChange}
-                        />
+                    <h2>Sign Up</h2>
+                    {loading ? (
+                        <Loader />
+                    ) : (
+                        <>
+                            <form className='form' onSubmit={handleSubmit} >
+                                <div className="name-inputs">
+                                    <input
+                                        type="text"
+                                        name="fname"
+                                        placeholder="First Name"
+                                        value={formData.fname}
+                                        onChange={handleInputChange}
+                                        className="half-width-input"
+                                    />
+                                    <input
+                                        type="text"
+                                        name="sname"
+                                        placeholder="Surname"
+                                        value={formData.sname}
+                                        onChange={handleInputChange}
+                                        className="half-width-input"
+                                    />
+                                </div>
+                                <input
+                                    className='input-field'
+                                    type="email"
+                                    name="email"
+                                    placeholder="Email Address"
+                                    value={formData.email}
+                                    onChange={handleInputChange}
+                                />
 
-                        {existingUserMessage && <p className="error-message">{existingUserMessage}</p>}
-                        <input
-                            className='input-field'
-                            type="password"
-                            name="password"
-                            placeholder="Password"
-                            value={formData.password}
-                            onChange={handleInputChange}
-                        />
+                                {existingUserMessage && <p className="error-message">{existingUserMessage}</p>}
+                                <input
+                                    className='input-field'
+                                    type="password"
+                                    name="password"
+                                    placeholder="Password"
+                                    value={formData.password}
+                                    onChange={handleInputChange}
+                                />
 
-                        <input
-                            className='input-field'
-                            type="password"
-                            name="confirmPassword"
-                            placeholder="Confirm Password"
-                            value={formData.confirmPassword}
-                            onChange={handleInputChange}
-                        />
-                        {emptyFieldErrorMessage && <p className="error-message">{emptyFieldErrorMessage}</p>}
-                        {passwordErrorMessage && <p className="error-message">{passwordErrorMessage}</p>}
+                                <input
+                                    className='input-field'
+                                    type="password"
+                                    name="confirmPassword"
+                                    placeholder="Confirm Password"
+                                    value={formData.confirmPassword}
+                                    onChange={handleInputChange}
+                                />
+                                {emptyFieldErrorMessage && <p className="error-message">{emptyFieldErrorMessage}</p>}
+                                {passwordErrorMessage && <p className="error-message">{passwordErrorMessage}</p>}
 
-                        <button className="submit" type="submit" onClick={handleSubmit}>
-                            Sign Up
-                        </button>
-                </form>
-                    <p>Already on BetterMent? <a href="/login" className='underline-login'>Log In</a></p>
+                                <button className="submit" type="submit" onClick={handleSubmit}>
+                                    Sign Up
+                                </button>
+                            </form>
+                            <p>Already on BetterMent? <a href="/login" className='underline-login'>Log In</a></p>
+                        </>
+                    )}
             </div>
             </div>
             <Footer />
