@@ -43,9 +43,11 @@ const Login = () => {
                 navigate("/signupSuccess", { state: { user: { fname: firstName, userType } } });
 
             } else {
+                setLoading(false);
                 setErrorMessage('Invalid email or password. Please try again.');
             }
         } catch (error) {
+            setLoading(false);
             console.error('Error:', error);
             setErrorMessage('An error occurred. Please try again later.');
         }
