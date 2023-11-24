@@ -157,16 +157,16 @@ const SignUp = () => {
 
             </div>
                 <div className="right-section">
+
+                    <h2>Sign Up</h2>
                     <h9>Please Select:</h9>
-                <div className="signButtons">
+                    <div className="signButtons">
                         <button className="signUpbutton" onClick={() => handleUserType('mentee')}>Find a Mentor</button>
                         <button className="signUpbutton" onClick={() => handleUserType('mentor')}>I am a Mentor</button>
                         <button className="signUpbutton" onClick={() => handleUserType('admin')}>I am an Admin</button>
 
                     </div>
                     {userTypeErrorMessage && <p className="error-message">{userTypeErrorMessage}</p>}
-
-                    <h2>Sign Up</h2>
                     {loading ? (
                         <Loader />
                     ) : (
