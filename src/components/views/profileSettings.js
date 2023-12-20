@@ -68,6 +68,13 @@ const customStyles = {
     }),
 };
 
+const capitaliseFirstLetter = (str) => {
+    return str
+        .split(' ')
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+};
+
 const Profile = () => {
 
     const location = useLocation(); 
@@ -93,21 +100,37 @@ const Profile = () => {
     useEffect(() => {
         const fetchProfileData = async () => {
             try {
-                const response = await axios.post('http://localhost:3001/getProfile', 
-                    { email: user.email, userType: user.userType }, // Use the params option to send email as a parameter
-                );
-                setFormData(response.data || {});
+                const response = await axios.post('http://localhost:3001/getProfile', {
+                    email: user.email,
+                    userType: user.userType,
+                });
+
+                setFormData((prevData) => ({
+                    ...prevData,
+                    ...response.data.profile.profileInfo,
+                    languages: response.data.profile.profileInfo.languages || [], // Ensure 'languages' is an array
+                    developmentAreas: response.data.profile.profileInfo.developmentAreas || [], // Ensure 'developmentAreas' is an array
+                    mentoringMethods: response.data.profile.profileInfo.mentoringMethods || [], // Ensure 'mentoringMethods' is an array
+
+                }));
             } catch (error) {
                 console.error('Error fetching profile data:', error);
             }
         };
 
         fetchProfileData();
-    }, [user.email,user.userType]);
+    }, [user.email, user.userType]);
+
 
     const handleInputChange = (field, value) => {
         setFormData((prevData) => ({ ...prevData, [field]: value }));
     };
+
+    const handleMultiInputChange = (field, selectedOptions) => {
+        const capitalizedOptions = selectedOptions.map(option => option.charAt(0).toUpperCase() + option.slice(1));
+        setFormData((prevData) => ({ ...prevData, [field]: capitalizedOptions }));
+    };
+
 
     const handleEditClick = (attribute) => {
         if (attribute === 'Job Role') {
@@ -119,19 +142,31 @@ const Profile = () => {
     const handleSaveClick = async () => {
         try {
             // Send the form data to the backend API endpoint
+            const updatedJobRole = isEditingJobRole ? jobRoleInput.trim() : formData.jobRole.trim();
+
             const response = await axios.post('http://localhost:3001/profile', {
                 ...formData,
                 email: user.email,
                 userType: user.userType,
+                jobRole: updatedJobRole,
             });
+
+            // Update formData with the response from the server
+            setFormData((prevData) => ({
+                ...prevData,
+                jobRole: response.data.jobRole || updatedJobRole,
+            }));
+
             setIsEditingJobRole(false);
             console.log('Profile saved successfully:', response.data);
-            // You can add a success message or redirect the user after successful save
+            // You can add a success message or redirect the user after a successful save
         } catch (error) {
             console.error('Error saving profile:', error);
             // Handle error, show a message, etc.
         }
     };
+
+
 
     return (
         <>
@@ -147,27 +182,32 @@ const Profile = () => {
 
             <div className="profile-container">
                 {/* Left Box */}
-                <div className="profile-box">
+                <div className="profile-settings-box">
                     
-                    {/* Add input fields for editable attributes */}
                         <p className="editable-attribute">
-                            Job Role:
+                            <span className="attribute-label">Job Role:</span>
                             {isEditingJobRole ? (
                                 <>
                                     <input
                                         className='job-role-field'
                                         type="text"
-                                        value={jobRoleInput}
+                                        value={isEditingJobRole ? jobRoleInput : formData.jobRole}
                                         onChange={(e) => setJobRoleInput(e.target.value)}
                                     />
                                     <button className='save-button' onClick={handleSaveClick}>Save</button>
+                                    <button className='cancel-button' onClick={() => setIsEditingJobRole(false)}>Cancel</button>
                                 </>
                             ) : (
-                                <span onClick={() => handleEditClick('Job Role')}>
-                                    <img src={editIcon} alt="Edit" className="edit-icon" />
-                                </span>
+                                <>
+                                    <span className='job-role'>{formData.jobRole}</span>
+                                    <span className='edit-icon-container' onClick={() => handleEditClick('Job Role')}>
+                                        <img src={editIcon} alt="Edit" className="edit-icon" />
+                                    </span>
+                                </>
                             )}
                         </p>
+
+
                     <p className="dropdown-title">
                             Office Location:
                             <Select
@@ -175,6 +215,7 @@ const Profile = () => {
                                 options={locationOptions}
                                 placeholder="Select Office"
                                 styles={customStyles}
+                                value={formData.officeLocation ? { value: formData.officeLocation, label: capitaliseFirstLetter(formData.officeLocation) } : null}
                                 onChange={(selectedOption) =>
                                     handleInputChange('officeLocation', selectedOption.value)
                                 }
@@ -184,7 +225,7 @@ const Profile = () => {
                 </div>
 
                 {/* Right Box */}
-                <div className="profile-box">
+                    <div className="profile-settings-box">
                     <p className='dropdown-title'>
                         Language(s):
                             <Select
@@ -192,8 +233,16 @@ const Profile = () => {
                                 options={languageOptions}
                                 placeholder="Select Languages"
                                 styles={customStyles}
-                                onChange={(selectedOption) =>
-                                    handleInputChange('languages', selectedOption.value)
+                                value={
+                                    formData.languages
+                                        ? formData.languages.map((lang) => ({
+                                            value: lang,
+                                            label: capitaliseFirstLetter(lang),
+                                        }))
+                                        : null
+                                }
+                                onChange={(selectedOptions) =>
+                                    handleMultiInputChange('languages', selectedOptions.map(option => option.value))
                                 }
                             />
                     </p>
@@ -204,8 +253,16 @@ const Profile = () => {
                                 placeholder="Select Development Areas"
                                 options={developmentOptions}
                                 styles={customStyles}
-                                onChange={(selectedOption) =>
-                                    handleInputChange('developmentAreas', selectedOption.value)
+                                value={
+                                    formData.developmentAreas
+                                        ? formData.developmentAreas.map((area) => ({
+                                            value: area,
+                                            label: capitaliseFirstLetter(area),
+                                        }))
+                                        : null
+                                }
+                                onChange={(selectedOptions) =>
+                                    handleMultiInputChange('developmentAreas', selectedOptions.map(option => option.value))
                                 }
                             />
                     </p>
@@ -216,8 +273,16 @@ const Profile = () => {
                                 placeholder="Select Mentoring Methods"
                                 options={methodOptions}
                                 styles={customStyles}
-                                onChange={(selectedOption) =>
-                                    handleInputChange('mentoringMethods', selectedOption.value)
+                                value={
+                                    formData.mentoringMethods
+                                        ? formData.mentoringMethods.map((methods) => ({
+                                            value: methods,
+                                            label: capitaliseFirstLetter(methods),
+                                        }))
+                                        : null
+                                }
+                                onChange={(selectedOptions) =>
+                                    handleMultiInputChange('mentoringMethods',selectedOptions.map(option => option.value))
                                 }
                             />
                     </p>
