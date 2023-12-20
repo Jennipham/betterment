@@ -27,7 +27,7 @@ const Login = () => {
             });
 
             if (response.data.loggedIn) {
-                const { token, firstName, lastName, userType } = response.data;
+                const { token, firstName, lastName, userType, email } = response.data;
 
                 // Store the token in sessionStorage instead of localStorage
                 sessionStorage.setItem('token', token);
@@ -36,11 +36,12 @@ const Login = () => {
                 sessionStorage.setItem('firstName', firstName);
                 sessionStorage.setItem('lastName', lastName);
                 sessionStorage.setItem('userType', userType);
+                sessionStorage.setItem('email', email);
+
 
                 // Set the token in the Axios headers for subsequent requests
                 axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-
-                navigate("/signupSuccess", { state: { user: { fname: firstName, userType } } });
+                navigate("/signupSuccess", { state: { user: { fname: firstName, sname: lastName, userType: userType, email: email, } } })
 
             } else {
                 setLoading(false);

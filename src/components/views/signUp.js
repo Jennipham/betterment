@@ -111,7 +111,7 @@ const SignUp = () => {
             dataToSend.userType = userType;
             const response = await axios.post('http://localhost:3001/signup', dataToSend); // Change the endpoint to match your server route
             if (response.status === 201) {
-                const { token, firstName, lastName, userType } = response.data;
+                const { token, firstName, lastName, userType, email, } = response.data;
 
                 // Store the token in sessionStorage instead of localStorage
                 sessionStorage.setItem('token', token);
@@ -120,10 +120,12 @@ const SignUp = () => {
                 sessionStorage.setItem('firstName', firstName);
                 sessionStorage.setItem('lastName', lastName);
                 sessionStorage.setItem('userType', userType);
+                sessionStorage.setItem('email', email);
+
 
                 // Set the token in the Axios headers for subsequent requests
                 axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-                navigate("/signupSuccess", { state: { user: { fname: firstName } } })
+                navigate("/signupSuccess", { state: { user: { fname: firstName, sname: lastName, userType: userType, email: email, } } })
             } else {
                 setLoading(false);
 

@@ -40,9 +40,10 @@ const Header = ({loggedIn}) => {
                         <RouterLink to="/signup">Sign Up</RouterLink>
                         <RouterLink to="/login">Login</RouterLink>
                     </>
-                ) : loggedIn ? ( //checks if logged in
+                ) : loggedIn && location.pathname==='/profileSettings' ? ( //checks if logged in
                         <>
                             <RouterLink to="/help">Help</RouterLink>
+                            <RouterLink to="/mentorProfile">Profile</RouterLink>
                             <RouterLink to="/">Log Out</RouterLink>
 
                         </>
@@ -54,7 +55,7 @@ const Header = ({loggedIn}) => {
 
                     <RouterLink to="/">Home</RouterLink>
                     <RouterLink to="/signup">Sign Up</RouterLink>
-                        <RouterLink to="/login">Login</RouterLink>
+                    <RouterLink to="/login">Login</RouterLink>
                             
                             
                 </>

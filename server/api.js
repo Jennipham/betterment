@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const nodemailer = require('nodemailer');
 const User = require('./models/user');
+const Profile = require('./models/profiles');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { validationResult } = require('express-validator'); // For input validation
@@ -36,13 +37,14 @@ router.post('/signup', async (req, res) => {
         });
 
         await newUser.save();
-        const token = jwt.sign({ userId: newUser._id, userType: newUser.userType }, secretKey, { expiresIn: '1h' });
+        const token = jwt.sign({ userId: newUser._id, userType: newUser.userType, email:newUser.email, }, secretKey, { expiresIn: '1h' });
         res.status(201).json({
             message: 'User registered successfully',
             token,
             firstName: newUser.fname,
             lastName: newUser.sname,
             userType: newUser.userType,
+            email: newUser.email,
 
         });
     } catch (error) {
@@ -90,6 +92,7 @@ router.post('/login', async (req, res) => {
                 firstName: user.fname,
                 lastName: user.sname,
                 userType: user.userType,
+                email: user.email,
             });
         } else {
             res.status(401).json({ loggedIn: false, error: 'Incorrect password' });
@@ -97,6 +100,101 @@ router.post('/login', async (req, res) => {
     } catch (error) {
         console.error('Error during login:', error);
         res.status(500).json({ error: 'Login failed' });
+    }
+});
+
+router.post('/getProfile', async (req, res) => {
+    try {
+        const { email, userType } = req.body; // Use req.user to get the user information
+
+        const profile = await Profile.findOne({ email });
+
+        if (!profile) {
+            console.log('Profile not found for email:', email);
+            const defaultProfile = {
+                email: email,
+                userType: '',
+                profileInfo: {
+                    jobRole: '',
+                    department: '',
+                    officeLocation: '',
+                    languages: [],
+                    developmentAreas: [],
+                    mentoringMethods: [],
+                },
+            };
+
+            // Sign a token with default values
+            const token = jwt.sign(
+                { userId: '', email, userType: '' }, // Use email directly from req.user
+                secretKey,
+                { expiresIn: '1h' }
+            );
+
+            return res.json({
+                profile: defaultProfile,
+                token,
+                email,
+                userType: '',
+            });
+        }
+
+        const token = jwt.sign(
+            { userId: profile._id, email: profile.email, userType: profile.userType },
+            secretKey,
+            { expiresIn: '1h' }
+        );
+
+        res.json({
+            profile,
+            token,
+            email: profile.email,
+            userType: profile.userType,
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
+
+
+router.post('/profile', async (req, res) => {
+    const { jobRole, department, officeLocation, languages, developmentAreas, mentoringMethods, email, userType, } = req.body;
+
+    try {
+        let profile = await Profile.findOne({ email });
+
+        if (!profile) {
+            // Create a new profile if it doesn't exist
+            profile = new Profile({
+                email: email,
+                userType: userType,
+                profileInfo: {
+                    jobRole,
+                    department,
+                    officeLocation,
+                    languages,
+                    developmentAreas,
+                    mentoringMethods,
+                },
+            });
+        } else {
+            // Update existing profile
+            profile.profileInfo = {
+                jobRole,
+                department,
+                officeLocation,
+                languages,
+                developmentAreas,
+                mentoringMethods,
+            };
+        }
+
+        await profile.save();
+        res.json(profile);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Internal Server Error' });
     }
 });
 

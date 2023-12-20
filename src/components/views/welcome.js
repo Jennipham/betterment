@@ -13,20 +13,19 @@ const Welcome = () => {
 
     const location = useLocation(); // Use useLocation hook to access the state
     const user = location.state?.user || { fname: 'Guest' }; // Default to 'Guest' if user information is not available 
-    const userType = user.userType || '';
-
-    console.log(userType);
+    const { userType, email } = user;
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const handleTermsClick = () => {
         if (userType === 'mentee' || userType === 'mentor') {
-            navigate("/profileSettings");
+            console.log("Navigating to Profile with user:", user);
+            navigate("/profileSettings", { state: { user: { userType: userType, email: email } } });
         } else if (userType === 'admin') {
-            navigate("/adminSettings");
+            navigate("/adminSettings", { state: { user: { userType: userType, email: email } } });
         } else {
             // Default redirection, you can update this as needed
-            navigate("/profileSettings");
+            navigate("/profileSettings", { state: { user: { userType: userType, email: email } } });
         }
     };
 
