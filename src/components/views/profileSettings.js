@@ -44,10 +44,6 @@ const methodOptions = [
     { value: 'virtual', label: 'Virtual Sessions' },
 ]
 
-const departmentOptions = [
-    { value: 'department', label: 'Department' },
-]
-
 const locationOptions = [
     { value: 'location', label: 'Location' },
 ]
@@ -97,6 +93,9 @@ const Profile = () => {
     const [isEditingJobRole, setIsEditingJobRole] = useState(false);
     const [jobRoleInput, setJobRoleInput] = useState('');
 
+    const [isEditingDepartment, setIsEditingDepartment] = useState(false);
+    const [departmentInput, setDepartmentInput] = useState('');
+
     useEffect(() => {
         const fetchProfileData = async () => {
             try {
@@ -136,28 +135,39 @@ const Profile = () => {
         if (attribute === 'Job Role') {
             setIsEditingJobRole(true);
         }
+
+        if (attribute === 'Department') {
+            setIsEditingDepartment(true);
+        }
     };
+
 
 
     const handleSaveClick = async () => {
         try {
             // Send the form data to the backend API endpoint
             const updatedJobRole = isEditingJobRole ? jobRoleInput.trim() : formData.jobRole.trim();
+            const updatedDepartment = isEditingDepartment ? departmentInput.trim() : formData.department.trim();
+
 
             const response = await axios.post('http://localhost:3001/profile', {
                 ...formData,
                 email: user.email,
                 userType: user.userType,
                 jobRole: updatedJobRole,
+                department: updatedDepartment,
             });
 
             // Update formData with the response from the server
             setFormData((prevData) => ({
                 ...prevData,
                 jobRole: response.data.jobRole || updatedJobRole,
+                department: response.data.department || updatedDepartment,
             }));
 
             setIsEditingJobRole(false);
+            setIsEditingDepartment(false);
+
             console.log('Profile saved successfully:', response.data);
             // You can add a success message or redirect the user after a successful save
         } catch (error) {
@@ -201,6 +211,29 @@ const Profile = () => {
                                 <>
                                     <span className='job-role'>{formData.jobRole}</span>
                                     <span className='edit-icon-container' onClick={() => handleEditClick('Job Role')}>
+                                        <img src={editIcon} alt="Edit" className="edit-icon" />
+                                    </span>
+                                </>
+                            )}
+                        </p>
+
+                        <p className="editable-attribute">
+                            <span className="attribute-label">Department:</span>
+                            {isEditingDepartment ? (
+                                <>
+                                    <input
+                                        className='job-role-field'
+                                        type="text"
+                                        value={isEditingDepartment ? departmentInput : formData.department}
+                                        onChange={(e) => setDepartmentInput(e.target.value)}
+                                    />
+                                    <button className='save-button' onClick={handleSaveClick}>Save</button>
+                                    <button className='cancel-button' onClick={() => setIsEditingDepartment(false)}>Cancel</button>
+                                </>
+                            ) : (
+                                <>
+                                    <span className='job-role'>{formData.department}</span>
+                                    <span className='edit-icon-container' onClick={() => handleEditClick('Department')}>
                                         <img src={editIcon} alt="Edit" className="edit-icon" />
                                     </span>
                                 </>
