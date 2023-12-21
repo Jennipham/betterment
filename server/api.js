@@ -3,6 +3,7 @@ const router = express.Router();
 const nodemailer = require('nodemailer');
 const User = require('./models/user');
 const Profile = require('./models/profiles');
+const ManagerProfile = require('./models/managerProfiles');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { validationResult } = require('express-validator'); // For input validation
@@ -157,6 +158,58 @@ router.post('/getProfile', async (req, res) => {
     }
 });
 
+router.post('/getManagerProfile', async (req, res) => {
+    try {
+        const { email, userType } = req.body; // Use req.user to get the user information
+
+        const profile = await ManagerProfile.findOne({ email });
+
+        if (!profile) {
+            console.log('Profile not found for email:', email);
+            const defaultProfile = {
+                email: email,
+                userType: '',
+                profileInfo: {
+                   domain: '',
+        department: '',
+        officeLocation: '',
+        mentoringMethods: [],
+        blindMatching: '', 
+                },
+            };
+
+            // Sign a token with default values
+            const token = jwt.sign(
+                { userId: '', email, userType: '' }, // Use email directly from req.user
+                secretKey,
+                { expiresIn: '1h' }
+            );
+
+            return res.json({
+                profile: defaultProfile,
+                token,
+                email,
+                userType: '',
+            });
+        }
+
+        const token = jwt.sign(
+            { userId: profile._id, email: profile.email, userType: profile.userType },
+            secretKey,
+            { expiresIn: '1h' }
+        );
+
+        res.json({
+            profile,
+            token,
+            email: profile.email,
+            userType: profile.userType,
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
 
 router.post('/profile', async (req, res) => {
     const { jobRole, department, officeLocation, languages, developmentAreas, mentoringMethods, email, userType, } = req.body;
@@ -187,6 +240,44 @@ router.post('/profile', async (req, res) => {
                 languages,
                 developmentAreas,
                 mentoringMethods,
+            };
+        }
+
+        await profile.save();
+        res.json(profile);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
+
+router.post('/managerProfile', async (req, res) => {
+    const { domain, department, officeLocation, mentoringMethods, blindMatching, email, userType, } = req.body;
+
+    try {
+        let profile = await ManagerProfile.findOne({ email });
+
+        if (!profile) {
+            // Create a new profile if it doesn't exist
+            profile = new ManagerProfile({
+                email: email,
+                userType: userType,
+                profileInfo: {
+                    domain,
+                    department,
+                    officeLocation,
+                    mentoringMethods,
+                    blindMatching,
+                },
+            });
+        } else {
+            // Update existing profile
+            profile.profileInfo = {
+                domain,
+                department,
+                officeLocation,
+                mentoringMethods,
+                blindMatching,
             };
         }
 

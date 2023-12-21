@@ -36,6 +36,13 @@ const customStyles = {
     }),
 };
 
+const capitaliseFirstLetter = (str) => {
+    return str
+        .split(' ')
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+};
+
 const AdminSettings = () => {
 
     const location = useLocation();
@@ -52,6 +59,9 @@ const AdminSettings = () => {
 
     const [isEditingDomain, setIsEditingDomain] = useState(false);
     const [domainInput, setDomainInput] = useState('');
+
+    const [isEditingDepartment, setIsEditingDepartment] = useState(false);
+    const [departmentInput, setDepartmentInput] = useState('');
 
     useEffect(() => {
         const fetchProfileData = async () => {
@@ -88,27 +98,37 @@ const AdminSettings = () => {
         if (attribute === 'Organisation Domain') {
             setIsEditingDomain(true);
         }
+
+        if (attribute === 'Department') {
+            setIsEditingDepartment(true);
+        }
     };
 
     const handleSaveClick = async () => {
         try {
             // Send the form data to the backend API endpoint
-            const updatedDomain = isEditingDomain? domainInput.trim() : formData.domain.trim();
+            const updatedDomain = isEditingDomain ? domainInput.trim() : formData.domain.trim();
+            const updatedDepartment = isEditingDepartment ? departmentInput.trim() : formData.department.trim();
 
             const response = await axios.post('http://localhost:3001/managerProfile', {
                 ...formData,
                 email: user.email,
                 userType: user.userType,
                 domain: updatedDomain,
+                department: updatedDepartment,
             });
 
             // Update formData with the response from the server
             setFormData((prevData) => ({
                 ...prevData,
                 domain: response.data.domain || updatedDomain,
+                department: response.data.department || updatedDepartment,
+
             }));
 
             setIsEditingDomain(false);
+            setIsEditingDepartment(false);
+
 
             console.log('Profile saved successfully:', response.data);
         } catch (error) {
@@ -116,7 +136,6 @@ const AdminSettings = () => {
             // Handle error, show a message, etc.
         }
     };
-
 
     return (
         <>
@@ -159,17 +178,26 @@ const AdminSettings = () => {
 
                         {/* Add input fields for editable attributes */}
                         <p className="editable-attribute">
-                            Department:
-                            <span onClick={() => handleEditClick('Job Role')}>
-                                <img src={editIcon} alt="Edit" className="edit-icon" />
-                            </span>
-                        </p>
-                        {/* Add input fields for editable attributes */}
-                          <p className="editable-attribute">
-                                Office Location:
-                                <span onClick={() => handleEditClick('Job Role')}>
-                                    <img src={editIcon} alt="Edit" className="edit-icon" />
-                                </span>
+                            <span className="attribute-label">Department:</span>
+                            {isEditingDepartment ? (
+                                <>
+                                    <input
+                                        className='job-role-field'
+                                        type="text"
+                                        value={isEditingDepartment ? departmentInput : formData.department}
+                                        onChange={(e) => setDepartmentInput(e.target.value)}
+                                    />
+                                    <button className='save-button' onClick={handleSaveClick}>Save</button>
+                                    <button className='cancel-button' onClick={() => setIsEditingDepartment(false)}>Cancel</button>
+                                </>
+                            ) : (
+                                <>
+                                    <span className='job-role'>{formData.department}</span>
+                                    <span className='edit-icon-container' onClick={() => handleEditClick('Department')}>
+                                        <img src={editIcon} alt="Edit" className="edit-icon" />
+                                    </span>
+                                </>
+                            )}
                         </p>
                     </div>
 
@@ -178,10 +206,21 @@ const AdminSettings = () => {
                         <p className='dropdown-title'>
                             Method of Pairing:
                             <Select
-                                isMulti={false}
+                                isMulti={true}
                                 options={pairingOptions}
                                 placeholder="Select Method"
                                 styles={customStyles}
+                                value={
+                                    formData.mentoringMethods
+                                        ? formData.mentoringMethods.map((lang) => ({
+                                            value: lang,
+                                            label: capitaliseFirstLetter(lang),
+                                        }))
+                                        : null
+                                }
+                                onChange={(selectedOptions) =>
+                                    handleMultiInputChange('mentoringMethods', selectedOptions.map(option => option.value))
+                                }
                             />
                         </p>
                         <p className='dropdown-title'>
@@ -191,10 +230,17 @@ const AdminSettings = () => {
                                 placeholder="Select Preference"
                                 options={blindOptions}
                                 styles={customStyles}
+                                value={formData.blindMatching ? { value: formData.blindMatching, label: capitaliseFirstLetter(formData.blindMatching) } : null}
+                                onChange={(selectedOption) =>
+                                    handleInputChange('blindMatching', selectedOption.value)
+                                }
                             />
                         </p>
                     
                     </div>
+                </div>
+                <div className='save-info'>
+                    <button onClick={handleSaveClick}>Save</button>
                 </div>
             </div>
             <Footer />
