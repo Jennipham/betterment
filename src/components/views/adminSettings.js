@@ -212,9 +212,9 @@ const AdminSettings = () => {
                                 styles={customStyles}
                                 value={
                                     formData.mentoringMethods
-                                        ? formData.mentoringMethods.map((lang) => ({
-                                            value: lang,
-                                            label: capitaliseFirstLetter(lang),
+                                        ? formData.mentoringMethods.map((pairing) => ({
+                                            value: pairing,
+                                            label: capitaliseFirstLetter(pairing),
                                         }))
                                         : null
                                 }
