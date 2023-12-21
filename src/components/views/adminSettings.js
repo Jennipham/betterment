@@ -3,7 +3,9 @@ import Header from './header';
 import Footer from './footer';
 import editIcon from '../images/EditIcon.png';
 import Select from 'react-select';
-
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useLocation } from 'react-router-dom';
 
 import '../styles/AdminSettings.css';
 
@@ -35,10 +37,86 @@ const customStyles = {
 };
 
 const AdminSettings = () => {
-    const handleEditClick = (attribute) => {
-        // Add your logic to handle the edit click for the specific attribute
-        console.log(`Edit icon clicked for ${attribute}`);
+
+    const location = useLocation();
+    const user = location.state?.user || { userType: '', email: '' };
+    const { userType, email } = user;
+
+    const [formData, setFormData] = useState({
+        domain: '',
+        department: '',
+        officeLocation: '',
+        mentoringMethods: [],
+        blindMatching: '',
+    });
+
+    const [isEditingDomain, setIsEditingDomain] = useState(false);
+    const [domainInput, setDomainInput] = useState('');
+
+    useEffect(() => {
+        const fetchProfileData = async () => {
+            try {
+                const response = await axios.post('http://localhost:3001/getManagerProfile', {
+                    email: user.email,
+                    userType: user.userType,
+                });
+
+                setFormData((prevData) => ({
+                    ...prevData,
+                    ...response.data.profile.profileInfo,
+                    mentoringMethods: response.data.profile.profileInfo.mentoringMethods || [], // Ensure 'languages' is an array
+                    
+                }));
+            } catch (error) {
+                console.error('Error fetching profile data:', error);
+            }
+        };
+
+        fetchProfileData();
+    }, [user.email, user.userType]);
+
+    const handleInputChange = (field, value) => {
+        setFormData((prevData) => ({ ...prevData, [field]: value }));
     };
+
+    const handleMultiInputChange = (field, selectedOptions) => {
+        const capitalizedOptions = selectedOptions.map(option => option.charAt(0).toUpperCase() + option.slice(1));
+        setFormData((prevData) => ({ ...prevData, [field]: capitalizedOptions }));
+    };
+
+    const handleEditClick = (attribute) => {
+        if (attribute === 'Organisation Domain') {
+            setIsEditingDomain(true);
+        }
+    };
+
+    const handleSaveClick = async () => {
+        try {
+            // Send the form data to the backend API endpoint
+            const updatedDomain = isEditingDomain? domainInput.trim() : formData.domain.trim();
+
+            const response = await axios.post('http://localhost:3001/managerProfile', {
+                ...formData,
+                email: user.email,
+                userType: user.userType,
+                domain: updatedDomain,
+            });
+
+            // Update formData with the response from the server
+            setFormData((prevData) => ({
+                ...prevData,
+                domain: response.data.domain || updatedDomain,
+            }));
+
+            setIsEditingDomain(false);
+
+            console.log('Profile saved successfully:', response.data);
+        } catch (error) {
+            console.error('Error saving profile:', error);
+            // Handle error, show a message, etc.
+        }
+    };
+
 
     return (
         <>
@@ -55,12 +133,30 @@ const AdminSettings = () => {
                 <div className="profile-container">
                     {/* Left Box */}
                     <div className="profile-box">
+
                         <p className="editable-attribute">
-                            Organisation Domain:
-                            <span onClick={() => handleEditClick('Job Role')}>
-                                <img src={editIcon} alt="Edit" className="edit-icon" />
-                            </span>
+                            <span className="attribute-label">Organisation Domain:</span>
+                            {isEditingDomain ? (
+                                <>
+                                    <input
+                                        className='domain-field'
+                                        type="text"
+                                        value={isEditingDomain ? domainInput : formData.domain}
+                                        onChange={(e) => setDomainInput(e.target.value)}
+                                    />
+                                    <button className='save-button' onClick={handleSaveClick}>Save</button>
+                                    <button className='cancel-button' onClick={() => setIsEditingDomain(false)}>Cancel</button>
+                                </>
+                            ) : (
+                                <>
+                                    <span className='job-role'>{formData.domain}</span>
+                                    <span className='edit-icon-container' onClick={() => handleEditClick('Organisation Domain')}>
+                                        <img src={editIcon} alt="Edit" className="edit-icon" />
+                                    </span>
+                                </>
+                            )}
                         </p>
+
                         {/* Add input fields for editable attributes */}
                         <p className="editable-attribute">
                             Department:
