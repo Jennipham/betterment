@@ -10,9 +10,6 @@ import { useState } from 'react';
 import Footer from './footer';
 import Loader from './loader';
 
-
-const apiUrl = process.env.REACT_APP_API_BASE_URL || 'http://localhost:3001';
-
 const SignUp = () => {
     const navigate = useNavigate();
     const [userType, setUserType] = useState('');
@@ -59,7 +56,7 @@ const SignUp = () => {
 
     const checkEmailExists = async (email) => {
         try {
-            const response = await axios.post(`${apiUrl}/check-email`, { params: { email } });
+            const response = await axios.get('http://localhost:3001/check-email', { params: { email } });
 
             return response.data.exists;
         } catch (error) {
@@ -109,7 +106,7 @@ const SignUp = () => {
 
             const { confirmPassword, ...dataToSend } = formData;
             dataToSend.userType = userType;
-            const response = await axios.post(`${apiUrl}/signup`, dataToSend);
+            const response = await axios.post('http://localhost:3001/signup', dataToSend);
 
             if (response.status === 201) {
                 const { token, firstName, lastName, userType, email, } = response.data;
