@@ -7,6 +7,8 @@ import '../styles/MenteeMatches.css';
 const customStyles = {
     control: (provided) => ({
         ...provided,
+        borderRadius: '12px',
+        border: 'none',
         backgroundColor: 'white', // Change the background color of the control
     }),
     placeholder: (provided) => ({
@@ -66,9 +68,9 @@ const MenteeMatches = () => {
 
                     />
                 </div>
-
                 <div className="match-section">
-                    <h2>Your Top Match</h2>
+                    <h2 className='top-match'>Your Top Match:</h2>
+
                     <div className="user-profile">
                         <div className="profile-left">
                             <div className="profile-icon"> {/* Add your profile icon here */} </div>
@@ -86,7 +88,18 @@ const MenteeMatches = () => {
                         <div className="matching-icon"> {/* Add your matching icon here */} </div>
 
                         <div className="mentor-profile">
-                            {/* Mirror the structure of the user profile for the mentor */}
+                          <div className="profile-left">
+                                    <div className="profile-icon"> {/* Add your profile icon here */} </div>
+                                    <div className="user-info">
+                                        <p>User's Name</p>
+                                        <p>User's Job Role</p>
+                                        <p>User's Development Areas</p>
+                                    </div>
+                                    <div className="matching-info">
+                                        <p>Methods of Matching: ...</p>
+                                        <p>Location: ...</p>
+                                    </div>
+                                </div>
                         </div>
                     </div>
                 </div>
