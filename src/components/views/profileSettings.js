@@ -85,6 +85,7 @@ const Profile = () => {
         jobRole: '',
         department: '',
         officeLocation: '',
+        capacity: '',
         languages: [],
         developmentAreas: [],
         mentoringMethods: [],
@@ -95,6 +96,9 @@ const Profile = () => {
 
     const [isEditingDepartment, setIsEditingDepartment] = useState(false);
     const [departmentInput, setDepartmentInput] = useState('');
+
+    const [isEditingCapacity, setIsEditingCapacity] = useState(false);
+    const [capacityInput, setCapacityInput] = useState('');
 
     useEffect(() => {
         const fetchProfileData = async () => {
@@ -139,6 +143,10 @@ const Profile = () => {
         if (attribute === 'Department') {
             setIsEditingDepartment(true);
         }
+
+        if (attribute === 'Capacity') {
+            setIsEditingCapacity(true);
+        }
     };
 
 
@@ -148,7 +156,7 @@ const Profile = () => {
             // Send the form data to the backend API endpoint
             const updatedJobRole = isEditingJobRole ? jobRoleInput.trim() : formData.jobRole.trim();
             const updatedDepartment = isEditingDepartment ? departmentInput.trim() : formData.department.trim();
-
+            const updatedCapacity = isEditingCapacity ? capacityInput.trim() : formData.capacity.trim();
 
             const response = await axios.post('http://localhost:3001/profile', {
                 ...formData,
@@ -156,6 +164,8 @@ const Profile = () => {
                 userType: user.userType,
                 jobRole: updatedJobRole,
                 department: updatedDepartment,
+                capacity: updatedCapacity,
+
             });
 
             // Update formData with the response from the server
@@ -163,10 +173,14 @@ const Profile = () => {
                 ...prevData,
                 jobRole: response.data.jobRole || updatedJobRole,
                 department: response.data.department || updatedDepartment,
+                capacity: response.data.capacity || updatedCapacity,
+
             }));
 
             setIsEditingJobRole(false);
             setIsEditingDepartment(false);
+            setIsEditingCapacity(false);
+
 
             console.log('Profile saved successfully:', response.data);
             // You can add a success message or redirect the user after a successful save
@@ -254,7 +268,30 @@ const Profile = () => {
                                 }
 
                             />
-                    </p>
+                        </p>
+                        
+                        <p className="editable-attribute">
+                            <span className="attribute-label">Capacity:</span>
+                            {isEditingCapacity ? (
+                                <>
+                                    <input
+                                        className='job-role-field'
+                                        type="text"
+                                        value={isEditingCapacity ? capacityInput : formData.capacity}
+                                        onChange={(e) => setCapacityInput(e.target.value)}
+                                    />
+                                    <button className='save-button' onClick={handleSaveClick}>Save</button>
+                                    <button className='cancel-button' onClick={() => setIsEditingCapacity(false)}>Cancel</button>
+                                </>
+                            ) : (
+                                <>
+                                    <span className='job-role'>{formData.capacity}</span>
+                                    <span className='edit-icon-container' onClick={() => handleEditClick('Capacity')}>
+                                        <img src={editIcon} alt="Edit" className="edit-icon" />
+                                    </span>
+                                </>
+                            )}
+                        </p>
                 </div>
 
                 {/* Right Box */}
@@ -324,6 +361,8 @@ const Profile = () => {
                 <div className='save-info'>
                     <button onClick={handleSaveClick}>Save</button>
                 </div>
+
+
             </div>
 
                     <Footer />

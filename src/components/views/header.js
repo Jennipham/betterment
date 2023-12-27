@@ -47,7 +47,14 @@ const Header = ({loggedIn}) => {
                             <RouterLink to="/">Log Out</RouterLink>
 
                         </>
-                )
+                    ) : loggedIn && location.pathname === '/adminSettings' ? ( //checks if logged in
+                            <>
+                                <RouterLink to="/help">Help</RouterLink>
+                                <RouterLink to="/dashboard">Insights</RouterLink>
+                                <RouterLink to="/">Log Out</RouterLink>
+
+                            </>
+                        )
                     
                    : //not logged in and not on homepage (sign up/login pages)
                     

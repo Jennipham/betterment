@@ -118,6 +118,7 @@ router.post('/getProfile', async (req, res) => {
                 profileInfo: {
                     jobRole: '',
                     department: '',
+                    capacity: '',
                     officeLocation: '',
                     languages: [],
                     developmentAreas: [],
@@ -212,7 +213,7 @@ router.post('/getManagerProfile', async (req, res) => {
 });
 
 router.post('/profile', async (req, res) => {
-    const { jobRole, department, officeLocation, languages, developmentAreas, mentoringMethods, email, userType, } = req.body;
+    const { jobRole, department, officeLocation, capacity, languages, developmentAreas, mentoringMethods, email, userType, } = req.body;
 
     try {
         let profile = await Profile.findOne({ email });
@@ -225,6 +226,7 @@ router.post('/profile', async (req, res) => {
                 profileInfo: {
                     jobRole,
                     department,
+                    capacity,
                     officeLocation,
                     languages,
                     developmentAreas,
@@ -237,6 +239,7 @@ router.post('/profile', async (req, res) => {
                 jobRole,
                 department,
                 officeLocation,
+                capacity,
                 languages,
                 developmentAreas,
                 mentoringMethods,

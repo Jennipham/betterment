@@ -16,6 +16,7 @@ const profileSchema = new mongoose.Schema({
         jobRole: String,
         department: String,
         officeLocation: String,
+        capacity: String,
         languages:[String],
         developmentAreas:[String],
         mentoringMethods:[String],
