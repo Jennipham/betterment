@@ -32,15 +32,18 @@
 
 .profile-left {
     display: flex;
-    align-items: center;
     background-color: white;
     border-radius: 10px;
 }
 
-.profile-icon {
-    width: 50px;
-    height: 50px;
-    /* Add styles for the profile icon */
+.profile-right {
+    display: flex;
+    background-color: #007785;
+    border-radius: 10px;
+}
+
+.profile-icon img{
+    height: 60px;
 }
 
 .user-info {
@@ -50,6 +53,7 @@
 .user-info p {
     color: #3BBED1;
 }
+
 
 .matching-info {
     margin-left: 10px;

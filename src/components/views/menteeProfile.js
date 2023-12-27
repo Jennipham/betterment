@@ -3,6 +3,9 @@ import Header from './header';
 import Footer from './footer';
 import Select from 'react-select';
 import '../styles/MenteeMatches.css';
+import white from '../images/profile-white.png';
+import black from '../images/profile-black.png';
+
 
 const customStyles = {
     control: (provided) => ({
@@ -73,7 +76,9 @@ const MenteeMatches = () => {
 
                     <div className="user-profile">
                         <div className="profile-left">
-                            <div className="profile-icon"> {/* Add your profile icon here */} </div>
+                            <div className="profile-icon">
+                                <img src={black} alt="Black Profile Icon" />
+                            </div>
                             <div className="user-info">
                                 <p>User's Name</p>
                                 <p>User's Job Role</p>
@@ -88,9 +93,11 @@ const MenteeMatches = () => {
                         <div className="matching-icon"> {/* Add your matching icon here */} </div>
 
                         <div className="mentor-profile">
-                          <div className="profile-left">
-                                    <div className="profile-icon"> {/* Add your profile icon here */} </div>
-                                    <div className="user-info">
+                          <div className="profile-right">
+                                <div className="profile-icon">
+                                    <img src={white} alt="White Profile Icon" />
+                                </div>
+                                    <div className="match-info">
                                         <p>User's Name</p>
                                         <p>User's Job Role</p>
                                         <p>User's Development Areas</p>
