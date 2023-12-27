@@ -12,6 +12,7 @@ import ManagerProfile from './components/views/managerProfile';
 import Profile from './components/views/profileSettings';
 import Help from './components/views/help';
 import AdminSettings from './components/views/adminSettings';
+import MenteeMatches from './components/views/menteeProfile';
 
 
 function App() {
@@ -31,7 +32,7 @@ function App() {
           <Route path="/adminSettings" element={<AdminSettings />} />
 
           <Route path="/mentorprofile" element={<MentorProfile />} />
-          <Route path="/menteeprofile" element={<MenteeProfile />} />
+          <Route path="/menteeprofile" element={<MenteeMatches />} />
           <Route path="/managerprofile" element={<ManagerProfile />} />
 
         </Routes>

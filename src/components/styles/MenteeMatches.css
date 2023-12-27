@@ -1,0 +1,56 @@
+/* Welcome.css */
+.mentee-profile-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: -30px;
+    height: 100vh;
+    background-color: #3BBED1;
+}
+
+.filter-section {
+
+    display: flex;
+    justify-content: space-between;
+    margin: 50px;
+    width: 80%;
+}
+
+.match-section {
+    width: 100%;
+}
+
+.user-profile {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.profile-left {
+    display: flex;
+    align-items: center;
+    background-color: blue;
+}
+
+.profile-icon {
+    width: 50px;
+    height: 50px;
+    /* Add styles for the profile icon */
+}
+
+.user-info {
+    margin-left: 10px;
+}
+
+.matching-info {
+    margin-left: 10px;
+}
+
+.matching-icon {
+    /* Add styles for the matching icon */
+}
+
+.mentor-profile {
+    /* Add styles for the mentor profile, mirror the user profile styles */
+}
