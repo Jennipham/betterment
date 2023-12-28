@@ -135,18 +135,17 @@ display: flex;
 .bottom-buttons-container {
     position: absolute;
         bottom: 0;
-        left: 0;
         display: flex;
         flex-direction: row;
+        overflow: hidden;
+        white-space: nowrap;
 }
 
 .bottom-buttons-container button {
     font-size: 1em;
-    padding: 10px;
     background-color: white;
     color: #3BBED1;
 }
 .bottom-right-button button {
     font-size: 1em;
-
 }
