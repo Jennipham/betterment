@@ -76,6 +76,11 @@ const MenteeMatches = () => {
         { value: 'balance', label: 'Work / Life Balance' },
     ]
 
+    const methodOptions = [
+        { value: 'inPerson', label: 'In Person Sessions' },
+        { value: 'virtual', label: 'Virtual Sessions' },
+    ]
+
     const CheckboxOption = ({ innerProps, label, isSelected, selectProps }) => (
         <div {...innerProps}>
             <input
@@ -111,6 +116,12 @@ const MenteeMatches = () => {
         setSelectedDevelopmentAreas(selectedOption);
     };
 
+    const [selectedMethods, setSelectedMethods] = useState([]);
+
+    const handleMethodsChange = (selectedOption) => {
+        setSelectedMethods(selectedOption);
+    };
+
     return (
         <>
             <Header loggedIn={true} />
@@ -132,13 +143,6 @@ const MenteeMatches = () => {
                     />
 
                     <Select
-                        options={locationOptions}
-                        placeholder="Location"
-                        styles={customStyles}
-
-                    />
-
-                    <Select
                         options={developmentAreaOptions}
                         placeholder={selectedDevelopmentAreas.length > 0 ? `Development Areas (${selectedDevelopmentAreas.length})` : 'Development Areas'}
                         styles={{ ...customStyles, ...customStylesWithCheckbox }}
@@ -152,6 +156,30 @@ const MenteeMatches = () => {
                         onChange={handleDevelopmentAreasChange}
 
                     />
+
+                    <Select
+                        options={methodOptions}
+                        placeholder={selectedMethods.length > 0 ? `Mentoring Methods (${selectedMethods.length})` : 'Mentoring Methods'}
+                        styles={{ ...customStyles, ...customStylesWithCheckbox }}
+                        isMulti={true}
+                        hideSelectedOptions={false}
+                        controlShouldRenderValue={false}
+                        components={{
+                            MultiValue: CheckboxOption,
+                        }}
+                        value={selectedMethods}
+                        onChange={handleMethodsChange}
+
+                    />
+
+                    <Select
+                        options={locationOptions}
+                        placeholder="Location"
+                        styles={customStyles}
+
+                    />
+
+                   
                 </div>
                 <div className="match-section">
                     <h2 className='top-match'>Your Top Match:</h2>
