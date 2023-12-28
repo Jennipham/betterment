@@ -295,8 +295,13 @@ const MenteeMatches = () => {
                                     <p>Location:</p>
                                     <p>Development Areas:</p>
                                         <p>Methods of Matching:</p>
-                                    </div>
                                 </div>
+                                <div className="bottom-buttons-container">
+                                    <button >Edit Profile</button>
+                                    <button>Another Button</button>
+                                </div>
+                            </div>
+                          
                         </div>
                     </div>
                     <button>See Other Matches</button>
