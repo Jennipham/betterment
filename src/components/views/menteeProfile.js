@@ -7,7 +7,7 @@ import white from '../images/profile-white.png';
 import black from '../images/profile-black.png';
 import connect from '../images/connect-icon.png';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 
 
@@ -38,6 +38,23 @@ const customStyles = {
 };
 
 const MenteeMatches = () => {
+    const [user, setUser] = useState({
+        firstName: sessionStorage.getItem('firstName') || 'User',
+        lastName: sessionStorage.getItem('lastName') || '',
+        userType: sessionStorage.getItem('userType') || '',
+        email: sessionStorage.getItem('email') || '',
+    });
+
+    useEffect(() => {
+        // Retrieve user information from sessionStorage
+        const firstName = sessionStorage.getItem('firstName');
+        const lastName = sessionStorage.getItem('lastName');
+        const userType = sessionStorage.getItem('userType');
+        const email = sessionStorage.getItem('email');
+
+        setUser({ firstName, lastName, userType, email });
+        console.log('User Information:', { firstName, lastName, userType, email });
+    }, []);
 
     const languageOptions = [
         { value: 'afrikaans', label: 'Afrikaans' },
@@ -190,7 +207,7 @@ const MenteeMatches = () => {
                                 <img src={black} alt="Black Profile Icon" />
                             </div>
                             <div className="user-info">
-                                <p>Name:</p>
+                                <p>Name: {user.firstName}</p>
                                 <p>Job Role:</p>
                             </div>
                             <div className="matching-info-left">
