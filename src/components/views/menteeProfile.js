@@ -207,7 +207,7 @@ const MenteeMatches = () => {
                                 <img src={black} alt="Black Profile Icon" />
                             </div>
                             <div className="user-info">
-                                <p>Name: {user.firstName}</p>
+                                <p>Name: {user.firstName} { user.lastName}</p>
                                 <p>Job Role:</p>
                             </div>
                             <div className="matching-info-left">
