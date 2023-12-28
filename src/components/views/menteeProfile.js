@@ -14,17 +14,24 @@ const customStyles = {
         ...provided,
         borderRadius: '12px',
         border: 'none',
-        backgroundColor: 'white', // Change the background color of the control
+        backgroundColor: 'white',
         fontFamily: 'agrandir wide light, sans- serif',
         fontWeight: 'bold',
     }),
     placeholder: (provided) => ({
         ...provided,
-        color: 'black', // Change the color of the placeholder text
+        color: 'black',
+
     }),
     option: (provided) => ({
         ...provided,
         color: 'black', // Change the color of the dropdown options
+        fontFamily: 'agrandir wide light, sans- serif',
+
+    }),
+    menu: (provided) => ({
+        ...provided,
+        fontFamily: 'agrandir wide light, sans-serif',
     }),
 };
 
@@ -58,16 +65,17 @@ const MenteeMatches = () => {
         { value: 'backend', label: 'Backend' },
         // Add more development area options as needed
     ];
+    
     const CheckboxOption = ({ innerProps, label, isSelected, onChange }) => (
         <div {...innerProps}>
             <input
                 type="checkbox"
                 checked={isSelected}
-                onChange={() => onChange(label)} // Handle checkbox change
             />
-            {label}
+            <span onClick={() => onChange(label)}>{label}</span>
         </div>
     );
+
 
     const customStylesWithCheckbox = {
         // ... your existing styles ...
@@ -75,6 +83,8 @@ const MenteeMatches = () => {
             ...provided,
             backgroundColor: state.isSelected ? '#3BBED1' : 'white',
             color: state.isSelected ? 'white' : 'black',
+            fontFamily: 'agrandir wide light, sans- serif',
+
 
         }),
     };
@@ -102,6 +112,7 @@ const MenteeMatches = () => {
                         controlShouldRenderValue={false}
                         components={{
                             Option: CheckboxOption,
+                            MultiValue: CheckboxOption,
                         }}
                         value={selectedLanguages}
                         onChange={handleChange}
