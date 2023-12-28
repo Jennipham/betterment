@@ -61,18 +61,27 @@ const MenteeMatches = () => {
     ];
 
     const developmentAreaOptions = [
-        { value: 'frontend', label: 'Frontend' },
-        { value: 'backend', label: 'Backend' },
-        // Add more development area options as needed
-    ];
-    
-    const CheckboxOption = ({ innerProps, label, isSelected, onChange }) => (
+        { value: 'career', label: 'Career Decision' },
+        { value: 'communication', label: 'Communication' },
+        { value: 'confidence', label: 'Confidence' },
+        { value: 'conflict', label: 'Conflict' },
+        { value: 'goals', label: 'Goal Setting' },
+        { value: 'obstacles', label: 'Obstacles' },
+        { value: 'resilience', label: 'Resilience' },
+        { value: 'stakeholders', label: 'Stakeholder Conversations' },
+        { value: 'time', label: 'Time Management' },
+        { value: 'wellbeing', label: 'Wellbeing' },
+        { value: 'balance', label: 'Work / Life Balance' },
+    ]
+
+    const CheckboxOption = ({ innerProps, label, isSelected, selectProps }) => (
         <div {...innerProps}>
             <input
                 type="checkbox"
                 checked={isSelected}
+                onChange={() => selectProps.onChange({ label })} // Use selectProps.onChange
             />
-            <span onClick={() => onChange(label)}>{label}</span>
+            <span onClick={() => selectProps.onChange({ label })}>{label}</span>
         </div>
     );
 
@@ -90,12 +99,15 @@ const MenteeMatches = () => {
     };
     const [selectedLanguages, setSelectedLanguages] = useState([]);
 
-    const handleChange = (selectedOption) => {
+    const handleLanguagesChange = (selectedOption) => {
         setSelectedLanguages(selectedOption);
-        // You can perform additional actions with the selected options if needed
     };
 
-    
+    const [selectedDevelopmentAreas, setSelectedDevelopmentAreas] = useState([]);
+
+    const handleDevelopmentAreasChange = (selectedOption) => {
+        setSelectedDevelopmentAreas(selectedOption);
+    };
 
     return (
         <>
@@ -111,11 +123,10 @@ const MenteeMatches = () => {
                         hideSelectedOptions={false}
                         controlShouldRenderValue={false}
                         components={{
-                            Option: CheckboxOption,
                             MultiValue: CheckboxOption,
                         }}
                         value={selectedLanguages}
-                        onChange={handleChange}
+                        onChange={handleLanguagesChange}
                     />
 
                     <Select
@@ -127,8 +138,16 @@ const MenteeMatches = () => {
 
                     <Select
                         options={developmentAreaOptions}
-                        placeholder="Development Area"
-                        styles={customStyles}
+                        placeholder={selectedDevelopmentAreas.length > 0 ? `Development Areas (${selectedDevelopmentAreas.length})` : 'Development Areas'}
+                        styles={{ ...customStyles, ...customStylesWithCheckbox }}
+                        isMulti={true}
+                        hideSelectedOptions={false}
+                        controlShouldRenderValue={false}
+                        components={{
+                            MultiValue: CheckboxOption,
+                        }}
+                        value={selectedDevelopmentAreas}
+                        onChange={handleDevelopmentAreasChange}
 
                     />
                 </div>
