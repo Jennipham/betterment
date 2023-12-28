@@ -30,6 +30,13 @@
     
 }
 
+.mentee-profile-box {
+    display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 20px 0;
+}
+
 .profile-left {
     background-color: white;
     border-radius: 10px;
@@ -42,12 +49,16 @@
 }
 
 .profile-right {
-    display: flex;
     background-color: #007785;
     border-radius: 10px;
     height: 20em;
     width: 30em;
+    display: grid;
+        grid-template-columns: auto 1fr;
+        grid-gap: 10px;
+        align-items: center;
 }
+
 
 .profile-icon img{
     margin-top: 1em;
@@ -59,25 +70,34 @@
 }
 
 .user-info {
-    /* margin-left: 10px; */
-    display: flex;
-    flex-direction: column;
+        margin: 2em 2em 1em -5em
 }
 
+.match-info {
+    margin: 2em 2em 1em -5em
+}
 .user-info p {
     color: #3BBED1;
     text-align: left;
-    margin-left: -50px;
-
 }
 
-
-.matching-info {
-    margin-left: 10px;
-}
 
 .match-info p{
     text-align: left;
+}
+
+.matching-info-left{
+display: flex;
+    flex-direction: column;
+    margin-left: auto;
+    margin-top: -2em;
+}
+
+.matching-info-right {
+    display: flex;
+    flex-direction: column;
+    margin-left: auto;
+    margin-top: -2em;
 }
 
 .matching-info-left p{
@@ -85,15 +105,15 @@
     text-align: left;
     display: flex;
     flex-direction: column;
+    margin-left: 2em;
 }
 
 .matching-info-right p {
     color: white;
     text-align: left;
-}
-
-.matching-icon {
-    /* Add styles for the matching icon */
+    display: flex;
+    flex-direction: column;
+    margin-left: 2em;
 }
 
 
