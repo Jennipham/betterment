@@ -53,6 +53,8 @@ const customStyles = {
     control: (provided) => ({
         ...provided,
         backgroundColor: 'white', // Change the background color of the control
+        fontFamily: 'agrandir wide light, sans- serif',
+        fontWeight: 'bold',
     }),
     placeholder: (provided) => ({
         ...provided,

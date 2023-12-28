@@ -22,12 +22,12 @@
     /* Adjust margin as needed */
 }
 
-.user-profile {
+.user-profile-box {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin: 20px 0;
-    /* Adjust margin as needed */
+    
 }
 
 .profile-left {
@@ -43,7 +43,8 @@
 }
 
 .profile-icon img{
-    height: 60px;
+    margin-top: 1em;
+    height: 80px;
 }
 
 .user-info {
@@ -52,6 +53,8 @@
 
 .user-info p {
     color: #3BBED1;
+    text-align: left;
+
 }
 
 
@@ -59,8 +62,18 @@
     margin-left: 10px;
 }
 
-.matching-info p{
+.match-info p{
+    text-align: left;
+}
+
+.matching-info-left p{
     color: #3BBED1;
+    text-align: left;
+}
+
+.matching-info-right p {
+    color: white;
+    text-align: left;
 }
 
 .matching-icon {
