@@ -117,7 +117,10 @@ const Profile = () => {
                     developmentAreas: response.data.profile.profileInfo.developmentAreas || [], // Ensure 'developmentAreas' is an array
                     mentoringMethods: response.data.profile.profileInfo.mentoringMethods || [], // Ensure 'mentoringMethods' is an array
 
+
                 }));
+                sessionStorage.setItem('profile', JSON.stringify(response.data.profile.profileInfo));
+
             } catch (error) {
                 console.error('Error fetching profile data:', error);
             }

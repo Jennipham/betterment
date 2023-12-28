@@ -6,6 +6,8 @@ import '../styles/MenteeMatches.css';
 import white from '../images/profile-white.png';
 import black from '../images/profile-black.png';
 import connect from '../images/connect-icon.png';
+import axios from 'axios';
+
 
 import { useState, useEffect } from 'react';
 
@@ -43,6 +45,7 @@ const MenteeMatches = () => {
         lastName: sessionStorage.getItem('lastName') || '',
         userType: sessionStorage.getItem('userType') || '',
         email: sessionStorage.getItem('email') || '',
+        jobRole: sessionStorage.getItem('jobRole') || '',
     });
 
     useEffect(() => {
@@ -51,10 +54,35 @@ const MenteeMatches = () => {
         const lastName = sessionStorage.getItem('lastName');
         const userType = sessionStorage.getItem('userType');
         const email = sessionStorage.getItem('email');
+        const jobRole = sessionStorage.getItem('jobRole') || '';
 
-        setUser({ firstName, lastName, userType, email });
-        console.log('User Information:', { firstName, lastName, userType, email });
+        setUser({ firstName, lastName, userType, email, jobRole });
+        console.log('User Information:', { firstName, lastName, userType, email, jobRole });
     }, []);
+
+    useEffect(() => {
+        const fetchProfileData = async () => {
+            try {
+                const response = await axios.post('http://localhost:3001/getProfile', {
+                    email: user.email,
+                    userType: user.userType,
+                });
+
+                sessionStorage.setItem('profile', JSON.stringify(response.data.profile.profileInfo));
+
+                // Update the user state with the latest jobRole
+                setUser((prevUser) => ({
+                    ...prevUser,
+                    jobRole: response.data.profile.profileInfo.jobRole || '',
+                }));
+
+            } catch (error) {
+                console.error('Error fetching profile data:', error);
+            }
+        };
+
+        fetchProfileData();
+    }, [user.email, user.userType]);
 
     const languageOptions = [
         { value: 'afrikaans', label: 'Afrikaans' },
@@ -139,6 +167,10 @@ const MenteeMatches = () => {
         setSelectedMethods(selectedOption);
     };
 
+    const capitaliseFirstLetter = (str) => {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    };
+
     return (
         <>
             <Header loggedIn={true} />
@@ -207,8 +239,8 @@ const MenteeMatches = () => {
                                 <img src={black} alt="Black Profile Icon" />
                             </div>
                             <div className="user-info">
-                                <p>Name: {user.firstName} { user.lastName}</p>
-                                <p>Job Role:</p>
+                                <p>Name: {capitaliseFirstLetter(user.firstName)} {capitaliseFirstLetter( user.lastName)}</p>
+                                <p>Job Role: {capitaliseFirstLetter(user.jobRole)}</p>
                             </div>
                             <div className="matching-info-left">
                                 <p>Location:</p>
