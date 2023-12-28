@@ -31,15 +31,22 @@
 }
 
 .profile-left {
-    display: flex;
     background-color: white;
     border-radius: 10px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-gap: 10px;
+    align-items: center;
+    height: 20em;
+    width: 30em;
 }
 
 .profile-right {
     display: flex;
     background-color: #007785;
     border-radius: 10px;
+    height: 20em;
+    width: 30em;
 }
 
 .profile-icon img{
@@ -48,16 +55,19 @@
 }
 
 .matching-icon img {
-    height: 60px;
+    height: 80px;
 }
 
 .user-info {
-    margin-left: 10px;
+    /* margin-left: 10px; */
+    display: flex;
+    flex-direction: column;
 }
 
 .user-info p {
     color: #3BBED1;
     text-align: left;
+    margin-left: -50px;
 
 }
 
@@ -73,6 +83,8 @@
 .matching-info-left p{
     color: #3BBED1;
     text-align: left;
+    display: flex;
+    flex-direction: column;
 }
 
 .matching-info-right p {
@@ -84,7 +96,4 @@
     /* Add styles for the matching icon */
 }
 
-.mentor-profile {
-    /* Add styles for the mentor profile, mirror the user profile styles */
-}
 

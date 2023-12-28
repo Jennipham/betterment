@@ -192,9 +192,9 @@ const MenteeMatches = () => {
                             <div className="user-info">
                                 <p>Name:</p>
                                 <p>Job Role:</p>
-                                <p>Development Areas:</p>
                             </div>
                             <div className="matching-info-left">
+                                <p>Development Areas:</p>
                                 <p>Methods of Matching:</p>
                                 <p>Location:</p>
                             </div>
@@ -212,9 +212,10 @@ const MenteeMatches = () => {
                                     <div className="match-info">
                                         <p>Name:</p>
                                         <p>Job Role:</p>
-                                        <p>Development Areas:</p>
                                     </div>
-                                    <div className="matching-info-right">
+                                <div className="matching-info-right">
+                                    <p>Development Areas:</p>
+
                                         <p>Methods of Matching:</p>
                                         <p>Location:</p>
                                     </div>
