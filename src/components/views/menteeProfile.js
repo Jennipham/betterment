@@ -5,6 +5,8 @@ import Select, { components } from 'react-select';
 import '../styles/MenteeMatches.css';
 import white from '../images/profile-white.png';
 import black from '../images/profile-black.png';
+import connect from '../images/connect-icon.png';
+
 import { useState } from 'react';
 
 
@@ -170,7 +172,9 @@ const MenteeMatches = () => {
                             </div>
                         </div>
 
-                        <div className="matching-icon"> {/* Add your matching icon here */} </div>
+                        <div className="matching-icon">
+                            <img src={connect} alt="Connect Icon" />
+                        </div>
 
                         <div className="mentor-profile-box">
                           <div className="profile-right">

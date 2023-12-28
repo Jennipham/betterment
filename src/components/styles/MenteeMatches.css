@@ -47,6 +47,10 @@
     height: 80px;
 }
 
+.matching-icon img {
+    height: 60px;
+}
+
 .user-info {
     margin-left: 10px;
 }
