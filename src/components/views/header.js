@@ -6,7 +6,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 
 
-const Header = ({loggedIn}) => {
+const Header = ({ loggedIn }) => {
     const location = useLocation();
 
     return (
@@ -40,31 +40,42 @@ const Header = ({loggedIn}) => {
                         <RouterLink to="/signup">Sign Up</RouterLink>
                         <RouterLink to="/login">Login</RouterLink>
                     </>
-                ) : loggedIn && location.pathname==='/profileSettings' ? ( //checks if logged in
-                        <>
-                            <RouterLink to="/help">Help</RouterLink>
-                            <RouterLink to="/menteeProfile">Profile</RouterLink>
-                            <RouterLink to="/">Log Out</RouterLink>
+                ) : loggedIn && location.pathname === '/profileSettings' ? ( //checks if logged in
+                    <>
+                        <RouterLink to="/help">Help</RouterLink>
+                        <RouterLink to="/menteeProfile">Matching</RouterLink>
+                        <RouterLink to="/">Log Out</RouterLink>
 
-                        </>
-                    ) : loggedIn && location.pathname === '/adminSettings' ? ( //checks if logged in
-                            <>
-                                <RouterLink to="/help">Help</RouterLink>
-                                <RouterLink to="/dashboard">Insights</RouterLink>
-                                <RouterLink to="/">Log Out</RouterLink>
+                    </>
+                ) : loggedIn && location.pathname === '/adminSettings' ? ( //checks if logged in
+                    <>
+                        <RouterLink to="/help">Help</RouterLink>
+                        <RouterLink to="/dashboard">Insights</RouterLink>
+                        <RouterLink to="/">Log Out</RouterLink>
 
-                            </>
-                        )
+                    </>
+
+
+                ) : loggedIn && location.pathname === '/menteeProfile' ? ( //checks if logged in
+                                <>
+                        <RouterLink to="/profileSettings">Profile</RouterLink>
+                        <RouterLink to="/help">Help</RouterLink>
+                        <RouterLink to="/">Log Out</RouterLink>
+
+                    </>
+                )
+
+                    :
                     
-                   : //not logged in and not on homepage (sign up/login pages)
-                    
-                    (<>
+                    //not logged in and not on homepage (sign up/login pages)
+
+                (<>
 
                     <RouterLink to="/">Home</RouterLink>
                     <RouterLink to="/signup">Sign Up</RouterLink>
                     <RouterLink to="/login">Login</RouterLink>
-                            
-                            
+
+
                 </>
                 )}
             </div>
