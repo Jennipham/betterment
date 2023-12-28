@@ -7,15 +7,15 @@ import Login from './components/views/login';
 import Welcome from './components/views/welcome';
 import TermsOfUse from './components/views/termsOfUse';
 import MentorProfile from './components/views/mentorProfile';
-import MenteeProfile from './components/views/menteeProfile';
 import ManagerProfile from './components/views/managerProfile';
 import Profile from './components/views/profileSettings';
 import Help from './components/views/help';
 import AdminSettings from './components/views/adminSettings';
 import MenteeMatches from './components/views/menteeProfile';
 
-
 function App() {
+
+  
 
   return (
     <Router>
