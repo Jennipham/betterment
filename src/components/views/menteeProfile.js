@@ -7,8 +7,7 @@ import white from '../images/profile-white.png';
 import black from '../images/profile-black.png';
 import connect from '../images/connect-icon.png';
 import axios from 'axios';
-
-
+import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
 
@@ -40,6 +39,10 @@ const customStyles = {
 };
 
 const MenteeMatches = () => {
+
+
+    const navigate = useNavigate();
+
     const [user, setUser] = useState({
         firstName: sessionStorage.getItem('firstName') || 'User',
         lastName: sessionStorage.getItem('lastName') || '',
@@ -55,9 +58,15 @@ const MenteeMatches = () => {
         const userType = sessionStorage.getItem('userType');
         const email = sessionStorage.getItem('email');
         const jobRole = sessionStorage.getItem('jobRole') || '';
+        const officeLocation = sessionStorage.getItem('officeLocation') || '';
+        const developmentAreas = sessionStorage.getItem('developmentAreas') || '';
+        const mentoringMethods = sessionStorage.getItem('mentoringMethods') || '';
 
-        setUser({ firstName, lastName, userType, email, jobRole });
-        console.log('User Information:', { firstName, lastName, userType, email, jobRole });
+
+
+
+        setUser({ firstName, lastName, userType, email, jobRole, officeLocation, developmentAreas, mentoringMethods });
+        console.log('User Information:', { firstName, lastName, userType, email, jobRole,officeLocation, developmentAreas, mentoringMethods });
     }, []);
 
     useEffect(() => {
@@ -74,7 +83,13 @@ const MenteeMatches = () => {
                 setUser((prevUser) => ({
                     ...prevUser,
                     jobRole: response.data.profile.profileInfo.jobRole || '',
+                    location: response.data.profile.profileInfo.officeLocation || '',
+                    developmentAreas: response.data.profile.profileInfo.developmentAreas || '',
+                    mentoringMethods: response.data.profile.profileInfo.mentoringMethods || '',
+
                 }));
+
+                console.log('devareas', response.data.profile.profileInfo.developmentAreas);
 
             } catch (error) {
                 console.error('Error fetching profile data:', error);
@@ -168,7 +183,18 @@ const MenteeMatches = () => {
     };
 
     const capitaliseFirstLetter = (str) => {
+        if (str === undefined) {
+            return;
+        }
         return str.charAt(0).toUpperCase() + str.slice(1);
+    };
+
+    const handleEditClick = () => {
+        if (user.userType === 'mentee' || user.userType === 'mentor') {
+            console.log("Navigating to Profile with user:", user);
+            navigate("/profileSettings");
+
+        }
     };
 
     return (
@@ -239,13 +265,16 @@ const MenteeMatches = () => {
                                 <img src={black} alt="Black Profile Icon" />
                             </div>
                             <div className="user-info">
-                                <p>Name: {capitaliseFirstLetter(user.firstName)} {capitaliseFirstLetter( user.lastName)}</p>
+                                <p>Name: {capitaliseFirstLetter(user.firstName)} {capitaliseFirstLetter(user.lastName)}</p>
                                 <p>Job Role: {capitaliseFirstLetter(user.jobRole)}</p>
                             </div>
                             <div className="matching-info-left">
-                                <p>Location:</p>
-                                <p>Development Areas:</p>
-                                <p>Methods of Matching:</p>
+                                <p>Location: {capitaliseFirstLetter(user.officeLocation)}</p>
+                                <p>Development Areas: {user.developmentAreas ? user.developmentAreas.join(', ') : ''}</p>
+                                <p>Methods of Matching: {user.mentoringMethods ? user.mentoringMethods.join(', ') : ''}</p>
+                            </div>
+                            <div className="bottom-right-button">
+                                <button onClick={() => { handleEditClick() }}>Edit Profile</button>
                             </div>
                         </div>
 

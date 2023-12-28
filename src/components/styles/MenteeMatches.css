@@ -46,6 +46,7 @@
     align-items: center;
     height: 20em;
     width: 30em;
+        position: relative;
 }
 
 .profile-right {
@@ -70,11 +71,11 @@
 }
 
 .user-info {
-        margin: 2em 2em 1em -5em
+        margin: 2em 2em 1em -10em;
 }
 
 .match-info {
-    margin: 2em 2em 1em -5em
+    margin: 2em 2em 1em -5em;
 }
 .user-info p {
     color: #3BBED1;
@@ -116,4 +117,13 @@ display: flex;
     margin-left: 2em;
 }
 
+.bottom-right-button {
+    position: absolute;
+    bottom: 10px;
+    right: 20px;
+}
 
+.bottom-right-button button {
+    font-size: 1em;
+
+}
