@@ -61,12 +61,12 @@ const MenteeMatches = () => {
         const officeLocation = sessionStorage.getItem('officeLocation') || '';
         const developmentAreas = sessionStorage.getItem('developmentAreas') || '';
         const mentoringMethods = sessionStorage.getItem('mentoringMethods') || '';
+        const languages = sessionStorage.getItem('languages') || '';
 
 
 
-
-        setUser({ firstName, lastName, userType, email, jobRole, officeLocation, developmentAreas, mentoringMethods });
-        console.log('User Information:', { firstName, lastName, userType, email, jobRole,officeLocation, developmentAreas, mentoringMethods });
+        setUser({ firstName, lastName, userType, email, jobRole, officeLocation, developmentAreas, mentoringMethods, languages });
+        console.log('User Information:', { firstName, lastName, userType, email, jobRole, officeLocation, developmentAreas, mentoringMethods, languages });
     }, []);
 
     useEffect(() => {
@@ -86,8 +86,12 @@ const MenteeMatches = () => {
                     location: response.data.profile.profileInfo.officeLocation || '',
                     developmentAreas: response.data.profile.profileInfo.developmentAreas || '',
                     mentoringMethods: response.data.profile.profileInfo.mentoringMethods || '',
+                    languages: response.data.profile.profileInfo.languages || '',
+
 
                 }));
+
+                setSelectedLanguages(response.data.profile.profileInfo.languages);
 
                 console.log('devareas', response.data.profile.profileInfo.developmentAreas);
 
