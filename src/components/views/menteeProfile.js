@@ -92,6 +92,9 @@ const MenteeMatches = () => {
                 }));
 
                 setSelectedLanguages(response.data.profile.profileInfo.languages);
+                setSelectedDevelopmentAreas(response.data.profile.profileInfo.developmentAreas);
+                setSelectedMethods(response.data.profile.profileInfo.mentoringMethods);
+                setSelectedLocation(response.data.profile.profileInfo.location);
 
                 console.log('devareas', response.data.profile.profileInfo.developmentAreas);
 
@@ -185,6 +188,20 @@ const MenteeMatches = () => {
         setSelectedMethods(selectedOption);
     };
 
+    const [selectedLocation, setSelectedLocation] = useState('');
+
+    const handleLocationChange = (selectedOption) => {
+        // Assuming selectedOption is an object with a value property
+        const selectedValue = selectedOption ? selectedOption.value : '';
+
+        // Update the selectedLocation state
+        setSelectedLocation(selectedValue);
+
+        // You can perform additional actions if needed
+        console.log('Selected Location:', selectedValue);
+    };
+
+
     const capitaliseFirstLetter = (str) => {
         if (str === undefined) {
             return;
@@ -251,9 +268,13 @@ const MenteeMatches = () => {
                     />
 
                     <Select
+                        isMulti={false}
                         options={locationOptions}
-                        placeholder="Location"
+                        placeholder="Select Office"
                         styles={customStyles}
+                        value={selectedLocation}
+                        onChange={(selectedOption) => handleLocationChange(selectedOption)}
+
 
                     />
 
