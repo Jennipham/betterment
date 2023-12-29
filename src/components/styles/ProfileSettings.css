@@ -115,3 +115,28 @@
     text-align: left;
     text-transform: capitalize;
 }
+
+/* Add these styles to your existing CSS or create a new stylesheet */
+.save-message {
+    padding: 1px 0px 1px 0px;
+    text-align: center;
+    max-width: 500px;
+    border-radius: 10px;
+    margin: 0 auto;
+}
+
+.success {
+    background-color: rgb(5, 147, 5);
+    color: white;
+}
+
+.error {
+    background-color: rgb(208, 51, 51);
+    color: white;
+}
+
+.loader-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

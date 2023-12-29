@@ -1,12 +1,13 @@
 import React from 'react';
 import Header from './header';
 import Footer from './footer';
+import Loader from './loader';
 import editIcon from '../images/EditIcon.png';
 import Select from 'react-select';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
-import '../styles/Profile.css';
+import '../styles/ProfileSettings.css';
 
 const languageOptions = [
     { value: 'afrikaans', label: 'Afrikaans' },
@@ -39,8 +40,8 @@ const developmentOptions = [
 ]
 
 const methodOptions = [
-    { value: 'inPerson', label: 'In Person Sessions' },
-    { value: 'virtual', label: 'Virtual Sessions' },
+    { value: 'In Person', label: 'In Person Sessions' },
+    { value: 'Virtual', label: 'Virtual Sessions' },
 ]
 
 const locationOptions = [
@@ -104,6 +105,11 @@ const Profile = () => {
     const [isEditingCapacity, setIsEditingCapacity] = useState(false);
     const [capacityInput, setCapacityInput] = useState('');
 
+    const [saveMessage, setSaveMessage] = useState(null);
+    const [loading, setLoading] = useState(false);
+
+
+
     useEffect(() => {
         const fetchProfileData = async () => {
             try {
@@ -159,6 +165,8 @@ const Profile = () => {
 
 
     const handleSaveClick = async () => {
+        setLoading(true);
+
         try {
             // Send the form data to the backend API endpoint
             const updatedJobRole = isEditingJobRole ? jobRoleInput.trim() : formData.jobRole.trim();
@@ -187,12 +195,26 @@ const Profile = () => {
             setIsEditingJobRole(false);
             setIsEditingDepartment(false);
             setIsEditingCapacity(false);
+            setLoading(false);
+
+            setSaveMessage('Profile saved successfully');
+
+            setTimeout(() => {
+                setSaveMessage(null);
+            }, 5000);
 
 
             console.log('Profile saved successfully:', response.data);
             // You can add a success message or redirect the user after a successful save
         } catch (error) {
             console.error('Error saving profile:', error);
+            setSaveMessage('Error saving profile');
+            setLoading(false);
+
+            setTimeout(() => {
+                setSaveMessage(null);
+            }, 5000);
+
             // Handle error, show a message, etc.
         }
     };
@@ -202,7 +224,13 @@ const Profile = () => {
     return (
         <>
         <div className='profile-page'>
-            <Header loggedIn={true}/>
+                <Header loggedIn={true} />
+                
+                {saveMessage && (
+                    <div className={`save-message ${saveMessage.includes('successfully') ? 'success' : 'error'}`}>
+                        <p>{saveMessage}</p>
+                    </div>
+                )}
 
             <div className="text-center">
                 <h2 className="profile-heading">Profile Settings</h2>
@@ -365,10 +393,17 @@ const Profile = () => {
                     </p>
                 </div>
                 </div>
+                {loading ? (
+                        <div className='loader-container'>
+
+                        <Loader />
+                        </div>
+                ) : (
                 <div className='save-info'>
                     <button onClick={handleSaveClick}>Save</button>
                 </div>
 
+                )}
 
             </div>
 

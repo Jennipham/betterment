@@ -143,8 +143,8 @@ const MenteeMatches = () => {
     ]
 
     const methodOptions = [
-        { value: 'inPerson', label: 'In Person Sessions' },
-        { value: 'virtual', label: 'Virtual Sessions' },
+        { value: 'In Person', label: 'In Person Sessions' },
+        { value: 'Virtual', label: 'Virtual Sessions' },
     ]
 
     const CheckboxOption = ({ innerProps, label, isSelected, selectProps }) => (
@@ -272,10 +272,8 @@ const MenteeMatches = () => {
                         options={locationOptions}
                         placeholder="Select Office"
                         styles={customStyles}
-                        value={selectedLocation}
+                        vvalue={selectedLocation} // Find the corresponding option
                         onChange={(selectedOption) => handleLocationChange(selectedOption)}
-
-
                     />
 
                    
