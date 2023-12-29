@@ -63,7 +63,6 @@
 
 
 .profile-icon img{
-    margin-top: 1em;
     height: 80px;
 }
 
@@ -72,11 +71,11 @@
 }
 
 .user-info {
-        margin: 2em 2em 1em -10em;
+        margin: 1em 2em 1em -10em;
 }
 
 .match-info {
-    margin: 2em 2em 1em -5em;
+    margin: 1em 2em 1em -5em;
 }
 .user-info p {
     color: #3BBED1;
@@ -92,14 +91,16 @@
 display: flex;
     flex-direction: column;
     margin-left: auto;
-    margin-top: -2em;
+    margin-bottom: 2em;
+    margin-top: -6em;
 }
 
 .matching-info-right {
     display: flex;
     flex-direction: column;
     margin-left: auto;
-    margin-top: -2em;
+    margin-bottom: 2em;
+    margin-top: -6em;
 }
 
 .matching-info-left p{
@@ -133,18 +134,22 @@ display: flex;
 }
 
 .bottom-buttons-container {
+    justify-content: center;
+    text-align: center;
+    display: flex;
+    overflow: hidden;
+    white-space: nowrap;
     position: absolute;
-        bottom: 0;
-        display: flex;
-        flex-direction: row;
-        overflow: hidden;
-        white-space: nowrap;
+    bottom: 0;
+    right: 0;
+    margin-top: 1em;
 }
 
 .bottom-buttons-container button {
     font-size: 1em;
     background-color: white;
     color: #3BBED1;
+        margin-bottom: 1em;
 }
 .bottom-right-button button {
     font-size: 1em;
