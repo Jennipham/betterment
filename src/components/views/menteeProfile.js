@@ -106,7 +106,6 @@ const MenteeMatches = () => {
         { value: 'german', label: 'German' },
         { value: 'hindi', label: 'Hindi' },
         { value: 'hungarian', label: 'Hungarian' },
-        { value: 'italian', label: 'Italian' },
         { value: 'marathi', label: 'Marathi' },
         { value: 'italian', label: 'Italian' },
         { value: 'portuguese', label: 'Portuguese' },

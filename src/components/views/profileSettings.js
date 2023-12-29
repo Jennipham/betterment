@@ -17,7 +17,6 @@ const languageOptions = [
     { value: 'hungarian', label: 'Hungarian' },
     { value: 'italian', label: 'Italian' },
     { value: 'marathi', label: 'Marathi' },
-    { value: 'italian', label: 'Italian' },
     { value: 'portuguese', label: 'Portuguese' },
     { value: 'romanian', label: 'Romanian' },
     { value: 'spanish', label: 'Spanish' },
