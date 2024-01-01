@@ -35,7 +35,6 @@ function App() {
           <Route path="/menteeprofile" element={<MenteeMatches />} />
           <Route path="/managerprofile" element={<ManagerProfile />} />
 
-          {/* CD Test */}
 
         </Routes>
       </div>
