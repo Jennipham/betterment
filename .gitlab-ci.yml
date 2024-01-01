@@ -1,19 +1,15 @@
 stages:
-  - build
-  - test
   - deploy
-
-build:
-  stage: build
-  script:
-    - echo "Building the project..."
-
-test:
-  stage: test
-  script:
-    - echo "Running tests..."
 
 deploy:
   stage: deploy
+  environment:
+    name: production
+    url: https://betterment.network
+  only:
+    - master
   script:
-    - echo "Deploying the project..."
+    - npm i
+    # your build command
+    - npm run build
+    - npx netlify-cli deploy --site $8a577fa3-bcf2-4c42-bffe-68b29373d3a2 --auth $nfp_k2sbztcvd2s5iy82t5e4gJ7M9yPhUHZL6bde --prod
