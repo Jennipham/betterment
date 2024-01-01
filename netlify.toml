@@ -23,7 +23,5 @@
 [context.production.environment]
   # Production environment variables
   REACT_APP_API_BASE_URL = "https://betterment.network"
-  REACT_APP_URI=mongodb+srv://jxp100:betterment@cluster0.hhplklu.mongodb.net/Users
-JWT_SECRET=r3T!fG^7jPQ2$5hA*9sX&8rZ
 CONTACT_PASS=makm rqtr ngou xzig
   # Other production environment variables...
