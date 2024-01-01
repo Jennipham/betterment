@@ -323,5 +323,24 @@ router.post('/send-form', async (req, res) => {
     }
 });
 
+router.post('/logout', async (req, res) => {
+    const token = req.headers.authorization.split(' ')[1];
+    const decoded = jwt.verify(token, secretKey);
+    const userId = decoded.userId;
+
+    try {
+        // Update the user to mark as logged out
+        await User.findByIdAndUpdate(userId, { isLoggedOut: true });
+
+        // You can also add the token to a blacklist here if needed
+
+        res.status(200).json({ message: 'Logout successful' });
+    } catch (error) {
+        console.error('Error during logout:', error);
+        res.status(500).json({ error: 'Logout failed' });
+    }
+});
+
+
 
 module.exports = router;

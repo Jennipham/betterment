@@ -1,20 +1,37 @@
 const jwt = require('jsonwebtoken');
-const secretKey = process.env.JWT_SECRET; // Retrieve the JWT secret key from environment variables
+const User = require('./models/user');
 
-const verifyToken = (req, res, next) => {
-    const token = req.header('Authorization');
+const secretKey = process.env.JWT_SECRET;
 
-    if (!token) {
-        return res.status(401).json({ message: 'Unauthorized' });
+const authenticateUser = async (req, res, next) => {
+    // Extract token from headers
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).json({ error: 'Unauthorized' });
     }
+
+    const token = authHeader.substring(7); // Remove 'Bearer ' from the beginning
 
     try {
         const decoded = jwt.verify(token, secretKey);
-        req.user = decoded;
-        next();
+
+        // Check if the user is logged out
+        const user = await User.findById(decoded.userId);
+
+        if (user && !user.isLoggedOut) {
+            req.user = decoded;
+            next(); // User is authenticated
+        } else {
+            res.status(401).json({ error: 'Unauthorized' });
+        }
     } catch (error) {
-        return res.status(403).json({ message: 'Invalid token' });
+        if (error.name === 'TokenExpiredError') {
+            res.status(401).json({ error: 'Token expired' });
+        } else {
+            res.status(401).json({ error: 'Invalid token' });
+        }
     }
 };
 
-module.exports = verifyToken;
+module.exports = authenticateUser;

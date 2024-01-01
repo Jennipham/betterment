@@ -4,10 +4,30 @@ import '../styles/font.css';
 import { Link as ScrollLink } from 'react-scroll';
 import { Link as RouterLink } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
 
 
 const Header = ({ loggedIn }) => {
     const location = useLocation();
+    const navigate = useNavigate();
+
+    const handleLogout = async () => {
+        try {
+            // Call the server-side logout endpoint
+            await axios.post('http://localhost:3001/logout');
+
+            // Clear any client-side authentication state or stored user information
+            // For example, you may want to clear the JWT token stored in localStorage.
+
+            // Redirect the user to the homepage or login page
+            navigate.push('/');
+        } catch (error) {
+            console.error('Logout failed:', error);
+            // Handle logout failure
+        }
+    };
 
     return (
         <div className="header">
@@ -40,19 +60,38 @@ const Header = ({ loggedIn }) => {
                         <RouterLink to="/signup">Sign Up</RouterLink>
                         <RouterLink to="/login">Login</RouterLink>
                     </>
+
                 ) : loggedIn && location.pathname === '/profileSettings' ? ( //checks if logged in
                     <>
                         <RouterLink to="/help">Help</RouterLink>
                         <RouterLink to="/menteeProfile">Matching</RouterLink>
-                        <RouterLink to="/">Log Out</RouterLink>
+                            <RouterLink to="/" onClick={handleLogout}>
+                                Log Out
+                            </RouterLink>
 
                     </>
-                ) : loggedIn && location.pathname === '/adminSettings' ? ( //checks if logged in
+                    ) : loggedIn && location.pathname === '/signupSuccess' ? ( //checks if logged in
+                        <>
+                                <RouterLink to="/profileSettings">Profile</RouterLink>
+                                <RouterLink to="/menteeProfile">Matching</RouterLink>
+                                <RouterLink to="/help">Help</RouterLink>
+                            <RouterLink to="/" onClick={handleLogout}>
+                                Log Out
+                            </RouterLink>
+
+                            </>
+                        
+                    )
+                
+                
+                
+                        : loggedIn && location.pathname === '/adminSettings' ? ( //checks if logged in
                     <>
                         <RouterLink to="/help">Help</RouterLink>
                         <RouterLink to="/dashboard">Insights</RouterLink>
-                        <RouterLink to="/">Log Out</RouterLink>
-
+                                    <RouterLink to="/" onClick={handleLogout}>
+                                        Log Out
+                                    </RouterLink>
                     </>
 
 
@@ -60,8 +99,9 @@ const Header = ({ loggedIn }) => {
                                 <>
                         <RouterLink to="/profileSettings">Profile</RouterLink>
                         <RouterLink to="/help">Help</RouterLink>
-                        <RouterLink to="/">Log Out</RouterLink>
-
+                                        <RouterLink to="/" onClick={handleLogout}>
+                                            Log Out
+                                        </RouterLink>
                     </>
                 )
 
