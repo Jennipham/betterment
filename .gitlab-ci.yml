@@ -12,4 +12,4 @@ deploy:
     - npm i
     # your build command
     - npm run build
-    - npx netlify-cli deploy --site $8a577fa3-bcf2-4c42-bffe-68b29373d3a2 --auth $nfp_k2sbztcvd2s5iy82t5e4gJ7M9yPhUHZL6bde --prod
+    - npx netlify-cli deploy --site $NETLIFY_SITE_ID --auth $NETLIFY_AUTH_TOKEN --prod
