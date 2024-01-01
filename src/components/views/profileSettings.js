@@ -40,7 +40,7 @@ const developmentOptions = [
 ]
 
 const methodOptions = [
-    { value: 'In Person', label: 'In Person Sessions' },
+    { value: 'InPerson', label: 'In Person Sessions' },
     { value: 'Virtual', label: 'Virtual Sessions' },
 ]
 

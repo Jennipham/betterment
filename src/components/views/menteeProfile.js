@@ -96,8 +96,6 @@ const MenteeMatches = () => {
                 setSelectedMethods(response.data.profile.profileInfo.mentoringMethods);
                 setSelectedLocation(response.data.profile.profileInfo.location);
 
-                console.log('devareas', response.data.profile.profileInfo.developmentAreas);
-
             } catch (error) {
                 console.error('Error fetching profile data:', error);
             }
@@ -123,9 +121,8 @@ const MenteeMatches = () => {
     ];
 
     const locationOptions = [
-        { value: 'city1', label: 'City 1' },
-        { value: 'city2', label: 'City 2' },
-        // Add more location options as needed
+        { value: 'location', label: 'Location' },
+
     ];
 
     const developmentAreaOptions = [
@@ -143,7 +140,7 @@ const MenteeMatches = () => {
     ]
 
     const methodOptions = [
-        { value: 'In Person', label: 'In Person Sessions' },
+        { value: 'InPerson', label: 'In Person Sessions' },
         { value: 'Virtual', label: 'Virtual Sessions' },
     ]
 
@@ -188,6 +185,8 @@ const MenteeMatches = () => {
         setSelectedMethods(selectedOption);
     };
 
+    console.log('methods', selectedMethods);
+
     const [selectedLocation, setSelectedLocation] = useState('');
 
     const handleLocationChange = (selectedOption) => {
@@ -217,6 +216,14 @@ const MenteeMatches = () => {
         }
     };
 
+    const mapValuesToLabels = (values, options) => {
+        return values.map(value => {
+            const option = options.find(option => option.value === value);
+            return option ? option.label : value;
+        });
+    };
+
+
     return (
         <>
             <Header loggedIn={true} />
@@ -233,7 +240,7 @@ const MenteeMatches = () => {
                         components={{
                             MultiValue: CheckboxOption,
                         }}
-                        value={selectedLanguages}
+                        value={languageOptions.filter(option => selectedLanguages.includes(option.value))}
                         onChange={handleLanguagesChange}
                     />
 
@@ -247,7 +254,7 @@ const MenteeMatches = () => {
                         components={{
                             MultiValue: CheckboxOption,
                         }}
-                        value={selectedDevelopmentAreas}
+                        value={developmentAreaOptions.filter(option => selectedDevelopmentAreas.includes(option.value))}
                         onChange={handleDevelopmentAreasChange}
 
                     />
@@ -262,7 +269,7 @@ const MenteeMatches = () => {
                         components={{
                             MultiValue: CheckboxOption,
                         }}
-                        value={selectedMethods}
+                        value={methodOptions.filter(option => selectedMethods.includes(option.value))}
                         onChange={handleMethodsChange}
 
                     />
@@ -270,7 +277,7 @@ const MenteeMatches = () => {
                     <Select
                         isMulti={false}
                         options={locationOptions}
-                        placeholder="Select Office"
+                        placeholder="Office Location"
                         styles={customStyles}
                         value={selectedLocation} // Find the corresponding option
                         onChange={(selectedOption) => handleLocationChange(selectedOption)}
@@ -293,7 +300,7 @@ const MenteeMatches = () => {
                             <div className="matching-info-left">
                                 <p>Location: {capitaliseFirstLetter(user.officeLocation)}</p>
                                 <p>Development Areas: {user.developmentAreas ? user.developmentAreas.join(', ') : ''}</p>
-                                <p>Methods of Matching: {user.mentoringMethods ? user.mentoringMethods.join(', ') : ''}</p>
+                                <p>Methods of Matching: {user.mentoringMethods ? mapValuesToLabels(user.mentoringMethods, methodOptions).join(', ') : ''}</p>
                             </div>
                             <div className="bottom-right-button">
                                 <button onClick={() => { handleEditClick() }}>Edit Profile</button>
