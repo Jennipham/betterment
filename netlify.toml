@@ -23,5 +23,4 @@
 [context.production.environment]
   # Production environment variables
   REACT_APP_API_BASE_URL = "https://betterment.network"
-CONTACT_PASS=makm rqtr ngou xzig
   # Other production environment variables...
