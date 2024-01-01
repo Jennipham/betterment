@@ -1,21 +1,30 @@
-# example netlify.toml
 [build]
-  command = "npm run build"
-  functions = "netlify/functions"
-  publish = "build"
+  command = "npm run build"  # Specify the build command for your frontend
+  functions = "netlify/functions"  # Path to your serverless functions
+  publish = "build"  # Directory to publish (your frontend build)
 
-  ## Uncomment to use this redirect for Single Page Applications like create-react-app.
-  ## Not needed for static site generators.
-  #[[redirects]]
-  #  from = "/*"
-  #  to = "/index.html"
-  #  status = 200
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  # This redirect is useful for Single Page Applications (SPAs) to handle client-side routing
+  # Uncomment this if you're using a SPA framework like React with React Router
 
-  ## (optional) Settings for Netlify Dev
-  ## https://github.com/netlify/cli/blob/main/docs/netlify-dev.md#project-detection
-  #[dev]
-  #  command = "yarn start" # Command to start your dev server
-  #  port = 3000 # Port that the dev server will be listening on
-  #  publish = "dist" # Folder with the static content for _redirect file
+## (optional) Settings for Netlify Dev
+[dev]
+  command = "npm run start"  # Adjust this based on your local development command
+  port = 3000  # Port for the local development server
+  publish = "build"  # Folder with the static content for _redirect file
 
-  ## more info on configuring this file: https://docs.netlify.com/configure-builds/file-based-configuration/
+[build.environment]
+  # Add your environment variables here, accessible during the build process
+  NODE_ENV = "production"
+  # Other environment variables...
+
+[context.production.environment]
+  # Production environment variables
+  REACT_APP_API_BASE_URL = "https://betterment.network"
+  REACT_APP_URI=mongodb+srv://jxp100:betterment@cluster0.hhplklu.mongodb.net/Users
+JWT_SECRET=r3T!fG^7jPQ2$5hA*9sX&8rZ
+CONTACT_PASS=makm rqtr ngou xzig
+  # Other production environment variables...
