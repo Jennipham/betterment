@@ -1,28 +1,18 @@
 [build]
-  command = "npm run build"  # Specify the build command for your frontend
-  publish = "build"  # Directory to publish (your frontend build)
+  command = "npm run build"
+  publish = "build"
 
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
-  # This redirect is useful for Single Page Applications (SPAs) to handle client-side routing
-  # Uncomment this if you're using a SPA framework like React with React Router
 
-## (optional) Settings for Netlify Dev
 [dev]
-  command = "npm run start"  # Adjust this based on your local development command
-  port = 3000  # Port for the local development server
-  publish = "build"  # Folder with the static content for _redirect file
+  command = "npm run start"
+  port = 3000
+  publish = "build"
 
 [build.environment]
-  # Add your environment variables here, accessible during the build process
   NODE_ENV = "production"
   REACT_APP_API_BASE_URL = "https://betterment.network"
-
-  # Other environment variables...
-
-[context.production.environment]
-  # Production environment variables
-  REACT_APP_API_BASE_URL = "https://betterment.network"
-  # Other production environment variables...
+  # Add other environment variables as needed
