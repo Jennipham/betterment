@@ -41,8 +41,11 @@ const Login = () => {
 
                 // Set the token in the Axios headers for subsequent requests
                 axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-                navigate("/signupSuccess", { state: { user: { fname: firstName, sname: lastName, userType: userType, email: email, } } })
-
+                {
+                    userType === 'admin' ?
+                        navigate("/adminSettings", { state: { user: { fname: firstName, sname: lastName, userType: userType, email: email, } } }) :
+                        navigate("/profileSettings", { state: { user: { fname: firstName, sname: lastName, userType: userType, email: email, } } })
+            }
             } else {
                 setLoading(false);
                 setErrorMessage('Invalid email or password. Please try again.');
