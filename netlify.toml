@@ -1,6 +1,5 @@
 [build]
   command = "npm run build"  # Specify the build command for your frontend
-  functions = "netlify/functions"  # Path to your serverless functions
   publish = "build"  # Directory to publish (your frontend build)
 
 [[redirects]]
