@@ -272,7 +272,7 @@ const MenteeMatches = () => {
                         options={locationOptions}
                         placeholder="Select Office"
                         styles={customStyles}
-                        vvalue={selectedLocation} // Find the corresponding option
+                        value={selectedLocation} // Find the corresponding option
                         onChange={(selectedOption) => handleLocationChange(selectedOption)}
                     />
 
