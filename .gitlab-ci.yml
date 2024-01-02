@@ -7,7 +7,7 @@ deploy:
     name: production
     url: https://betterment.network
   only:
-    - master
+    - main
   script:
     - npm ci
     # your build command
