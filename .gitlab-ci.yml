@@ -1,9 +1,22 @@
 stages:
+  - build
   - deploy
+
+variables:
+  NODE_ENV: "production"
+
+before_script:
+  - npm install
+
+build:
+  stage: build
+  script:
+    - npm run build
 
 deploy:
   stage: deploy
   script:
-    - curl -X POST -d {} $NETLIFY_BUILD_HOOK_URL
+    - npm install -g netlify-cli
+    - netlify deploy --prod
   only:
     - main
