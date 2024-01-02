@@ -1,6 +1,6 @@
 import React from 'react';
-import Header from './header';
-import Footer from './footer';
+import Header from '../utils/header';
+import Footer from '../utils/footer';
 import Select, { components } from 'react-select';
 import '../styles/MenteeMatches.css';
 import white from '../images/profile-white.png';

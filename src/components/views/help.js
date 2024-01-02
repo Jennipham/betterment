@@ -3,8 +3,8 @@
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
-import Header from './header';
-import Footer from './footer';
+import Header from '../utils/header';
+import Footer from '../utils/footer';
 import '../styles/Help.css';
 
 const Help = () => {

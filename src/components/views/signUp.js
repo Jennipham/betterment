@@ -5,10 +5,10 @@ import { useNavigate } from 'react-router-dom';
 import signUpEmployee from '../images/sign-up1.png';
 import signUpCoach from '../images/sign-up2.png';
 
-import Header from './header';
+import Header from '../utils/header';
 import { useState } from 'react';
-import Footer from './footer';
-import Loader from './loader';
+import Footer from '../utils/footer';
+import Loader from '../utils/loader';
 
 const SignUp = () => {
     const navigate = useNavigate();

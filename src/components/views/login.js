@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import '../styles/Login.css';
-import Header from './header';
-import Footer from './footer';
-import Loader from './loader';
+import Header from '../utils/header';
+import Footer from '../utils/footer';
+import Loader from '../utils/loader';
 import login from '../images/log-in.png';
 
 const Login = () => {

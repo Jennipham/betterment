@@ -1,6 +1,6 @@
 import React from 'react';
-import Header from './header';
-import Footer from './footer';
+import Header from '../utils/header';
+import Footer from '../utils/footer';
 import editIcon from '../images/EditIcon.png';
 import Select from 'react-select';
 import { useState, useEffect } from 'react';

@@ -1,7 +1,7 @@
 import React from 'react';
-import Header from './header';
+import Header from '../utils/header';
 import '../styles/Welcome.css';
-import Footer from './footer';
+import Footer from '../utils/footer';
 
 const MentorProfile = () => {
 
