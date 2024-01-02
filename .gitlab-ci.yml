@@ -1,12 +1,17 @@
 stages:
+  - build
   - deploy
 
 variables:
   NODE_ENV: "production"
 
 before_script:
-  - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa  # Set SSH key
-  - chmod 600 ~/.ssh/id_rsa  # Set correct permissions
+  - npm install
+
+build:
+  stage: build
+  script:
+    - npm run build
 
 deploy:
   stage: deploy
@@ -14,4 +19,4 @@ deploy:
     - npm install -g netlify-cli
     - netlify deploy --prod
   only:
-    - main  # or "master" if that's your default branch
+    - main
