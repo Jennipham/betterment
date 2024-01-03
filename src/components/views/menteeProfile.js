@@ -235,7 +235,7 @@ const MenteeMatches = () => {
     const handleEditClick = () => {
         if (user.userType === 'mentee' || user.userType === 'mentor') {
             console.log("Navigating to Profile with user:", user);
-            navigate("/profileSettings", { state: { user: { userType: user.userType, email: user.email } } });
+            navigate("/profileSettings", { state: { user: { fname: user.firstName, sname: user.lastName, userType: user.userType, email: user.email, } } })
 
         }
     };

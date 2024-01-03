@@ -6,7 +6,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 
 
@@ -14,7 +14,33 @@ const Header = ({ loggedIn }) => {
     const location = useLocation();
     const navigate = useNavigate();
 
-    const userType = sessionStorage.getItem('userType');
+    const userInfo = location.state?.userInfo || {};
+
+    const [user, setUser] = useState({
+        firstName: sessionStorage.getItem('firstName') || 'User',
+        lastName: sessionStorage.getItem('lastName') || '',
+        userType: sessionStorage.getItem('userType') || '',
+        email: sessionStorage.getItem('email') || '',
+        jobRole: sessionStorage.getItem('jobRole') || '',
+    });
+
+    useEffect(() => {
+        // Retrieve user information from sessionStorage
+        const firstName = sessionStorage.getItem('firstName');
+        const lastName = sessionStorage.getItem('lastName');
+        const userType = sessionStorage.getItem('userType');
+        const email = sessionStorage.getItem('email');
+        const jobRole = sessionStorage.getItem('jobRole') || '';
+        const officeLocation = sessionStorage.getItem('officeLocation') || '';
+        const developmentAreas = sessionStorage.getItem('developmentAreas') || '';
+        const mentoringMethods = sessionStorage.getItem('mentoringMethods') || '';
+        const languages = sessionStorage.getItem('languages') || '';
+
+
+
+        setUser({ firstName, lastName, userType, email, jobRole, officeLocation, developmentAreas, mentoringMethods, languages });
+        console.log('User Information:', { firstName, lastName, userType, email, jobRole, officeLocation, developmentAreas, mentoringMethods, languages });
+    }, []);
 
     const [loggedInStatus, setLoggedInStatus] = useState(loggedIn);
 
@@ -67,9 +93,9 @@ const Header = ({ loggedIn }) => {
                 ) : loggedInStatus && location.pathname === '/profileSettings' ? ( //checks if logged in
                     <>
                         <RouterLink to="/help">Help</RouterLink>
-                            {userType === 'mentee' ? (
+                            {user.userType === 'mentee' ? (
                                 <RouterLink to="/menteeProfile">Matching</RouterLink>
-                            ) : userType === 'mentor' ? (
+                            ) : user.userType === 'mentor' ? (
                                 <RouterLink to="/mentorProfile">Matching</RouterLink>
                             ) : null}
                             <RouterLink to="/" onClick={handleLogout}>
@@ -79,15 +105,20 @@ const Header = ({ loggedIn }) => {
                     </>
                     ) : loggedInStatus && location.pathname === '/signupSuccess' ? ( //checks if logged in
                             <>
-                                {userType === 'admin' ? (
+                                {user.userType === 'admin' ? (
                                     <RouterLink to="/managerSettings">Profile</RouterLink>
                                 ) : (
-                                    <RouterLink to="/profileSettings">Profile</RouterLink>
+                                        <RouterLink to={{
+                                            pathname: "/profileSettings",
+                                            state: {user: {userType: user.userType, email: user.email } } 
+                                        }}>
+                                            Profile
+                                    </RouterLink>
                                 )}
 
-                                {userType === 'mentee' ? (
+                                {user.userType === 'mentee' ? (
                                     <RouterLink to="/menteeProfile">Matching</RouterLink>
-                                ) : userType === 'mentor' ? (
+                                ) : user.userType === 'mentor' ? (
                                     <RouterLink to="/mentorProfile">Matching</RouterLink>
                                 ) : null}
                             <RouterLink to="/help">Help</RouterLink>
@@ -112,8 +143,13 @@ const Header = ({ loggedIn }) => {
 
                 ) : loggedInStatus && location.pathname === '/menteeProfile' || '/mentorProfile' ? ( //checks if logged in
                                 <>
-                        <RouterLink to="/profileSettings">Profile</RouterLink>
-                        <RouterLink to="/help">Help</RouterLink>
+                                        <RouterLink to={{
+                                            pathname: "/profileSettings",
+                                            state: { user: { userType: user.userType, email: user.email } }
+                                        }}>
+                                            Profile
+                                        </RouterLink>
+                                        <RouterLink to="/help">Help</RouterLink>
                                         <RouterLink to="/" onClick={handleLogout}>
                                             Log Out
                                         </RouterLink>

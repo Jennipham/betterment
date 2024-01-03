@@ -78,13 +78,32 @@ const capitaliseFirstLetter = (str) => {
 
 const Profile = () => {
 
-    const location = useLocation(); 
-    const user = location.state?.user || { userType: '', email: '' };
-    const { userType, email } = user;
+    const [user, setUser] = useState({
+        firstName: sessionStorage.getItem('firstName') || 'User',
+        lastName: sessionStorage.getItem('lastName') || '',
+        userType: sessionStorage.getItem('userType') || '',
+        email: sessionStorage.getItem('email') || '',
+        jobRole: sessionStorage.getItem('jobRole') || '',
+    });
 
-    console.log(user, 'user')
+    useEffect(() => {
+        // Retrieve user information from sessionStorage
+        const firstName = sessionStorage.getItem('firstName');
+        const lastName = sessionStorage.getItem('lastName');
+        const userType = sessionStorage.getItem('userType');
+        const email = sessionStorage.getItem('email');
+        const jobRole = sessionStorage.getItem('jobRole') || '';
+        const officeLocation = sessionStorage.getItem('officeLocation') || '';
+        const developmentAreas = sessionStorage.getItem('developmentAreas') || '';
+        const mentoringMethods = sessionStorage.getItem('mentoringMethods') || '';
+        const languages = sessionStorage.getItem('languages') || '';
 
-    console.log(email,'email')
+
+
+        setUser({ firstName, lastName, userType, email, jobRole, officeLocation, developmentAreas, mentoringMethods, languages });
+        console.log('User Information:', { firstName, lastName, userType, email, jobRole, officeLocation, developmentAreas, mentoringMethods, languages });
+    }, []);
+
     
     const [formData, setFormData] = useState({
         jobRole: '',
@@ -235,7 +254,7 @@ const Profile = () => {
             <div className="text-center">
                 <h2 className="profile-heading">Profile Settings</h2>
                 <div className='account-background'>
-                        <p className="account-type">Account Type: {userType && userType.charAt(0).toUpperCase() + userType.slice(1)} </p>
+                        <p className="account-type">Account Type: {user.userType && user.userType.charAt(0).toUpperCase() + user.userType.slice(1)} </p>
                 </div>
             </div>
 
