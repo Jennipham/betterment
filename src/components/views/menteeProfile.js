@@ -51,6 +51,11 @@ const MenteeMatches = () => {
         jobRole: sessionStorage.getItem('jobRole') || '',
     });
 
+    const [mentorProfile, setMentorProfile] = useState(null);
+    const [mentorFname, setMentorFname] = useState('');
+    const [mentorSname, setMentorSname] = useState('');
+
+
     useEffect(() => {
         // Retrieve user information from sessionStorage
         const firstName = sessionStorage.getItem('firstName');
@@ -67,6 +72,25 @@ const MenteeMatches = () => {
 
         setUser({ firstName, lastName, userType, email, jobRole, officeLocation, developmentAreas, mentoringMethods, languages });
         console.log('User Information:', { firstName, lastName, userType, email, jobRole, officeLocation, developmentAreas, mentoringMethods, languages });
+    }, []);
+
+
+    useEffect(() => {
+        const fetchRandomMentorProfile = async () => {
+            try {
+                const response = await axios.get('http://localhost:3001/getRandomMentorProfile');
+                setMentorProfile(response.data.profile);
+                // Fetch user details based on email from the mentor profile
+                
+                const userResponse = await axios.get(`http://localhost:3001/getUserDetails?email=${response.data.profile.email}`);
+                setMentorFname(userResponse.data.user.fname);
+                setMentorSname(userResponse.data.user.sname);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+
+        fetchRandomMentorProfile();
     }, []);
 
     useEffect(() => {
@@ -223,7 +247,6 @@ const MenteeMatches = () => {
         });
     };
 
-
     return (
         <>
             <Header loggedIn={true} />
@@ -317,13 +340,13 @@ const MenteeMatches = () => {
                                     <img src={white} alt="White Profile Icon" />
                                 </div>
                                     <div className="match-info">
-                                        <p>Name:</p>
-                                        <p>Job Role:</p>
+                                    <p>Name: {mentorFname && mentorSname ? `${mentorFname} ${mentorSname}` : ''}</p>
+                                    <p>Job Role: {mentorProfile && mentorProfile.profileInfo.jobRole ? capitaliseFirstLetter(mentorProfile.profileInfo.jobRole) : ''}</p>
                                     </div>
                                 <div className="matching-info-right">
-                                    <p>Location:</p>
-                                    <p>Development Areas:</p>
-                                        <p>Methods of Matching:</p>
+                                    <p>Location: {mentorProfile && mentorProfile.profileInfo.officeLocation ? capitaliseFirstLetter(mentorProfile.profileInfo.officeLocation) : ''}</p>
+                                    <p>Development Areas: {mentorProfile && mentorProfile.profileInfo.developmentAreas ? mentorProfile.profileInfo.developmentAreas.join(', ') : ''}</p>
+                                    <p>Methods of Matching: {mentorProfile && mentorProfile.profileInfo.mentoringMethods ? mapValuesToLabels(mentorProfile.profileInfo.mentoringMethods, methodOptions).join(', ') : ''}</p>
                                 </div>
                                 <div className="bottom-buttons-container">
                                     <button>View Full Profile</button>

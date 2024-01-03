@@ -254,6 +254,41 @@ router.post('/profile', async (req, res) => {
     }
 });
 
+router.get('/getUserDetails', async (req, res) => {
+    const { email } = req.query;
+
+    try {
+        // Find the user by email
+        const user = await User.findOne({ email });
+
+        if (user) {
+            // Send the user details in the response
+            res.json({ user });
+        } else {
+            res.status(404).json({ error: 'User not found' });
+        }
+    } catch (error) {
+        console.error('Error fetching user details:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+router.get('/getRandomMentorProfile', async (req, res) => {
+    try {
+        const mentorProfiles = await Profile.find({ userType: 'mentor' });
+        if (mentorProfiles.length === 0) {
+            return res.status(404).json({ error: 'No mentor profiles found' });
+        }
+
+        const randomMentorProfile = mentorProfiles[Math.floor(Math.random() * mentorProfiles.length)];
+        res.json({ profile: randomMentorProfile });
+    } catch (error) {
+        console.error('Error fetching random mentor profile:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
 router.post('/managerProfile', async (req, res) => {
     const { domain, department, officeLocation, mentoringMethods, blindMatching, email, userType, } = req.body;
 

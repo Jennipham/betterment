@@ -14,6 +14,8 @@ const Header = ({ loggedIn }) => {
     const location = useLocation();
     const navigate = useNavigate();
 
+    const userType = sessionStorage.getItem('userType');
+
     const [loggedInStatus, setLoggedInStatus] = useState(loggedIn);
 
     const handleLogout = async () => {
@@ -65,17 +67,30 @@ const Header = ({ loggedIn }) => {
                 ) : loggedInStatus && location.pathname === '/profileSettings' ? ( //checks if logged in
                     <>
                         <RouterLink to="/help">Help</RouterLink>
-                        <RouterLink to="/menteeProfile">Matching</RouterLink>
+                            {userType === 'mentee' ? (
+                                <RouterLink to="/menteeProfile">Matching</RouterLink>
+                            ) : userType === 'mentor' ? (
+                                <RouterLink to="/mentorProfile">Matching</RouterLink>
+                            ) : null}
                             <RouterLink to="/" onClick={handleLogout}>
                                 Log Out
                             </RouterLink>
 
                     </>
                     ) : loggedInStatus && location.pathname === '/signupSuccess' ? ( //checks if logged in
-                        <>
-                                <RouterLink to="/profileSettings">Profile</RouterLink>
-                                <RouterLink to="/menteeProfile">Matching</RouterLink>
-                                <RouterLink to="/help">Help</RouterLink>
+                            <>
+                                {userType === 'admin' ? (
+                                    <RouterLink to="/managerSettings">Profile</RouterLink>
+                                ) : (
+                                    <RouterLink to="/profileSettings">Profile</RouterLink>
+                                )}
+
+                                {userType === 'mentee' ? (
+                                    <RouterLink to="/menteeProfile">Matching</RouterLink>
+                                ) : userType === 'mentor' ? (
+                                    <RouterLink to="/mentorProfile">Matching</RouterLink>
+                                ) : null}
+                            <RouterLink to="/help">Help</RouterLink>
                             <RouterLink to="/" onClick={handleLogout}>
                                 Log Out
                             </RouterLink>
