@@ -100,7 +100,6 @@ const Header = ({ loggedIn }) => {
                     )
                 
                 
-                
                         : loggedInStatus && location.pathname === '/adminSettings' ? ( //checks if logged in
                     <>
                         <RouterLink to="/help">Help</RouterLink>
@@ -111,7 +110,7 @@ const Header = ({ loggedIn }) => {
                     </>
 
 
-                ) : loggedInStatus && location.pathname === '/menteeProfile' ? ( //checks if logged in
+                ) : loggedInStatus && location.pathname === '/menteeProfile' || '/mentorProfile' ? ( //checks if logged in
                                 <>
                         <RouterLink to="/profileSettings">Profile</RouterLink>
                         <RouterLink to="/help">Help</RouterLink>
