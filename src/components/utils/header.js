@@ -92,12 +92,12 @@ const Header = ({ loggedIn }) => {
 
                 ) : loggedInStatus && location.pathname === '/profileSettings' ? ( //checks if logged in
                     <>
-                        <RouterLink to="/help">Help</RouterLink>
                             {user.userType === 'mentee' ? (
                                 <RouterLink to="/menteeProfile">Matching</RouterLink>
                             ) : user.userType === 'mentor' ? (
                                 <RouterLink to="/mentorProfile">Matching</RouterLink>
                             ) : null}
+                            <RouterLink to="/help">Help</RouterLink>
                             <RouterLink to="/" onClick={handleLogout}>
                                 Log Out
                             </RouterLink>
