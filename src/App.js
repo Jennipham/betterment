@@ -13,6 +13,7 @@ import FullProfile from './components/views/fullViewProfile';
 import Help from './components/views/help';
 import AdminSettings from './components/views/adminSettings';
 import MenteeMatches from './components/views/menteeProfile';
+import NoPermissions from './components/views/noPermissions';
 
 function App() {
 
@@ -29,6 +30,8 @@ function App() {
           <Route path="/termsofuse" element={<TermsOfUse />} />
           <Route path="/fullprofile" element={<FullProfile />} />
           <Route path="/help" element={<Help />} />
+          <Route path="/error" element={<NoPermissions />} />
+
 
           <Route path="/profileSettings" element={<Profile />} />
           <Route path="/adminSettings" element={<AdminSettings />} />
