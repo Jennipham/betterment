@@ -9,6 +9,7 @@ import TermsOfUse from './components/views/termsOfUse';
 import MentorProfile from './components/views/mentorProfile';
 import ManagerProfile from './components/views/managerProfile';
 import Profile from './components/views/profileSettings';
+import FullProfile from './components/views/fullViewProfile';
 import Help from './components/views/help';
 import AdminSettings from './components/views/adminSettings';
 import MenteeMatches from './components/views/menteeProfile';
@@ -26,7 +27,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signupSuccess" element={<Welcome />} />
           <Route path="/termsofuse" element={<TermsOfUse />} />
-          <Route path="/fullprofile" element={<TermsOfUse />} />
+          <Route path="/fullprofile" element={<FullProfile />} />
           <Route path="/help" element={<Help />} />
 
           <Route path="/profileSettings" element={<Profile />} />

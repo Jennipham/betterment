@@ -1,9 +1,8 @@
 import React from 'react';
-import Header from '../utils/header';
-import '../styles/Welcome.css';
+// import '../styles/FullProfile.css';
 import Footer from '../utils/footer';
 
-const ManagerProfile = () => {
+const FullProfile = () => {
 
     return (
         <>
@@ -14,4 +13,4 @@ const ManagerProfile = () => {
     );
 };
 
-export default ManagerProfile;
+export default FullProfile;
