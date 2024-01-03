@@ -41,11 +41,11 @@ const Login = () => {
 
                 // Set the token in the Axios headers for subsequent requests
                 axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-                {
+                
                     userType === 'admin' ?
                         navigate("/adminSettings", { state: { user: { fname: firstName, sname: lastName, userType: userType, email: email, } } }) :
                         navigate("/profileSettings", { state: { user: { fname: firstName, sname: lastName, userType: userType, email: email, } } })
-            }
+                
             } else {
                 setLoading(false);
                 setErrorMessage('Invalid email or password. Please try again.');
@@ -89,13 +89,13 @@ const Login = () => {
                                 />
                                 <button className="submit" type="submit">Sign In</button>
                             </form>
-                    
+
                             <p>New to BetterMent? <a href="/signup" className='underline-signup'>Sign Up</a></p>
                             {errorMessage && <p className="error-message">{errorMessage}</p>}
                         </>
                     )}
-                        </div>
-                
+                </div>
+
             </div>
             <Footer />
         </div>

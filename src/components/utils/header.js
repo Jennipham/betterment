@@ -14,8 +14,6 @@ const Header = ({ loggedIn }) => {
     const location = useLocation();
     const navigate = useNavigate();
 
-    const userInfo = location.state?.userInfo || {};
-
     const [user, setUser] = useState({
         firstName: sessionStorage.getItem('firstName') || 'User',
         lastName: sessionStorage.getItem('lastName') || '',
@@ -141,7 +139,7 @@ const Header = ({ loggedIn }) => {
                     </>
 
 
-                ) : loggedInStatus && location.pathname === '/menteeProfile' || '/mentorProfile' ? ( //checks if logged in
+                            ) : loggedInStatus && (location.pathname === '/menteeProfile' || location.pathname === '/mentorProfile') ? ( //checks if logged in
                                 <>
                                         <RouterLink to={{
                                             pathname: "/profileSettings",

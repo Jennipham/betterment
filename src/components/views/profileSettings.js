@@ -6,7 +6,6 @@ import editIcon from '../images/EditIcon.png';
 import Select from 'react-select';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useLocation } from 'react-router-dom';
 import '../styles/ProfileSettings.css';
 
 const languageOptions = [
