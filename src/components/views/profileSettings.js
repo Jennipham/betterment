@@ -9,33 +9,33 @@ import axios from 'axios';
 import '../styles/ProfileSettings.css';
 
 const languageOptions = [
-    { value: 'afrikaans', label: 'Afrikaans' },
-    { value: 'english', label: 'English' },
-    { value: 'french', label: 'French' },
-    { value: 'german', label: 'German' },
-    { value: 'hindi', label: 'Hindi' },
-    { value: 'hungarian', label: 'Hungarian' },
-    { value: 'italian', label: 'Italian' },
-    { value: 'marathi', label: 'Marathi' },
-    { value: 'portuguese', label: 'Portuguese' },
-    { value: 'romanian', label: 'Romanian' },
-    { value: 'spanish', label: 'Spanish' },
-    { value: 'swedish', label: 'Swedish' },
-    { value: 'turkish', label: 'Turkish' },
+    { value: 'Afrikaans', label: 'Afrikaans' },
+    { value: 'English', label: 'English' },
+    { value: 'French', label: 'French' },
+    { value: 'German', label: 'German' },
+    { value: 'Hindi', label: 'Hindi' },
+    { value: 'Hungarian', label: 'Hungarian' },
+    { value: 'Marathi', label: 'Marathi' },
+    { value: 'Italian', label: 'Italian' },
+    { value: 'Portuguese', label: 'Portuguese' },
+    { value: 'Romanian', label: 'Romanian' },
+    { value: 'Spanish', label: 'Spanish' },
+    { value: 'Swedish', label: 'Swedish' },
+    { value: 'Turkish', label: 'Turkish' },
 ];
 
-const developmentOptions = [
-    { value: 'career', label: 'Career Decision' },
-    { value: 'communication', label: 'Communication' },
-    { value: 'confidence', label: 'Confidence' },
-    { value: 'conflict', label: 'Conflict' },
-    { value: 'goals', label: 'Goal Setting' },
-    { value: 'obstacles', label: 'Obstacles' },
-    { value: 'resilience', label: 'Resilience' },
-    { value: 'stakeholders', label: 'Stakeholder Conversations' },
-    { value: 'time', label: 'Time Management' },
-    { value: 'wellbeing', label: 'Wellbeing' },
-    { value: 'balance', label: 'Work / Life Balance' },
+const developmentAreaOptions = [
+    { value: 'Career', label: 'Career Decision' },
+    { value: 'Communication', label: 'Communication' },
+    { value: 'Confidence', label: 'Confidence' },
+    { value: 'Conflict', label: 'Conflict' },
+    { value: 'Goals', label: 'Goal Setting' },
+    { value: 'Obstacles', label: 'Obstacles' },
+    { value: 'Resilience', label: 'Resilience' },
+    { value: 'Stakeholders', label: 'Stakeholder Conversations' },
+    { value: 'Time', label: 'Time Management' },
+    { value: 'Wellbeing', label: 'Wellbeing' },
+    { value: 'Balance', label: 'Work / Life Balance' },
 ]
 
 const methodOptions = [
@@ -374,7 +374,7 @@ const Profile = () => {
                             <Select
                                 isMulti={true}
                                 placeholder="Select Development Areas"
-                                options={developmentOptions}
+                                options={developmentAreaOptions}
                                 styles={customStyles}
                                 value={
                                     formData.developmentAreas
