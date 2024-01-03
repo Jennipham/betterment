@@ -140,3 +140,18 @@
     align-items: center;
     justify-content: center;
 }
+
+.find-coach-button:hover {
+    background-color: #fff;
+    color: #007785;
+}
+
+.full-profile-button:hover {
+    background-color: #3BBED1;
+    color: white;
+}
+
+.match-request-button:hover {
+    background-color: #3BBED1;
+    color: white;
+}

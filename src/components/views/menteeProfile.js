@@ -1,6 +1,7 @@
 import React from 'react';
 import Header from '../utils/header';
 import Footer from '../utils/footer';
+import Modal from '../utils/modal';
 import Select, { components } from 'react-select';
 import '../styles/MenteeMatches.css';
 import white from '../images/profile-white.png';
@@ -54,6 +55,17 @@ const MenteeMatches = () => {
     const [mentorProfile, setMentorProfile] = useState(null);
     const [mentorFname, setMentorFname] = useState('');
     const [mentorSname, setMentorSname] = useState('');
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const openModal = (mentorProfile) => {
+        setIsModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+    };
+
 
 
     useEffect(() => {
@@ -349,8 +361,13 @@ const MenteeMatches = () => {
                                     <p>Methods of Matching: {mentorProfile && mentorProfile.profileInfo.mentoringMethods ? mapValuesToLabels(mentorProfile.profileInfo.mentoringMethods, methodOptions).join(', ') : ''}</p>
                                 </div>
                                 <div className="bottom-buttons-container">
-                                    <button>View Full Profile</button>
-                                    <button>Request Match</button>
+                                    <button className="full-profile-button" onClick={() => openModal(mentorProfile)}>View Full Profile</button>
+                                    {isModalOpen && (
+                                        <Modal onClose={handleCloseModal}>
+                                            <iframe title="Terms of Use" src="/fullprofile" width="100%" height="100%" />
+                                        </Modal>
+                                    )}
+                                    <button className='match-request-button'>Request Match</button>
                                 </div>
                             </div>
                           

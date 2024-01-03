@@ -26,6 +26,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signupSuccess" element={<Welcome />} />
           <Route path="/termsofuse" element={<TermsOfUse />} />
+          <Route path="/fullprofile" element={<TermsOfUse />} />
           <Route path="/help" element={<Help />} />
 
           <Route path="/profileSettings" element={<Profile />} />
