@@ -1,17 +1,26 @@
 .request-box-sent {
     display: flex;
-        align-items: center;
-        padding: 5px;
-        border-radius: 10px;
-        margin-bottom: 10px;
-        background-color: #fff;
-        width: 30em;
-        justify-content: space-between;
+    align-items: center;
+    padding: 5px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    background-color: #fff;
+    width: 30em;
+    justify-content: space-between;
+
 }
 
-.request-profile-icon {
-    width: 55px;
-        height: 30px;
+.action-buttons {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+}
+
+.icon-box img {
+    width: 60px;
+    height: auto;
+    cursor: pointer;
+    margin-top: 5px;
 }
 
 .profile-info {
@@ -25,19 +34,31 @@
     margin-bottom: 5px;
 }
 
-.profile-info p {
-    font-size: 14px;
+.view-profile {
     color: black;
+    font-size: 10px;
+    margin: 3px;
+    overflow: hidden;
+    white-space: nowrap;
+    font-family: 'agrandir wide light', sans-serif;
+    font-weight: bold;
 }
 
-.sent-profile-info p {
-    color: black;
+.icon-box {
+    display: flex;
+    background-color: #fff;
+    flex-direction: column;
+    align-items: center;
+    margin-left: 10px;
 }
 
 .action-icon {
     cursor: pointer;
     width: 10%;
-    height: 50%;
-    margin-left: auto;
-    margin-right: 5px;
+    height: auto;
+    margin-left: 5px;
+}
+
+.action-buttons {
+    justify-content: right;
 }
