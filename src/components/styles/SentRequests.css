@@ -1,16 +1,17 @@
 .request-box-sent {
     display: flex;
-    align-items: center;
-    padding: 10px;
-    border-radius: 8px;
-    margin-bottom: 10px;
-    background-color: #fff;
-    width: 30em;
+        align-items: center;
+        padding: 5px;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        background-color: #fff;
+        width: 30em;
+        justify-content: space-between;
 }
 
 .request-profile-icon {
-    height: 50%;
-    width: 10%;
+    width: 55px;
+        height: 30px;
 }
 
 .profile-info {

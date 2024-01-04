@@ -1,8 +1,8 @@
 .request-box-received {
     display: flex;
     align-items: center;
-    padding: 10px;
-    border-radius: 8px;
+    padding: 5px;
+    border-radius: 10px;
     margin-bottom: 10px;
     background-color: #fff;
     width: 30em;
@@ -13,13 +13,14 @@
 .action-buttons {
     display: flex;
     align-items: center;
-    margin-left: auto;
-        /* Add this line */
+        margin-left: auto;
 }
 
-.request-profile-icon {
-    height: 50%;
-    width: 10%;
+.icon-box img {
+    width: 60px;
+    height: auto;
+cursor: pointer;
+            margin-top: 5px;
 }
 
 .profile-info {
@@ -33,19 +34,31 @@
     margin-bottom: 5px;
 }
 
-.profile-info p {
-    font-size: 14px;
-    color: black;
+.view-profile {
+    color:black;
+    font-size: 10px;
+    margin: 3px;
+    overflow: hidden;
+    white-space: nowrap;
+    font-family: 'agrandir wide light', sans-serif;
+    font-weight: bold;
 }
 
-.received-profile-info p {
-        color: black;
+.icon-box {
+        display: flex;
+        background-color: #fff;
+        flex-direction: column;
+        align-items: center;
+        margin-left: 10px;
 }
 
 .action-icon {
     cursor: pointer;
     width: 10%;
-    height: 50%;
-    margin-left: auto;
-    margin-right: 5px;
+    height: auto;
+    margin-left: 5px;
+}
+
+.action-buttons {
+justify-content: right;
 }
