@@ -1,0 +1,42 @@
+.request-box-sent {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    background-color: #fff;
+    width: 30em;
+}
+
+.request-profile-icon {
+    height: 50%;
+    width: 10%;
+}
+
+.profile-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-info h3 {
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.profile-info p {
+    font-size: 14px;
+    color: black;
+}
+
+.sent-profile-info p {
+    color: black;
+}
+
+.action-icon {
+    cursor: pointer;
+    width: 10%;
+    height: 50%;
+    margin-left: auto;
+    margin-right: 5px;
+}

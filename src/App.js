@@ -14,6 +14,7 @@ import Help from './components/views/help';
 import AdminSettings from './components/views/adminSettings';
 import MenteeMatches from './components/views/menteeProfile';
 import NoPermissions from './components/views/noPermissions';
+import Requests from './components/views/requests';
 
 function App() {
 
@@ -39,6 +40,9 @@ function App() {
           <Route path="/mentorprofile" element={<MentorProfile />} />
           <Route path="/menteeprofile" element={<MenteeMatches />} />
           <Route path="/managerprofile" element={<ManagerProfile />} />
+
+          <Route path="/requests" element={<Requests />} />
+
 
         </Routes>
       </div>
