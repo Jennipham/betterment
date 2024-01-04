@@ -43,7 +43,7 @@ const Header = ({ loggedIn }) => {
     }, []);
 
     const [loggedInStatus, setLoggedInStatus] = useState(loggedIn);
-    const [notifications, setNotifications] = useState(1);
+    const [notifications, setNotifications] = useState(0);
 
 
     const handleLogout = async () => {
@@ -63,9 +63,25 @@ const Header = ({ loggedIn }) => {
     return (
         <div className="header">
             <div className="logo">
-                <RouterLink to="/">
-                    <img src={logo} alt="BetterMent Logo" />
-                </RouterLink>
+                {loggedInStatus ? (
+                    user.userType === 'admin' ? (
+                        <RouterLink to="/managerSettings">Profile</RouterLink>
+                    ) : (
+                        <RouterLink
+                            to={{
+                                pathname: "/profileSettings",
+                                state: { user: { userType: user.userType, email: user.email } }
+                            }}
+                            >
+                                <img src={logo} alt="BetterMent Logo" />
+                        </RouterLink>
+                    )
+                ) : (
+                    <RouterLink to="/">
+                        <img src={logo} alt="BetterMent Logo" />
+                    </RouterLink>
+                )}
+
             </div>
             <div className="nav-links">
                 {location.pathname === '/' ? ( // Check if the user is on the home page
