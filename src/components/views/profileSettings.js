@@ -3,6 +3,7 @@ import Header from '../utils/header';
 import Footer from '../utils/footer';
 import Loader from '../utils/loader';
 import editIcon from '../images/EditIcon.png';
+import notification from '../images/notification-icon.png';
 import Select from 'react-select';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
@@ -250,15 +251,24 @@ const Profile = () => {
                     </div>
                 )}
 
-            <div className="text-center">
-                <h2 className="profile-heading">Profile Settings</h2>
-                <div className='account-background'>
-                        <p className="account-type">Account Type: {user.userType && user.userType.charAt(0).toUpperCase() + user.userType.slice(1)} </p>
-                </div>
-            </div>
+                <div className='header-settings'>
+                    <div className="text-center">
+                        <h2 className="profile-heading">Profile Settings</h2>
+                        <div className='account-background'>
+                            <p className="account-type">Account Type: {user.userType && user.userType.charAt(0).toUpperCase() + user.userType.slice(1)} </p>
+                        </div>
+                    </div>
 
-            <div className="profile-container">
-                {/* Left Box */}
+                    <div className="notification-container">
+                        <a href="/requests">
+                            <img src={notification} alt="Notification" className="notification-icon" />
+                            <p className="notification-caption">Requests (0)</p>
+                        </a>
+                    </div>
+                </div>
+
+                <div className="profile-container">
+                 
                 <div className="profile-settings-box">
                     
                         <p className="editable-attribute">

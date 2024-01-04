@@ -14,15 +14,19 @@
     float: right;
 }
 
-/* Centered text styles */
+/* Centered text styles
 .text-center {
     text-align: center;
-}
+    display: inline-block;
+  
+} */
 
 /* Profile heading styles */
 .profile-heading {
     font-size: 3em;
     margin-bottom: -20px;
+
+
 }
 
 /* Account type styles */
@@ -154,4 +158,29 @@
 .match-request-button:hover {
     background-color: #3BBED1;
     color: white;
+}
+
+.notification-container {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    flex-direction: column;
+    margin-right: 40px;
+    margin-top: -90px;
+    text-align: center;
+}
+
+.notification-icon {
+    width: auto;
+    height: 60px;
+}
+
+.notification-caption {
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+}
+
+.header-settings{
+    text-align: center;
 }
