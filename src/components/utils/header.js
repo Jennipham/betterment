@@ -7,6 +7,8 @@ import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import notification from '../images/notification-icon.png';
+import notificationExclamation from '../images/notification-exclamation.png';
 
 
 
@@ -41,6 +43,8 @@ const Header = ({ loggedIn }) => {
     }, []);
 
     const [loggedInStatus, setLoggedInStatus] = useState(loggedIn);
+    const [notifications, setNotifications] = useState(1);
+
 
     const handleLogout = async () => {
         try {
@@ -90,6 +94,14 @@ const Header = ({ loggedIn }) => {
 
                 ) : loggedInStatus && location.pathname === '/profileSettings' ? ( //checks if logged in
                     <>
+                            {notifications === 0 ?
+                                <RouterLink to="/requests">
+                                    <img className='notification-icon-header' src={notification} alt="Requests" />
+                                </RouterLink> :
+                                <RouterLink to="/requests">
+                                    <img className='notification-icon-header' src={notificationExclamation} alt="Requests" />
+                                </RouterLink>
+                            }
                             {user.userType === 'mentee' ? (
                                 <RouterLink to="/menteeProfile">Matching</RouterLink>
                             ) : user.userType === 'mentor' ? (
@@ -141,6 +153,15 @@ const Header = ({ loggedIn }) => {
 
                             ) : loggedInStatus && (location.pathname === '/menteeProfile' || location.pathname === '/mentorProfile') ? ( //checks if logged in
                                 <>
+                                        {notifications === 0 ?
+                                            <RouterLink to="/requests">
+                                                <img className='notification-icon-header' src={notification} alt="Requests" />
+                                            </RouterLink> :
+                                            <RouterLink to="/requests">
+                                                <img className='notification-icon-header' src={notificationExclamation} alt="Requests" />
+                                            </RouterLink>
+                                        }
+                                        
                                         <RouterLink to={{
                                             pathname: "/profileSettings",
                                             state: { user: { userType: user.userType, email: user.email } }
