@@ -108,29 +108,35 @@ const FullProfile = () => {
     return (
         <>
             <div className="full-profile-container">
-                <div className="profile-right">
-                    <div className="profile-icon">
+                <div className="profile-box">
+                    <div className="full-profile-icon">
                         <img src={white} alt="White Profile Icon" />
                     </div>
-                    <div className="match-info">
-                        <p>Name: {mentorFname && mentorSname ? `${mentorFname} ${mentorSname}` : ''}</p>
-                        <p>Job Role: {mentorProfile && mentorProfile.profileInfo.jobRole ? capitaliseFirstLetter(mentorProfile.profileInfo.jobRole) : ''}</p>
+                    <div className="profile-header">
+                        <h1>{mentorFname && mentorSname ? `${mentorFname} ${mentorSname}` : ''}</h1>
+                        <p className="job-role">Job Role: {mentorProfile && mentorProfile.profileInfo.jobRole ? capitaliseFirstLetter(mentorProfile.profileInfo.jobRole) : ''}</p>
+
                     </div>
-                    <div className="matching-info-right">
-                        <p>Location: {mentorProfile && mentorProfile.profileInfo.officeLocation ? capitaliseFirstLetter(mentorProfile.profileInfo.officeLocation) : ''}</p>
-                        <p>Development Areas: {mentorProfile && mentorProfile.profileInfo.developmentAreas ? mentorProfile.profileInfo.developmentAreas.join(', ') : ''}</p>
-                        <p>Methods of Matching: {mentorProfile && mentorProfile.profileInfo.mentoringMethods ? mapValuesToLabels(mentorProfile.profileInfo.mentoringMethods, methodOptions).join(', ') : ''}</p>
+                    <div className='match-profile-info'>
+                        <div className="profile-info">
+                            <p>Department: {mentorProfile && mentorProfile.profileInfo.department ? capitaliseFirstLetter(mentorProfile.profileInfo.department) : ''}</p>
+                            <p>Location: {mentorProfile && mentorProfile.profileInfo.officeLocation ? capitaliseFirstLetter(mentorProfile.profileInfo.officeLocation) : ''}</p>
+                            <p>Languages: {mentorProfile && mentorProfile.profileInfo.languages ? mentorProfile.profileInfo.languages.join(', ') : ''}</p>
+                        </div>
+                        <div className="profile-info">
+                            <p>Development Areas: {mentorProfile && mentorProfile.profileInfo.developmentAreas ? mentorProfile.profileInfo.developmentAreas.join(', ') : ''}</p>
+                            <p>Methods of Matching: {mentorProfile && mentorProfile.profileInfo.mentoringMethods ? mapValuesToLabels(mentorProfile.profileInfo.mentoringMethods, methodOptions).join(', ') : ''}</p>
+                        </div>
                     </div>
                     <div className="bottom-buttons-container">
-        
                         <button className='match-request-button'>Request Match</button>
                     </div>
                 </div>
-
             </div>
 
             <Footer />
         </>
+
     );
 };
 

@@ -1,8 +1,53 @@
 .full-profile-container {
     display: flex;
-        align-items: center;
-        height: 100vh;
-        padding: 20px;
-        margin-top: -30px;
-        background-color: #3BBED1;
+    align-items: center;
+    height: 100vh;
+    padding: 20px;
+    margin-top: -30px;
+    background-color: #3BBED1;
+    justify-content: center;
+}
+
+.profile-box {
+    background-color: #007785;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    min-height: 25em;
+    min-width: 50em;
+}
+
+.full-profile-icon img {
+    height: 120px;
+}
+
+.profile-header {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.job-role {
+    text-align: center;
+}
+
+.match-profile-info {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+}
+
+.profile-info {
+    flex: 1;
+    margin: 0 10px;
+}
+
+.profile-info p {
+    text-align: left;
+}
+
+.bottom-buttons-container {
+    margin-top: 20px;
+    align-self: flex-end;
 }
