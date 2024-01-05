@@ -9,12 +9,18 @@ import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import notification from '../images/notification-icon.png';
 import notificationExclamation from '../images/notification-exclamation.png';
+import { use } from 'bcrypt/promises';
 
 
 
 const Header = ({ loggedIn }) => {
     const location = useLocation();
     const navigate = useNavigate();
+
+
+    const [loggedInStatus, setLoggedInStatus] = useState(loggedIn);
+    const [notifications, setNotifications] = useState(0);
+
 
     const [user, setUser] = useState({
         firstName: sessionStorage.getItem('firstName') || 'User',
@@ -23,6 +29,7 @@ const Header = ({ loggedIn }) => {
         email: sessionStorage.getItem('email') || '',
         jobRole: sessionStorage.getItem('jobRole') || '',
     });
+
 
     useEffect(() => {
         // Retrieve user information from sessionStorage
@@ -35,16 +42,27 @@ const Header = ({ loggedIn }) => {
         const developmentAreas = sessionStorage.getItem('developmentAreas') || '';
         const mentoringMethods = sessionStorage.getItem('mentoringMethods') || '';
         const languages = sessionStorage.getItem('languages') || '';
-
-
-
+        
+        const profileString = sessionStorage.getItem('profile');
+        const profile = JSON.parse(profileString);
+        
         setUser({ firstName, lastName, userType, email, jobRole, officeLocation, developmentAreas, mentoringMethods, languages });
         console.log('User Information:', { firstName, lastName, userType, email, jobRole, officeLocation, developmentAreas, mentoringMethods, languages });
+   
+        const receivedRequestsLength = Array.isArray(profile?.receivedRequests)
+            ? profile?.receivedRequests.length
+            : 0;
+
+        setNotifications(receivedRequestsLength);
+        console.log('profile', profile);
+
+
+        console.log('notification count', notifications);
     }, []);
 
-    const [loggedInStatus, setLoggedInStatus] = useState(loggedIn);
-    const [notifications, setNotifications] = useState(1);
 
+
+    // setNotifications(user.receivedRequests.length);
 
     const handleLogout = async () => {
         try {
