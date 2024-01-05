@@ -11,7 +11,7 @@ const SentRequest = ({ request }) => {
                 <a href="#profile-link" className='view-profile'>View Profile</a>
             </div>
             <div className="sent-profile-info">
-                <h3>{request.username}</h3>
+                <p className='sent-name'>{`${request.firstName} ${request.lastName}`}</p>
             </div>
             <div className='action-buttons'>
                 <img src={cross} alt="Cancel" className="action-icon" />

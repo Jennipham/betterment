@@ -95,6 +95,7 @@ const MenteeMatches = () => {
                 setMentorProfile(response.data.profile);
 
                 sessionStorage.setItem('matchProfile', JSON.stringify(response.data.profile));
+                console.log('match',sessionStorage.getItem('matchProfile'))
                 
                 const userResponse = await axios.get(`http://localhost:3001/getUserDetails?email=${response.data.profile.email}`);
                 setMentorFname(userResponse.data.user.fname);

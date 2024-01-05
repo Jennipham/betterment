@@ -130,6 +130,30 @@ const Header = ({ loggedIn }) => {
 
                     </>
                     )
+                         : loggedInStatus && location.pathname === '/requests' ? ( //checks if logged in
+                <>
+                                {user.userType === 'admin' ? (
+                                    <RouterLink to="/managerSettings">Profile</RouterLink>
+                                ) : (
+                                    <RouterLink to={{
+                                        pathname: "/profileSettings",
+                                        state: { user: { userType: user.userType, email: user.email } }
+                                    }}>
+                                        Profile
+                                    </RouterLink>
+                                )}
+                    {user.userType === 'mentee' ? (
+                        <RouterLink to="/menteeProfile">Matching</RouterLink>
+                    ) : user.userType === 'mentor' ? (
+                        <RouterLink to="/mentorProfile">Matching</RouterLink>
+                    ) : null}
+                    <RouterLink to="/help">Help</RouterLink>
+                    <RouterLink to="/" onClick={handleLogout}>
+                        Log Out
+                    </RouterLink>
+
+                </>
+                )
                         : loggedInStatus && location.pathname === '/help' ? ( //checks if logged in
                             <>
                                 {notifications === 0 ?

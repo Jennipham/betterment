@@ -320,6 +320,71 @@ router.post('/requestMatch', async (req, res) => {
     }
 });
 
+router.post('/getReceivedRequests', async (req, res) => {
+    const { email, userType } = req.body;
+
+    try {
+        const profile = await Profile.findOne({ email });
+        if (!profile) {
+            return res.status(404).json({ error: 'Profile not found' });
+        }
+
+        const receivedRequestsEmails = profile.profileInfo.receivedRequests || [];
+        const receivedRequests = await Promise.all(
+            receivedRequestsEmails.map(async (requestEmail) => {
+                const user = await User.findOne({ email: requestEmail });
+                if (user) {
+                    return {
+                        email: user.email,
+                        firstName: user.fname,
+                        lastName: user.sname,
+                    };
+                }
+                return null;
+            })
+        );
+
+        res.json({ receivedRequests });
+    } catch (error) {
+        console.error('Error getting received requests:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+router.post('/getSentRequests', async (req, res) => {
+    const { email, userType } = req.body;
+
+    try {
+        const profile = await Profile.findOne({ email });
+
+
+        if (!profile) {
+            return res.status(404).json({ error: 'Profile not found' });
+        }
+
+        const sentRequestsEmails = profile.profileInfo.sentRequests || [];
+        const sentRequests = await Promise.all(
+            sentRequestsEmails.map(async (requestEmail) => {
+                const user = await User.findOne({ email: requestEmail });
+                if (user) {
+                    return {
+                        email: user.email,
+                        firstName: user.fname,
+                        lastName: user.sname,
+                    };
+                }
+                return null;
+            })
+        );
+
+        res.json({ sentRequests });
+    } catch (error) {
+        console.error('Error getting sent requests:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
 router.post('/managerProfile', async (req, res) => {
     const { domain, department, officeLocation, mentoringMethods, blindMatching, email, userType, } = req.body;
 

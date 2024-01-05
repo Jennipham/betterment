@@ -17,7 +17,7 @@
 }
 
 .icon-box img {
-    width: 60px;
+    width: 80px;
     height: auto;
     cursor: pointer;
     margin-top: 5px;
@@ -54,11 +54,23 @@
 
 .action-icon {
     cursor: pointer;
-    width: 10%;
-    height: auto;
     margin-left: 5px;
 }
 
 .action-buttons {
     justify-content: right;
+}
+
+.action-buttons img{
+   height: 20px;
+   width: auto;
+}
+
+
+.sent-name {
+    font-family: 'agrandir wide light', sans-serif;
+    color: black;
+    overflow: hidden;
+    margin-left: 40px;
+    white-space: nowrap;
 }
