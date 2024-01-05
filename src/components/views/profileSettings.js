@@ -99,11 +99,12 @@ const Profile = () => {
         const developmentAreas = sessionStorage.getItem('developmentAreas') || '';
         const mentoringMethods = sessionStorage.getItem('mentoringMethods') || '';
         const languages = sessionStorage.getItem('languages') || '';
+        const sentRequests = sessionStorage.getItem('sentRequests') || '';
+        const receivedRequests = sessionStorage.getItem('receivedRequests') || '';
+        const matchedUp = sessionStorage.getItem('matchedUp') || '';
 
-
-
-        setUser({ firstName, lastName, userType, email, jobRole, officeLocation, developmentAreas, mentoringMethods, languages });
-        console.log('User Information:', { firstName, lastName, userType, email, jobRole, officeLocation, developmentAreas, mentoringMethods, languages });
+        setUser({ firstName, lastName, userType, email, jobRole, officeLocation, developmentAreas, mentoringMethods, languages, sentRequests, receivedRequests, matchedUp });
+        console.log('User Information:', { firstName, lastName, userType, email, jobRole, officeLocation, developmentAreas, mentoringMethods, languages, sentRequests, receivedRequests, matchedUp });
     }, []);
 
     
@@ -124,7 +125,7 @@ const Profile = () => {
     const [departmentInput, setDepartmentInput] = useState('');
 
     const [isEditingCapacity, setIsEditingCapacity] = useState(false);
-    const [capacityInput, setCapacityInput] = useState('');
+    const [capacityInput, setCapacityInput] = useState('1');
 
     const [saveMessage, setSaveMessage] = useState(null);
     const [loading, setLoading] = useState(false);

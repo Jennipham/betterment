@@ -118,11 +118,14 @@ router.post('/getProfile', async (req, res) => {
                 profileInfo: {
                     jobRole: '',
                     department: '',
-                    capacity: '',
+                    capacity: '1',
                     officeLocation: '',
                     languages: [],
                     developmentAreas: [],
                     mentoringMethods: [],
+                    sentRequests: [],
+                    receivedRequests: [],
+                    matchedUp: false,
                 },
             };
 
@@ -213,7 +216,7 @@ router.post('/getManagerProfile', async (req, res) => {
 });
 
 router.post('/profile', async (req, res) => {
-    const { jobRole, department, officeLocation, capacity, languages, developmentAreas, mentoringMethods, email, userType, } = req.body;
+    const { jobRole, department, officeLocation, capacity, languages, developmentAreas, mentoringMethods, email, userType, sentRequests, receivedRequests, matchedUp } = req.body;
 
     try {
         let profile = await Profile.findOne({ email });
@@ -231,6 +234,9 @@ router.post('/profile', async (req, res) => {
                     languages,
                     developmentAreas,
                     mentoringMethods,
+                    sentRequests,
+                    receivedRequests,
+                    matchedUp,
                 },
             });
         } else {
@@ -243,6 +249,9 @@ router.post('/profile', async (req, res) => {
                 languages,
                 developmentAreas,
                 mentoringMethods,
+                sentRequests,
+                receivedRequests,
+                matchedUp,
             };
         }
 
@@ -288,6 +297,28 @@ router.get('/getRandomMentorProfile', async (req, res) => {
     }
 });
 
+router.post('/requestMatch', async (req, res) => {
+    const { senderEmail, receiverEmail } = req.body;
+
+    try {
+        // Update sender's sentRequests
+        await Profile.findOneAndUpdate(
+            { email: senderEmail },
+            { $addToSet: { 'profileInfo.sentRequests': receiverEmail } }
+        );
+
+        // Update receiver's receivedRequests
+        await Profile.findOneAndUpdate(
+            { email: receiverEmail },
+            { $addToSet: { 'profileInfo.receivedRequests': senderEmail } }
+        );
+
+        res.json({ success: true, message: 'Match request sent successfully.' });
+    } catch (error) {
+        console.error('Error sending match request:', error);
+        res.status(500).json({ success: false, message: 'Internal server error.' });
+    }
+});
 
 router.post('/managerProfile', async (req, res) => {
     const { domain, department, officeLocation, mentoringMethods, blindMatching, email, userType, } = req.body;
@@ -329,27 +360,33 @@ router.post('/managerProfile', async (req, res) => {
 
 router.post('/send-form', async (req, res) => {
     const { formMessage } = req.body;
-    const token = req.headers.authorization.split(' ')[1];
-    const decoded = jwt.verify(token, secretKey);
+    const tokenHeader = req.headers.authorization;
 
-    const userEmail = decoded.email;
+    if (!tokenHeader) {
+        res.status(401).json({ error: 'Authorization header is missing' });
+        return;
+    }
+    const token = tokenHeader.split(' ')[1];
 
     const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-            user: 'betterment.fyp@gmail.com', 
-            pass: contactPass, 
+            user: 'betterment.fyp@gmail.com',
+            pass: contactPass,
         },
     });
 
-    const mailOptions = {
-        from: 'betterment.fyp@gmail.com',
-        to: 'jxp100@student.bham.ac.uk',
-        subject: 'Help Form Submission',
-        text: `User Email: ${userEmail}\n\nForm Message:\n${formMessage}`,
-    };
-
     try {
+        const decoded = jwt.verify(token, secretKey);
+        const userEmail = decoded.email;
+
+        const mailOptions = {
+            from: 'betterment.fyp@gmail.com',
+            to: 'jxp100@student.bham.ac.uk',
+            subject: 'Help Form Submission',
+            text: `User Email: ${userEmail}\n\nForm Message:\n${formMessage}`,
+        };
+
         await transporter.sendMail(mailOptions);
         res.status(200).send('Form submitted successfully!');
     } catch (error) {
@@ -359,12 +396,19 @@ router.post('/send-form', async (req, res) => {
 });
 
 router.post('/logout', async (req, res) => {
-    const token = req.headers.authorization.split(' ')[1];
-    const decoded = jwt.verify(token, secretKey);
-    const userId = decoded.userId;
+    const tokenHeader = req.headers.authorization;
+    
+    if (!tokenHeader) {
+        res.status(401).json({ error: 'Authorization header is missing' });
+        return;
+    }
+
+    const token = tokenHeader.split(' ')[1];
+
 
     try {
-        // Update the user to mark as logged out
+        const decoded = jwt.verify(token, secretKey);
+        const userId = decoded.userId;
         await User.findByIdAndUpdate(userId, { isLoggedOut: true });
 
         // You can also add the token to a blacklist here if needed

@@ -1,4 +1,5 @@
 
+const { Binary } = require('mongodb');
 const mongoose = require('mongoose');
 
 const profileSchema = new mongoose.Schema({
@@ -19,7 +20,10 @@ const profileSchema = new mongoose.Schema({
         capacity: String,
         languages:[String],
         developmentAreas:[String],
-        mentoringMethods:[String],
+        mentoringMethods: [String],
+        sentRequests: [String],
+        receivedRequests: [String],
+        matchedUp: [String]
     },
 });
 

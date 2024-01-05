@@ -142,6 +142,21 @@ const MenteeMatches = () => {
         fetchProfileData();
     }, [user.email, user.userType]);
 
+    const handleRequestMatch = async () => {
+        try {
+            const response = await axios.post('http://localhost:3001/requestMatch', {
+                senderEmail: user.email,
+                receiverEmail: mentorProfile.email, // Assuming you have the mentor's email in mentorProfile.email
+            });
+
+            // Handle the response, update state, or perform any additional actions if needed
+            console.log('Match request sent successfully:', response.data);
+        } catch (error) {
+            console.error('Error sending match request:', error);
+            // Handle the error, show a message, etc.
+        }
+    };
+
     const languageOptions = [
         { value: 'Afrikaans', label: 'Afrikaans' },
         { value: 'English', label: 'English' },
@@ -369,7 +384,8 @@ const MenteeMatches = () => {
                                             <iframe title="Terms of Use" src="/fullprofile" width="100%" height="100%" />
                                         </Modal>
                                     )}
-                                    <button className='match-request-button'>Request Match</button>
+                                    <button className='match-request-button' onClick={() => { handleRequestMatch() }}>Request Match</button>
+
                                 </div>
                             </div>
                           
