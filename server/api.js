@@ -301,22 +301,26 @@ router.post('/requestMatch', async (req, res) => {
     const { senderEmail, receiverEmail } = req.body;
 
     try {
-        // Update sender's sentRequests
-        await Profile.findOneAndUpdate(
-            { email: senderEmail },
-            { $addToSet: { 'profileInfo.sentRequests': receiverEmail } }
-        );
+        // Assuming you have a Profile model defined with a schema similar to your data structure
+        const senderProfile = await Profile.findOne({ email: senderEmail });
+        const receiverProfile = await Profile.findOne({ email: receiverEmail });
 
-        // Update receiver's receivedRequests
-        await Profile.findOneAndUpdate(
-            { email: receiverEmail },
-            { $addToSet: { 'profileInfo.receivedRequests': senderEmail } }
-        );
+        if (!senderProfile || !receiverProfile) {
+            return res.status(404).json({ error: 'Profile not found' });
+        }
 
-        res.json({ success: true, message: 'Match request sent successfully.' });
+        // Update sender's sentRequests and receiver's receivedRequests
+        senderProfile.profileInfo.sentRequests.push(receiverEmail);
+        receiverProfile.profileInfo.receivedRequests.push(senderEmail);
+
+        // Save the changes to the database
+        await senderProfile.save();
+        await receiverProfile.save();
+
+        res.json({ success: true, message: 'Match request sent successfully' });
     } catch (error) {
         console.error('Error sending match request:', error);
-        res.status(500).json({ success: false, message: 'Internal server error.' });
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 

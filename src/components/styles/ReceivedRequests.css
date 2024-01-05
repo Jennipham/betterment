@@ -54,11 +54,14 @@ cursor: pointer;
 
 .action-icon {
     cursor: pointer;
-    width: 10%;
-    height: auto;
     margin-left: 5px;
 }
 
 .action-buttons {
 justify-content: right;
+}
+
+.received-name {
+    color: black;
+    margin-left: 40px;
 }
