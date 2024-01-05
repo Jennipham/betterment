@@ -2,10 +2,10 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* Change to flex-start */
     height: 100vh;
     padding: 20px;
     background-color: #3BBED1;
+    padding-bottom: 100px;
 }
 
 .filter-section {
@@ -75,7 +75,7 @@
 }
 
 .match-info {
-    margin: 1em 2em 1em -12em;
+    margin: 1em 2em 1em -7em;
 }
 .user-info p {
     color: #3BBED1;
@@ -153,4 +153,27 @@ display: flex;
 }
 .bottom-right-button button {
     font-size: 1em;
+}
+
+
+.error-message-profile {
+    color: white;
+        background-color: rgb(167, 25, 25);
+        font-size: 1vw;
+        text-align: center;
+        padding: 0.4rem 0.7rem;
+        border-radius: 18px;
+        width: fit-content;
+     
+    }
+
+.error-message-profile-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.other-matches {
+
 }

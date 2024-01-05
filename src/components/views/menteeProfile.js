@@ -7,6 +7,7 @@ import '../styles/MenteeMatches.css';
 import white from '../images/profile-white.png';
 import black from '../images/profile-black.png';
 import connect from '../images/connect-icon.png';
+import Loader from '../utils/loader';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
@@ -57,6 +58,10 @@ const MenteeMatches = () => {
     const [mentorFname, setMentorFname] = useState('');
     const [mentorSname, setMentorSname] = useState('');
 
+    const [errorMessage, setErrorMessage] = useState('');
+    const [loading, setLoading] = useState(false);
+
+
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const openModal = (mentorProfile) => {
@@ -100,8 +105,11 @@ const MenteeMatches = () => {
                 const userResponse = await axios.get(`http://localhost:3001/getUserDetails?email=${response.data.profile.email}`);
                 setMentorFname(userResponse.data.user.fname);
                 setMentorSname(userResponse.data.user.sname);
+
             } catch (error) {
                 console.error('Error fetching data:', error);
+                setErrorMessage('Error Finding Match.');
+
             }
         };
 
@@ -111,6 +119,7 @@ const MenteeMatches = () => {
     useEffect(() => {
         const fetchProfileData = async () => {
             try {
+
                 const response = await axios.post('http://localhost:3001/getProfile', {
                     email: user.email,
                     userType: user.userType,
@@ -135,8 +144,11 @@ const MenteeMatches = () => {
                 setSelectedMethods(response.data.profile.profileInfo.mentoringMethods);
                 setSelectedLocation(response.data.profile.profileInfo.location);
 
+
             } catch (error) {
                 console.error('Error fetching profile data:', error);
+                setErrorMessage('Error Fetching Profile Data');
+
             }
         };
 
@@ -145,6 +157,8 @@ const MenteeMatches = () => {
 
     const handleRequestMatch = async () => {
         try {
+            setLoading(true);
+
             const response = await axios.post('http://localhost:3001/requestMatch', {
                 senderEmail: user.email,
                 receiverEmail: mentorProfile.email, // Assuming you have the mentor's email in mentorProfile.email
@@ -152,9 +166,12 @@ const MenteeMatches = () => {
 
             // Handle the response, update state, or perform any additional actions if needed
             console.log('Match request sent successfully:', response.data);
+            setLoading(false);
+
         } catch (error) {
+            setLoading(false);
             console.error('Error sending match request:', error);
-            // Handle the error, show a message, etc.
+            setErrorMessage('Error sending Match Request');
         }
     };
 
@@ -340,7 +357,9 @@ const MenteeMatches = () => {
                 </div>
                 <div className="match-section">
                     <h2 className='top-match'>Your Top Match:</h2>
-
+                    <div className='error-message-profile-container'>
+                    {errorMessage && <p className="error-message-profile">{errorMessage}</p>}
+                    </div>
                     <div className="user-profile-box">
                         <div className="profile-left">
                             <div className="profile-icon">
@@ -361,7 +380,11 @@ const MenteeMatches = () => {
                         </div>
 
                         <div className="matching-icon">
-                            <img src={connect} alt="Connect Icon" />
+                            {loading ? (
+                                <Loader />
+                            ) : (
+                                <img src={connect} alt="Connect Icon" />
+                            )}
                         </div>
 
                         <div className="mentor-profile-box">
@@ -391,10 +414,15 @@ const MenteeMatches = () => {
                             </div>
                           
                         </div>
+                       
                     </div>
-                    <button>See Other Matches</button>
-
+                   
+                    <div className='other-matches'>
+                        <button>See Other Matches</button>
+                    </div>
                 </div>
+              
+             
             </div>
 
             <Footer />
