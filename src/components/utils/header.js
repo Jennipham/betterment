@@ -43,7 +43,7 @@ const Header = ({ loggedIn }) => {
     }, []);
 
     const [loggedInStatus, setLoggedInStatus] = useState(loggedIn);
-    const [notifications, setNotifications] = useState(0);
+    const [notifications, setNotifications] = useState(1);
 
 
     const handleLogout = async () => {
@@ -129,7 +129,42 @@ const Header = ({ loggedIn }) => {
                             </RouterLink>
 
                     </>
-                    ) : loggedInStatus && location.pathname === '/signupSuccess' ? ( //checks if logged in
+                    )
+                        : loggedInStatus && location.pathname === '/help' ? ( //checks if logged in
+                            <>
+                                {notifications === 0 ?
+                                    <RouterLink to="/requests">
+                                        <img className='notification-icon-header' src={notification} alt="Requests" />
+                                    </RouterLink> :
+                                    <RouterLink to="/requests">
+                                        <img className='notification-icon-header' src={notificationExclamation} alt="Requests" />
+                                    </RouterLink>
+                                }
+                                {user.userType === 'admin' ? (
+                                    <RouterLink to="/managerSettings">Profile</RouterLink>
+                                ) : (
+                                    <RouterLink to={{
+                                        pathname: "/profileSettings",
+                                        state: { user: { userType: user.userType, email: user.email } }
+                                    }}>
+                                        Profile
+                                    </RouterLink>
+                                )}
+                                {user.userType === 'mentee' ? (
+                                    <RouterLink to="/menteeProfile">Matching</RouterLink>
+                                ) : user.userType === 'mentor' ? (
+                                    <RouterLink to="/mentorProfile">Matching</RouterLink>
+                                ) : null}
+                                <RouterLink to="/help">Help</RouterLink>
+                                <RouterLink to="/" onClick={handleLogout}>
+                                    Log Out
+                                </RouterLink>
+
+                            </>
+                        )
+                        
+                        
+                        : loggedInStatus && location.pathname === '/signupSuccess' ? ( //checks if logged in
                             <>
                                 {user.userType === 'admin' ? (
                                     <RouterLink to="/managerSettings">Profile</RouterLink>
