@@ -301,8 +301,12 @@ router.post('/requestMatch', async (req, res) => {
     const { senderEmail, receiverEmail } = req.body;
 
     try {
-        // Assuming you have a Profile model defined with a schema similar to your data structure
+        // Check if the match request already exists
         const senderProfile = await Profile.findOne({ email: senderEmail });
+        if (senderProfile && senderProfile.profileInfo.sentRequests.includes(receiverEmail)) {
+            return res.status(400).json({ error: 'Match request already sent' });
+        }
+
         const receiverProfile = await Profile.findOne({ email: receiverEmail });
 
         if (!senderProfile || !receiverProfile) {
@@ -323,6 +327,7 @@ router.post('/requestMatch', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 
 router.post('/getReceivedRequests', async (req, res) => {
     const { email, userType } = req.body;
