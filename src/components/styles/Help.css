@@ -1,24 +1,51 @@
 .help-page {
+    background-color: #3BBED1;
+    min-height: 100vh;
+    
+}
+
+.help-page-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh;
-    background-color: #3BBED1;
-    margin-top: -20px;
+    flex: 1;
+
 }
 
 
 .help-header {
     margin-top: 20px;
+
 }
 
 .form-container {
-    width: 700px;
-    margin-top: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding: 20px;
+    outline: none;
+}
+
+.contact-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 10px;
+
+}
+
+textarea {
+
+width: 100%;
+    box-sizing: border-box;
+    font-size: 20px;
+    border: none;
+}
+
+.contact-label {
+    color: white;
+    margin-top: 2px;
 }
 
 form {
@@ -35,8 +62,8 @@ label {
 }
 
 textarea {
-    width: 700px;
-    height: 300px;
+    width: 30em;
+    height: 15em;
     margin-bottom: 10px;
     border-radius: 10px;
     font-family: 'agrandir wide light', sans-serif;
@@ -45,4 +72,8 @@ textarea {
 button {
     width: 100%;
     padding: 10px;
+}
+
+.faqs-help {
+    padding-top: 60px;
 }
