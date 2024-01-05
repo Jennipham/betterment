@@ -1,13 +1,23 @@
 .terms-page {
-    /* display: flex;
-    /* justify-content: center; */ 
-    background-color: #3BBED1;
-    align-items: center;
-    height: 100vh;
+    display: flex;
+     height: 100vh;
+    padding: 20px;
+    margin-top: -30px;
+     background-color: #3BBED1;
+     flex-direction: column;
+
 }
 
 .terms-message{
-        margin-top: 1em;
+        padding-top: 1em;
         margin-left: 0.2em;
-        background-color: #3BBED1;
+        color: white;
+}
+
+.terms-of-use-text {
+    color: black;
+    text-align: left;
+    background-color: white;
+    padding: 10px;
+    border-radius: 10px;
 }
