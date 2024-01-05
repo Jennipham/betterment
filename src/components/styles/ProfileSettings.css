@@ -61,21 +61,22 @@
 .editable-attribute {
     display: flex;
     align-items: center;
-    color: #3BBED1;
-    background-color: white;
+    color: white;
+    background-color: #3BBED1;
     border-radius: 10px;
     padding: 10px 20px;
     justify-content: space-between;
-
+    width: 600px;
 
 }
 
 .dropdown-title{
-    color: #3BBED1;
-    background: white;
+    color: white;
+    background-color: #3BBED1;
     display: inline-block;
     padding: 10px 20px;
     border-radius: 10px;
+        width: 600px;
 
 }
 
@@ -184,4 +185,59 @@
 
 .header-settings{
     text-align: center;
+}
+
+.more-info-icon {
+    height: 20px;
+    width: auto;
+}
+
+.editable-container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+/* Tooltip container */
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip .tooltip-text {
+    color: black;
+    visibility: visible;
+        opacity: 1;
+}
+
+
+/* Show the tooltip text on hover */
+.tooltip:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+        color: black;
+}
+
+.tooltip-container {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip-content {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: white;
+    color: black;
+    padding: 5px;
+    border: 2px solid white;
+    z-index: 999;
+    border-radius: 10px;  
+}
+
+.tooltip-content p{
+    color: black;
+    font-size: small;
+ 
 }

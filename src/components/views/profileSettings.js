@@ -4,6 +4,8 @@ import Footer from '../utils/footer';
 import Loader from '../utils/loader';
 import editIcon from '../images/EditIcon.png';
 import notification from '../images/notification-icon.png';
+import moreInfo from '../images/more-info-icon.png';
+import Tooltip from '../utils/tooltip';
 import Select from 'react-select';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
@@ -269,8 +271,10 @@ const Profile = () => {
 
                 <div className="profile-container">
                  
-                <div className="profile-settings-box">
-                    
+                    <div className="profile-settings-box">
+                        
+                        <div className='editable-container'>
+
                         <p className="editable-attribute">
                             <span className="attribute-label">Job Role:</span>
                             {isEditingJobRole ? (
@@ -292,8 +296,14 @@ const Profile = () => {
                                     </span>
                                 </>
                             )}
-                        </p>
-
+                            </p>
+                             
+                            <Tooltip text="Your Occupation">
+                                <img src={moreInfo} alt="More Info" className="more-info-icon" />
+                                </Tooltip>
+  
+                        </div>
+                        <div className='editable-container'>
                         <p className="editable-attribute">
                             <span className="attribute-label">Department:</span>
                             {isEditingDepartment ? (
@@ -315,8 +325,14 @@ const Profile = () => {
                                     </span>
                                 </>
                             )}
-                        </p>
+                            </p>
+                            <Tooltip text="The Department you work in.">
+                                <img src={moreInfo} alt="More Info" className="more-info-icon" />
+                            </Tooltip>
 
+                            </div>
+
+                        <div className='editable-container'>
 
                     <p className="dropdown-title">
                             Office Location:
@@ -331,8 +347,14 @@ const Profile = () => {
                                 }
 
                             />
-                        </p>
+                            </p>
+                            <Tooltip text="The location of your workplace.">
+                                <img src={moreInfo} alt="More Info" className="more-info-icon" />
+                            </Tooltip>
+                            </div>
+
                         
+                        <div className='editable-container'>
                         <p className="editable-attribute">
                             <span className="attribute-label">Capacity:</span>
                             {isEditingCapacity ? (
@@ -354,11 +376,17 @@ const Profile = () => {
                                     </span>
                                 </>
                             )}
-                        </p>
+                            </p>
+                            <Tooltip text="The number of mentors/mentees you are willing to be matched with.">
+                                <img src={moreInfo} alt="More Info" className="more-info-icon" />
+                            </Tooltip>
+                        </div>
                 </div>
 
                 {/* Right Box */}
                     <div className="profile-settings-box">
+                        <div className='editable-container'>
+
                     <p className='dropdown-title'>
                         Language(s):
                             <Select
@@ -378,7 +406,13 @@ const Profile = () => {
                                     handleMultiInputChange('languages', selectedOptions.map(option => option.value))
                                 }
                             />
-                    </p>
+                            </p>
+                            <Tooltip text="Languages you speak.">
+                                <img src={moreInfo} alt="More Info" className="more-info-icon" />
+                            </Tooltip>
+                        </div>
+                        <div className='editable-container'>
+
                     <p className='dropdown-title'>
                         Areas of Development:
                             <Select
@@ -398,7 +432,13 @@ const Profile = () => {
                                     handleMultiInputChange('developmentAreas', selectedOptions.map(option => option.value))
                                 }
                             />
-                    </p>
+                            </p>
+                            <Tooltip text="The areas you want to focus on for mentoring.">
+                                <img src={moreInfo} alt="More Info" className="more-info-icon" />
+                            </Tooltip>
+                        </div>
+                        <div className='editable-container'>
+
                         <p className='dropdown-title'>
                         Methods of Mentoring:
                             <Select
@@ -418,7 +458,11 @@ const Profile = () => {
                                     handleMultiInputChange('mentoringMethods',selectedOptions.map(option => option.value))
                                 }
                             />
-                    </p>
+                            </p>
+                            <Tooltip className="tooltip-text" text="The methods you're happy to receive/give mentoring.">
+                                <img src={moreInfo} alt="More Info" className="more-info-icon" />
+                            </Tooltip>
+                            </div>
                 </div>
                 </div>
                 {loading ? (
