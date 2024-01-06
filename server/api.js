@@ -394,6 +394,31 @@ router.post('/getSentRequests', async (req, res) => {
 });
 
 
+router.delete('/cancelRequest/:requestEmail', async (req, res) => {
+    const { email } = req.body;
+    const { requestEmail } = req.params;
+
+    try {
+        // Find the profile and remove the canceled request from sentRequests
+        const profile = await Profile.findOneAndUpdate(
+            { email },
+            { $pull: { 'profileInfo.sentRequests': requestEmail } },
+            { new: true }
+        );
+
+        if (!profile) {
+            return res.status(404).json({ error: 'Profile not found' });
+        }
+
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Error canceling request:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
+
 router.post('/managerProfile', async (req, res) => {
     const { domain, department, officeLocation, mentoringMethods, blindMatching, email, userType, } = req.body;
 

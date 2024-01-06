@@ -69,6 +69,11 @@ const Requests = () => {
         fetchData();
     }, [user.email, user.userType]); // Added dependencies to useEffect
 
+    const onRemoveSentRequest = (emailToRemove) => {
+        // Update the state to remove the sent request with the specified email
+        setSentRequests(sentRequests.filter(request => request.email !== emailToRemove));
+    };
+
     return (
         <>
             <Header loggedIn={true} />
@@ -83,7 +88,7 @@ const Requests = () => {
                 <div className="requests-box">
                     <h2>Sent Requests</h2>
                     {sentRequests.map((request) => (
-                        <SentRequest key={request.email} request={request} />
+                        <SentRequest key={request.email} request={request} onRemoveRequest={onRemoveSentRequest} />
                     ))}
                 </div>
             </div>
