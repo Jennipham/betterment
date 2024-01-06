@@ -60,21 +60,17 @@ const Header = ({ loggedIn }) => {
         console.log('notification count', notifications);
     }, []);
 
-
-
-    // setNotifications(user.receivedRequests.length);
-
     const handleLogout = async () => {
         try {
-            // Call the server-side logout endpoint
             await axios.post('http://localhost:3001/logout');
 
-            setLoggedInStatus(false);
-            
-            navigate.push('/');
+            setTimeout(() => {
+                setLoggedInStatus(false);
+                navigate('/');
+            }, 500);
         } catch (error) {
             console.error('Logout failed:', error);
-            // Handle logout failure
+
         }
     };
 

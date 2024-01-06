@@ -15,6 +15,7 @@ const saltRounds = 10;
 
 const contactPass = process.env.CONTACT_PASS;
 
+const blacklist = new Set();
 
 router.post('/signup', async (req, res) => {
     try {
@@ -496,7 +497,7 @@ router.post('/send-form', async (req, res) => {
 
 router.post('/logout', async (req, res) => {
     const tokenHeader = req.headers.authorization;
-    
+
     if (!tokenHeader) {
         res.status(401).json({ error: 'Authorization header is missing' });
         return;
@@ -504,21 +505,28 @@ router.post('/logout', async (req, res) => {
 
     const token = tokenHeader.split(' ')[1];
 
-
     try {
+        // Check if the token is in the blacklist
+        if (blacklist.has(token)) {
+            res.status(401).json({ error: 'Token is already invalidated' });
+            return;
+        }
+
+        // Verify the token
         const decoded = jwt.verify(token, secretKey);
         const userId = decoded.userId;
-        await User.findByIdAndUpdate(userId, { isLoggedOut: true });
 
-        // You can also add the token to a blacklist here if needed
+        // Add the token to the blacklist
+        blacklist.add(token);
 
+        // Invalidate the token on the client side
+        // You can also set an expiration date in the past to make it immediately invalid
         res.status(200).json({ message: 'Logout successful' });
     } catch (error) {
         console.error('Error during logout:', error);
         res.status(500).json({ error: 'Logout failed' });
     }
 });
-
 
 
 module.exports = router;

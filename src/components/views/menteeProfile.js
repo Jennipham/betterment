@@ -405,7 +405,7 @@ const MenteeMatches = () => {
                                     <button className="full-profile-button" onClick={() => openModal(mentorProfile)}>View Full Profile</button>
                                     {isModalOpen && (
                                         <Modal onClose={handleCloseModal}>
-                                            <iframe title="Terms of Use" src="/fullprofile" width="100%" height="100%" />
+                                            <iframe title="Full Profile" src="/fullprofile" width="100%" height="100%" />
                                         </Modal>
                                     )}
                                     <button className='match-request-button' onClick={() => { handleRequestMatch() }}>Request Match</button>

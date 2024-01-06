@@ -10,7 +10,8 @@
     border-radius: 10px;
     margin: 10px;
     background-color: #007785;
-    height: 30em;
+    min-height: 30em;
+    height: auto;
     width: 40em;
     display: flex;
         flex-direction: column;
@@ -36,6 +37,7 @@
 .action-icon {
     cursor: pointer;
     margin-left: auto;
+    height: 100%;
 }
 
 /* Add more styles as needed */

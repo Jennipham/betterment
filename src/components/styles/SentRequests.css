@@ -42,6 +42,8 @@
     white-space: nowrap;
     font-family: 'agrandir wide light', sans-serif;
     font-weight: bold;
+    background-color: white;
+        padding: 0px;
 }
 
 .icon-box {
@@ -73,4 +75,9 @@
     overflow: hidden;
     margin-left: 40px;
     white-space: nowrap;
+}
+
+.match-profile-button {
+    background-color: white;
+    padding: 0px;
 }
