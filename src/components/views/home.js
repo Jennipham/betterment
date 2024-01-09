@@ -67,7 +67,7 @@ function Home() {
     return (
 
         <div>
-            <Header loggedIn={false}/>
+            <Header />
             <TopSection id='top-section' />
             <div className="divider"></div>
             <div id='about-section'>

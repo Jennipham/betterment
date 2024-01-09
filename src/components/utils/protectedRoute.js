@@ -28,11 +28,10 @@ function ProtectedRoute({ children }) {
 
     // Use a conditional statement to check authentication
     if (!isAuthenticated()) {
-        navigate('/error');
-        return <NoPermissions />; // You can return an error component or null here
+        navigate('/error', {replace : true});
+        return <NoPermissions />; 
     }
 
-    // Return the children if authenticated
     return children;
 }
 

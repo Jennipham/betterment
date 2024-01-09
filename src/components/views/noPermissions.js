@@ -10,7 +10,7 @@ const NoPermissions = () => {
 
     return (
         <>
-            <Header loggedIn={true} />
+            <Header />
             <div className="no-permissions-container">
                 <img src={warning} alt="warning-icon" className='warning-icon' />
                 <div className="error-caption">

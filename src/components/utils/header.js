@@ -10,17 +10,36 @@ import { useState, useEffect } from 'react';
 import notification from '../images/notification-icon.png';
 import notificationExclamation from '../images/notification-exclamation.png';
 import { use } from 'bcrypt/promises';
+import { jwtDecode } from 'jwt-decode';
 
 
-
-const Header = ({ loggedIn }) => {
+const Header = () => {
     const location = useLocation();
     const navigate = useNavigate();
 
-
-    const [loggedInStatus, setLoggedInStatus] = useState(loggedIn);
+    const [loggedInStatus, setLoggedInStatus] = useState(false);
     const [notifications, setNotifications] = useState(0);
 
+
+    const isAuthenticated = () => {
+        const token = sessionStorage.getItem('token');
+
+        if (!token) {
+            setLoggedInStatus(false);
+        }
+
+        try {
+            const decodedToken = jwtDecode(token);
+
+            // Check if the token has expired
+            const isTokenExpired = Date.now() >= decodedToken.exp * 1000;
+            if
+                (!isTokenExpired) { setLoggedInStatus(true); }// Return true if the token is not expired, otherwise false
+        } catch (error) {
+            console.error('Error decoding token:', error);
+            setLoggedInStatus(false);
+        }
+    };
 
     const [user, setUser] = useState({
         firstName: sessionStorage.getItem('firstName') || 'User',
@@ -32,6 +51,9 @@ const Header = ({ loggedIn }) => {
 
 
     useEffect(() => {
+
+        isAuthenticated();
+
         // Retrieve user information from sessionStorage
         const firstName = sessionStorage.getItem('firstName');
         const lastName = sessionStorage.getItem('lastName');
@@ -58,7 +80,7 @@ const Header = ({ loggedIn }) => {
 
 
         console.log('notification count', notifications);
-    }, []);
+    }, [isAuthenticated]);
 
     const handleLogout = async () => {
         try {
@@ -263,7 +285,7 @@ const Header = ({ loggedIn }) => {
                                             Log Out
                                         </RouterLink>
                     </>
-                )
+                                        )
 
                     :
                     

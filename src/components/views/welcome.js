@@ -37,7 +37,7 @@ const Welcome = () => {
 
     return (
         <>
-            <Header loggedIn={true} />
+            <Header />
             <div className="welcome-page">
                 <div className="welcome-box">
                     <h1 className="welcome-message">Welcome to BetterMent {user.fname}!</h1>

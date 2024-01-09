@@ -140,7 +140,7 @@ const AdminSettings = () => {
     return (
         <>
             <div className='profile-page'>
-                <Header loggedIn={true} />
+                <Header  />
 
                 <div className="text-center">
                     <h2 className="profile-heading">Profile Settings</h2>

@@ -7,7 +7,7 @@ const ManagerProfile = () => {
 
     return (
         <>
-            <Header loggedIn={true} />
+            <Header />
 
             
             <Footer />

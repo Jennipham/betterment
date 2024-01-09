@@ -7,7 +7,7 @@ const MentorProfile = () => {
 
     return (
         <>
-            <Header loggedIn={true} />
+            <Header />
             
             <Footer />
         </>

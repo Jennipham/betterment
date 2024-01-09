@@ -68,7 +68,7 @@ const Help = () => {
 
     return (
         <>
-            <Header loggedIn={true} className="header" />
+            <Header className="header" />
 
             <div className="help-page">
                 <div className='faqs-help'>

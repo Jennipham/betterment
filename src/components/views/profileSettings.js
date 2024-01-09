@@ -246,7 +246,7 @@ const Profile = () => {
     return (
         <>
         <div className='profile-page'>
-                <Header loggedIn={true} />
+                <Header />
                 
                 {saveMessage && (
                     <div className={`save-message ${saveMessage.includes('successfully') ? 'success' : 'error'}`}>

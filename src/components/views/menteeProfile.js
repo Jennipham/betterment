@@ -296,7 +296,7 @@ const MenteeMatches = () => {
 
     return (
         <>
-            <Header loggedIn={true} />
+            <Header />
 
             <div className="mentee-profile-container">
                 <div className="filter-section">

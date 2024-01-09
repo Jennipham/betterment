@@ -76,7 +76,7 @@ const Requests = () => {
 
     return (
         <>
-            <Header loggedIn={true} />
+            <Header />
 
             <div className="requests-page">
                 <div className="requests-box">
