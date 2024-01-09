@@ -63,10 +63,11 @@ const Header = ({ loggedIn }) => {
     const handleLogout = async () => {
         try {
             await axios.post('http://localhost:3001/logout');
+            sessionStorage.clear();
 
             setTimeout(() => {
                 setLoggedInStatus(false);
-                navigate('/');
+                navigate("/", { replace: true })
             }, 500);
         } catch (error) {
             console.error('Logout failed:', error);

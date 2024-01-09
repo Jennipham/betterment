@@ -15,6 +15,8 @@ import AdminSettings from './components/views/adminSettings';
 import MenteeMatches from './components/views/menteeProfile';
 import NoPermissions from './components/views/noPermissions';
 import Requests from './components/views/requests';
+import ProtectedRoute from './components/utils/protectedRoute';
+
 
 function App() {
 
@@ -27,22 +29,18 @@ function App() {
           <Route path="/" element={<Home />} /> 
           <Route path="/signup" element={<SignUp />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/signupSuccess" element={<Welcome />} />
+          <Route path="/signupSuccess" element={<ProtectedRoute><Welcome /></ProtectedRoute>} />
           <Route path="/termsofuse" element={<TermsOfUse />} />
-          <Route path="/fullprofile" element={<FullProfile />} />
-          <Route path="/help" element={<Help />} />
+          <Route path="/fullprofile" element={<ProtectedRoute><FullProfile /></ProtectedRoute>} />
+          <Route path="/help" element={<ProtectedRoute><Help /></ProtectedRoute>} />
           <Route path="/error" element={<NoPermissions />} />
 
-
-          <Route path="/profileSettings" element={<Profile />} />
-          <Route path="/adminSettings" element={<AdminSettings />} />
-
-          <Route path="/mentorprofile" element={<MentorProfile />} />
-          <Route path="/menteeprofile" element={<MenteeMatches />} />
-          <Route path="/managerprofile" element={<ManagerProfile />} />
-
-          <Route path="/requests" element={<Requests />} />
-
+          <Route path="/profileSettings" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+          <Route path="/adminSettings" element={<ProtectedRoute><AdminSettings /></ProtectedRoute>} />
+          <Route path="/mentorprofile" element={<ProtectedRoute><MentorProfile /></ProtectedRoute>} />
+          <Route path="/menteeprofile" element={<ProtectedRoute><MenteeMatches /></ProtectedRoute>} />
+          <Route path="/managerprofile" element={<ProtectedRoute><ManagerProfile /></ProtectedRoute>} />
+          <Route path="/requests" element={<ProtectedRoute><Requests /></ProtectedRoute>} />
 
         </Routes>
       </div>
