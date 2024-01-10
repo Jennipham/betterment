@@ -298,6 +298,22 @@ router.get('/getRandomMentorProfile', async (req, res) => {
     }
 });
 
+router.get('/getRandomMenteeProfile', async (req, res) => {
+    try {
+        const menteeProfiles = await Profile.find({ userType: 'mentee' });
+        if (menteeProfiles.length === 0) {
+            return res.status(404).json({ error: 'No mentor profiles found' });
+        }
+
+        const randomMenteeProfile = menteeProfiles[Math.floor(Math.random() * menteeProfiles.length)];
+        res.json({ profile: randomMenteeProfile });
+    } catch (error) {
+        console.error('Error fetching random mentee profile:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
 router.post('/requestMatch', async (req, res) => {
     const { senderEmail, receiverEmail } = req.body;
 

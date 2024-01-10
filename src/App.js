@@ -6,13 +6,13 @@ import SignUp from './components/views/signUp';
 import Login from './components/views/login';
 import Welcome from './components/views/welcome';
 import TermsOfUse from './components/views/termsOfUse';
-import MentorProfile from './components/views/mentorProfile';
+import MenteeMatches from './components/views/menteeMatches';
 import ManagerProfile from './components/views/managerProfile';
 import Profile from './components/views/profileSettings';
 import FullProfile from './components/views/fullViewProfile';
 import Help from './components/views/help';
 import AdminSettings from './components/views/adminSettings';
-import MenteeMatches from './components/views/menteeProfile';
+import MentorMatches from './components/views/mentorMatches';
 import NoPermissions from './components/views/noPermissions';
 import Requests from './components/views/requests';
 import ProtectedRoute from './components/utils/protectedRoute';
@@ -37,7 +37,7 @@ function App() {
 
           <Route path="/profileSettings" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="/adminSettings" element={<ProtectedRoute><AdminSettings /></ProtectedRoute>} />
-          <Route path="/mentorprofile" element={<ProtectedRoute><MentorProfile /></ProtectedRoute>} />
+          <Route path="/mentorprofile" element={<ProtectedRoute><MentorMatches /></ProtectedRoute>} />
           <Route path="/menteeprofile" element={<ProtectedRoute><MenteeMatches /></ProtectedRoute>} />
           <Route path="/managerprofile" element={<ProtectedRoute><ManagerProfile /></ProtectedRoute>} />
           <Route path="/requests" element={<ProtectedRoute><Requests /></ProtectedRoute>} />
