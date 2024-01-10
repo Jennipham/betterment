@@ -90,7 +90,7 @@ const Login = () => {
                                 <button className="submit" type="submit">Sign In</button>
                             </form>
 
-                            <p>New to BetterMent? <a href="/signup" className='underline-signup'>Sign Up</a></p>
+                                <p>New to Better<span className='ment'>Ment</span>? <a href="/signup" className='underline-signup'>Sign Up</a></p>
                             {errorMessage && <p className="error-message">{errorMessage}</p>}
                         </>
                     )}

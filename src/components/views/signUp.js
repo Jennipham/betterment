@@ -146,7 +146,7 @@ const SignUp = () => {
                     ) : (
                         <h7>Looking for a Mentee?</h7>
                     )}
-                    <h8>Look no further with BetterMent!</h8>
+                    <h8>Look no further with Better<span className='ment'>Ment</span>!</h8>
                     {userType === 'mentee' ? (
                         <img src={signUpEmployee} alt="Find a Mentor" className="bottom" />
                     ) : userType === 'admin' ? (

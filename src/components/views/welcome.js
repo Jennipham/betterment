@@ -40,7 +40,7 @@ const Welcome = () => {
             <Header />
             <div className="welcome-page">
                 <div className="welcome-box">
-                    <h1 className="welcome-message">Welcome to BetterMent {user.fname}!</h1>
+                    <h1 className="welcome-message">Welcome to Better<span className='ment'>Ment</span> {user.fname}!</h1>
                     <h1 className="terms-agree">Please accept if you agree to the <span onClick={() => setIsModalOpen(true)} className='underline-link'>Terms and Conditions</span></h1>
                     <div className='profile-button'>
                         <button onClick={() => { handleTermsClick() }} className='accept'>Accept</button>
