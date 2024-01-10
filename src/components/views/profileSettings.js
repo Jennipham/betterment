@@ -88,6 +88,9 @@ const Profile = () => {
         jobRole: sessionStorage.getItem('jobRole') || '',
     });
 
+    const [requestsLength, setRequestsLength] = useState(0);
+
+
     useEffect(() => {
         // Retrieve user information from sessionStorage
         const firstName = sessionStorage.getItem('firstName');
@@ -102,6 +105,14 @@ const Profile = () => {
         const sentRequests = sessionStorage.getItem('sentRequests') || '';
         const receivedRequests = sessionStorage.getItem('receivedRequests') || '';
         const matchedUp = sessionStorage.getItem('matchedUp') || '';
+
+        const profileString = sessionStorage.getItem('profile');
+        const profile = JSON.parse(profileString);
+        const receivedRequestsLength = Array.isArray(profile?.receivedRequests)
+            ? profile?.receivedRequests.length
+            : 0;
+
+        setRequestsLength(receivedRequestsLength);
 
         setUser({ firstName, lastName, userType, email, jobRole, officeLocation, developmentAreas, mentoringMethods, languages, sentRequests, receivedRequests, matchedUp });
         console.log('User Information:', { firstName, lastName, userType, email, jobRole, officeLocation, developmentAreas, mentoringMethods, languages, sentRequests, receivedRequests, matchedUp });
@@ -265,7 +276,7 @@ const Profile = () => {
                     <div className="notification-container">
                         <a href="/requests">
                             <img src={notification} alt="Notification" className="notification-icon" />
-                            <p className="notification-caption">Requests (0)</p>
+                            <p className="notification-caption">Requests ({requestsLength})</p>
                         </a>
                     </div>
                 </div>
