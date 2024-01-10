@@ -141,7 +141,7 @@ const MentorMatches = () => {
                 setSelectedLanguages(response.data.profile.profileInfo.languages);
                 setSelectedDevelopmentAreas(response.data.profile.profileInfo.developmentAreas);
                 setSelectedMethods(response.data.profile.profileInfo.mentoringMethods);
-                setSelectedLocation(response.data.profile.profileInfo.location);
+                setSelectedLocation(response.data.profile.profileInfo.officeLocation);
 
 
             } catch (error) {
