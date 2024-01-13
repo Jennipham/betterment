@@ -9,7 +9,6 @@ import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import notification from '../images/notification-icon.png';
 import notificationExclamation from '../images/notification-exclamation.png';
-import { use } from 'bcrypt/promises';
 import { jwtDecode } from 'jwt-decode';
 
 
@@ -93,6 +92,12 @@ const Header = () => {
             }, 500);
         } catch (error) {
             console.error('Logout failed:', error);
+            sessionStorage.clear();
+
+            setTimeout(() => {
+                setLoggedInStatus(false);
+                navigate("/", { replace: true })
+            }, 500);
 
         }
     };

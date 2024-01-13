@@ -391,7 +391,7 @@ const MentorMatches = () => {
                                 <div className="profile-icon">
                                     <img src={white} alt="White Profile Icon" />
                                 </div>
-                                <div className="match-info-ment">
+                                <div className="match-info">
                                     <p>Name: {menteeFname && menteeSname ? `${menteeFname} ${menteeSname}` : ''}</p>
                                     <p>Job Role: {menteeProfile && menteeProfile.profileInfo.jobRole ? capitaliseFirstLetter(menteeProfile.profileInfo.jobRole) : ''}</p>
                                 </div>

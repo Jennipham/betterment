@@ -7,6 +7,8 @@ const ManagerProfile = require('./models/managerProfiles');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { validationResult } = require('express-validator'); // For input validation
+const matchingController = require('./controllers/matching');
+
 
 require('dotenv').config();
 
@@ -126,7 +128,8 @@ router.post('/getProfile', async (req, res) => {
                     mentoringMethods: [],
                     sentRequests: [],
                     receivedRequests: [],
-                    matchedUp: false,
+                    acceptedRequests: [],
+                    matchedUp: 'false',
                 },
             };
 
@@ -217,7 +220,8 @@ router.post('/getManagerProfile', async (req, res) => {
 });
 
 router.post('/profile', async (req, res) => {
-    const { jobRole, department, officeLocation, capacity, languages, developmentAreas, mentoringMethods, email, userType, sentRequests, receivedRequests, matchedUp } = req.body;
+    const { jobRole, department, officeLocation, capacity, languages, developmentAreas, mentoringMethods, email, userType, sentRequests, receivedRequests, acceptedRequests,
+ matchedUp } = req.body;
 
     try {
         let profile = await Profile.findOne({ email });
@@ -237,6 +241,7 @@ router.post('/profile', async (req, res) => {
                     mentoringMethods,
                     sentRequests,
                     receivedRequests,
+                    acceptedRequests,
                     matchedUp,
                 },
             });
@@ -252,6 +257,7 @@ router.post('/profile', async (req, res) => {
                 mentoringMethods,
                 sentRequests,
                 receivedRequests,
+                acceptedRequests,
                 matchedUp,
             };
         }
@@ -313,6 +319,16 @@ router.get('/getRandomMenteeProfile', async (req, res) => {
     }
 });
 
+
+router.get('/getMatches', async (req, res) => {
+    try {
+        const matches = await matchingController.performMatching();
+        res.json({ matches });
+    } catch (error) {
+        console.error('Error performing matching:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
 
 router.post('/requestMatch', async (req, res) => {
     const { senderEmail, receiverEmail } = req.body;

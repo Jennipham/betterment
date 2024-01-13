@@ -23,6 +23,7 @@ const profileSchema = new mongoose.Schema({
         mentoringMethods: [String],
         sentRequests: [String],
         receivedRequests: [String],
+        acceptedRequests: [String],
         matchedUp: [String]
     },
 });
