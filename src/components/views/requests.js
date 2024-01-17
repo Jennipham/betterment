@@ -60,7 +60,9 @@ const Requests = () => {
                     email: user.email,
                     userType: user.userType,
                 });
+
                 setSentRequests(sentResponse.data.sentRequests);
+
             } catch (error) {
                 console.error('Error fetching requests:', error);
             }
@@ -71,7 +73,7 @@ const Requests = () => {
 
     const onRemoveSentRequest = (emailToRemove) => {
         // Update the state to remove the sent request with the specified email
-        setSentRequests(sentRequests.filter(request => request.email !== emailToRemove));
+        setSentRequests(sentRequests.filter(request => request.receiverEmail !== emailToRemove));
     };
 
     return (

@@ -115,7 +115,7 @@ const Profile = () => {
         setRequestsLength(receivedRequestsLength);
 
         setUser({ firstName, lastName, userType, email, jobRole, officeLocation, developmentAreas, mentoringMethods, languages, sentRequests, receivedRequests, matchedUp });
-        console.log('User Information:', { firstName, lastName, userType, email, jobRole, officeLocation, developmentAreas, mentoringMethods, languages, sentRequests, receivedRequests, matchedUp });
+        // console.log('User Information:', { firstName, lastName, userType, email, jobRole, officeLocation, developmentAreas, mentoringMethods, languages, sentRequests, receivedRequests, matchedUp });
     }, []);
 
     

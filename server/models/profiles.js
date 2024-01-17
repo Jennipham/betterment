@@ -21,8 +21,18 @@ const profileSchema = new mongoose.Schema({
         languages:[String],
         developmentAreas:[String],
         mentoringMethods: [String],
-        sentRequests: [String],
-        receivedRequests: [String],
+        sentRequests: [
+            {
+                receiverEmail: { type: String, required: true },
+                expiration: { type: Date, required: true },
+            }
+        ],
+        receivedRequests: [
+            {
+                senderEmail: { type: String, required: true },
+                expiration: { type: Date, required: true },
+            }
+        ],
         acceptedRequests: [String],
         matchedUp: [String]
     },

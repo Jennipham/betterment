@@ -89,7 +89,7 @@ const MenteeMatches = () => {
 
 
         setUser({ firstName, lastName, userType, email, jobRole, officeLocation, developmentAreas, mentoringMethods, languages });
-        console.log('User Information:', { firstName, lastName, userType, email, jobRole, officeLocation, developmentAreas, mentoringMethods, languages });
+        // console.log('User Information:', { firstName, lastName, userType, email, jobRole, officeLocation, developmentAreas, mentoringMethods, languages });
     }, []);
 
 
@@ -100,7 +100,7 @@ const MenteeMatches = () => {
                 setMentorProfile(response.data.profile);
 
                 sessionStorage.setItem('matchProfile', JSON.stringify(response.data.profile));
-                console.log('match',sessionStorage.getItem('matchProfile'))
+                // console.log('match',sessionStorage.getItem('matchProfile'))
                 
                 const userResponse = await axios.get(`http://localhost:3001/getUserDetails?email=${response.data.profile.email}`);
                 setMentorFname(userResponse.data.user.fname);
@@ -158,10 +158,14 @@ const MenteeMatches = () => {
     const handleRequestMatch = async () => {
         try {
             setLoading(true);
+            const currentDate = new Date();
+            const expirationDate = new Date(currentDate);
+            expirationDate.setDate(expirationDate.getDate() + 14);
 
             const response = await axios.post('http://localhost:3001/requestMatch', {
                 senderEmail: user.email,
                 receiverEmail: mentorProfile.email, // Assuming you have the mentor's email in mentorProfile.email
+                expiration: expirationDate.toISOString(),
             });
 
             // Handle the response, update state, or perform any additional actions if needed

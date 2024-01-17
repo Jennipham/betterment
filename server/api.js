@@ -331,12 +331,12 @@ router.get('/getMatches', async (req, res) => {
 });
 
 router.post('/requestMatch', async (req, res) => {
-    const { senderEmail, receiverEmail } = req.body;
+    const { senderEmail, receiverEmail, expiration } = req.body;
 
     try {
         // Check if the match request already exists
         const senderProfile = await Profile.findOne({ email: senderEmail });
-        if (senderProfile && senderProfile.profileInfo.sentRequests.includes(receiverEmail)) {
+        if (senderProfile && senderProfile.profileInfo.sentRequests.some(request => request.receiverEmail === receiverEmail)) {
             return res.status(400).json({ error: 'Match request already sent' });
         }
 
@@ -347,8 +347,8 @@ router.post('/requestMatch', async (req, res) => {
         }
 
         // Update sender's sentRequests and receiver's receivedRequests
-        senderProfile.profileInfo.sentRequests.push(receiverEmail);
-        receiverProfile.profileInfo.receivedRequests.push(senderEmail);
+        senderProfile.profileInfo.sentRequests.push({ receiverEmail, expiration });
+        receiverProfile.profileInfo.receivedRequests.push({ senderEmail, expiration });
 
         // Save the changes to the database
         await senderProfile.save();
@@ -391,56 +391,55 @@ router.post('/getReceivedRequests', async (req, res) => {
         console.error('Error getting received requests:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
-});
+}); 
 
 router.post('/getSentRequests', async (req, res) => {
     const { email, userType } = req.body;
 
     try {
-        const profile = await Profile.findOne({ email });
+        // Fetch user profile from the database
+        const userProfile = await Profile.findOne({ email });
 
-
-        if (!profile) {
+        if (!userProfile) {
             return res.status(404).json({ error: 'Profile not found' });
         }
 
-        const sentRequestsEmails = profile.profileInfo.sentRequests || [];
-        const sentRequests = await Promise.all(
-            sentRequestsEmails.map(async (requestEmail) => {
-                const user = await User.findOne({ email: requestEmail });
-                if (user) {
-                    return {
-                        email: user.email,
-                        firstName: user.fname,
-                        lastName: user.sname,
-                    };
-                }
-                return null;
-            })
-        );
+        // Extract sentRequests from the user's profile
+        const sentRequests = userProfile.profileInfo.sentRequests || [];
 
+        // Return sentRequests directly without modifying expirationDate
         res.json({ sentRequests });
     } catch (error) {
-        console.error('Error getting sent requests:', error);
+        console.error('Error fetching sent requests:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
 
-router.delete('/cancelRequest/:requestEmail', async (req, res) => {
+router.delete('/cancelRequest/:receiverEmail', async (req, res) => {
     const { email } = req.body;
-    const { requestEmail } = req.params;
+    const { receiverEmail } = req.params;
 
     try {
         // Find the profile and remove the canceled request from sentRequests
         const profile = await Profile.findOneAndUpdate(
             { email },
-            { $pull: { 'profileInfo.sentRequests': requestEmail } },
+            { $pull: { 'profileInfo.sentRequests': { receiverEmail: receiverEmail } } },
             { new: true }
         );
 
         if (!profile) {
             return res.status(404).json({ error: 'Profile not found' });
+        }
+
+        const receiverProfile = await Profile.findOneAndUpdate(
+            { 'profileInfo.receivedRequests.senderEmail': email },
+            { $pull: { 'profileInfo.receivedRequests': { senderEmail: email } } },
+            { new: true }
+        );
+
+        if (!receiverProfile) {
+            return res.status(404).json({ error: 'Receiver profile not found' });
         }
 
         res.json({ success: true });

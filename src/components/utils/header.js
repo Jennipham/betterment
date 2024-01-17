@@ -68,18 +68,18 @@ const Header = () => {
         const profile = JSON.parse(profileString);
         
         setUser({ firstName, lastName, userType, email, jobRole, officeLocation, developmentAreas, mentoringMethods, languages });
-        console.log('User Information:', { firstName, lastName, userType, email, jobRole, officeLocation, developmentAreas, mentoringMethods, languages });
+        // console.log('User Information:', { firstName, lastName, userType, email, jobRole, officeLocation, developmentAreas, mentoringMethods, languages });
    
         const receivedRequestsLength = Array.isArray(profile?.receivedRequests)
             ? profile?.receivedRequests.length
             : 0;
 
         setNotifications(receivedRequestsLength);
-        console.log('profile', profile);
+        // console.log('profile', profile);
 
 
-        console.log('notification count', notifications);
-    }, [isAuthenticated]);
+        // console.log('notification count', notifications);
+    }, []);
 
     const handleLogout = async () => {
         try {
