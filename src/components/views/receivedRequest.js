@@ -7,7 +7,7 @@ import cross from '../images/cross-icon.png';
 import tick from '../images/tick-icon.png';
 import '../styles/ReceivedRequests.css';
 
-const ReceivedRequest = ({ request, onDecline }) => {
+const ReceivedRequest = ({ request, onDecline, onAccept }) => {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -35,6 +35,19 @@ const ReceivedRequest = ({ request, onDecline }) => {
         }
     };
 
+    const handleAccept = async () => {
+        try {
+            await axios.post('http://localhost:3001/acceptRequest', {
+                email: sessionStorage.getItem('email'),
+                senderEmail: request.senderEmail,
+            });
+
+            onAccept(request);
+        } catch (error) {
+            console.error('Error accepting request:', error);
+        }
+    };
+
     return (
         <div className="request-box-received">
             <div className='icon-box'>
@@ -53,7 +66,7 @@ const ReceivedRequest = ({ request, onDecline }) => {
             </div>
             <div className='action-buttons'>
                 <img src={cross} alt="Reject" className="action-icon" onClick={handleDecline} />
-                <img src={tick} alt="Accept" className="action-icon" />
+                <img src={tick} alt="Accept" className="action-icon" onClick={handleAccept} />
             </div>
         </div>
     );

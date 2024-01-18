@@ -55,6 +55,10 @@ const Requests = () => {
         setReceivedRequests(receivedRequests.filter(request => request.senderEmail !== declinedRequest.senderEmail));
     };
 
+    const onAccept = (acceptedRequest) => {
+        setReceivedRequests(receivedRequests.filter(request => request.senderEmail !== acceptedRequest.senderEmail));
+    };
+
 
     return (
         <>
@@ -65,7 +69,7 @@ const Requests = () => {
                     <h2>Received Requests</h2>
                     {receivedRequests.map((request) => (
                         request && request.senderEmail ? (
-                            <ReceivedRequest key={request.senderEmail} request={request} onDecline= {onDecline} />
+                            <ReceivedRequest key={request.senderEmail} request={request} onDecline= {onDecline} onAccept = {onAccept} />
                         ) : null
                     ))}
                 </div>

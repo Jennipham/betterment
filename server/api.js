@@ -437,6 +437,41 @@ router.delete('/cancelRequest/:receiverEmail', async (req, res) => {
     }
 });
 
+router.post('/acceptRequest', async (req, res) => {
+    const { email, senderEmail } = req.body;
+
+    try {
+        // Update the received request
+        await Profile.updateOne(
+            { email },
+            {
+                $set: {
+                    'profileInfo.receivedRequests.$[elem].accepted': true,
+                },
+            },
+            {
+                arrayFilters: [
+                    {
+                        'elem.senderEmail': senderEmail,
+                        'elem.accepted': false, // Only update if not already accepted
+                    },
+                ],
+            }
+        );
+
+        // Update the sent request
+        await Profile.updateOne(
+            { 'profileInfo.sentRequests.receiverEmail': email },
+            { $set: { 'profileInfo.sentRequests.$.accepted': true } }
+        );
+
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Error accepting request:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 router.post('/declineRequest', async (req, res) => {
     const { email, senderEmail } = req.body;
 
