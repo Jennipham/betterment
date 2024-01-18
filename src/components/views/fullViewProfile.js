@@ -67,7 +67,7 @@ const FullProfile = () => {
     ]
 
     const capitaliseFirstLetter = (str) => {
-        if (str === undefined) {
+        if (str === null || str === undefined) {
             return;
         }
         return str.charAt(0).toUpperCase() + str.slice(1);

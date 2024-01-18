@@ -60,6 +60,11 @@
     padding: 10px;
 }
 
+.save-icon img {
+    height: 40px;
+    cursor: pointer;
+}
+
 .profile-top {
     display: flex;
     flex-direction: row;
@@ -97,8 +102,6 @@
     flex-direction: column;
 
 }
-
-
 
 .matching-info-right {
     display: flex;

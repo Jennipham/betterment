@@ -7,6 +7,7 @@ import '../styles/MenteeMatches.css';
 import white from '../images/profile-white.png';
 import black from '../images/profile-black.png';
 import connect from '../images/connect-icon.png';
+import save from '../images/save-icon.png'
 import Loader from '../utils/loader';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -277,7 +278,7 @@ const MenteeMatches = () => {
 
 
     const capitaliseFirstLetter = (str) => {
-        if (str === undefined) {
+        if (str === null || str === undefined) {
             return;
         }
         return str.charAt(0).toUpperCase() + str.slice(1);
@@ -296,6 +297,36 @@ const MenteeMatches = () => {
             const option = options.find(option => option.value === value);
             return option ? option.label : value;
         });
+    };
+
+    const handleSave = async () => {
+        try {
+            setLoading(true);
+
+            // Prepare the data to be saved
+            const dataToSave = {
+                languages: selectedLanguages.map(option => option.value),
+                developmentAreas: selectedDevelopmentAreas.map(option => option.value),
+                mentoringMethods: selectedMethods.map(option => option.value),
+                officeLocation: selectedLocation,
+            };
+
+            // Send a PUT request to update the user's profile
+            const response = await axios.put('http://localhost:3001/updateUserProfile', {
+                email: user.email,
+                userType: user.userType,
+                data: dataToSave,
+            });
+
+            // Handle the response, update state, or perform any additional actions if needed
+            console.log('Profile updated successfully:', response.data);
+            setLoading(false);
+
+        } catch (error) {
+            setLoading(false);
+            console.error('Error updating profile:', error);
+            setErrorMessage('Error Updating Profile');
+        }
     };
 
     return (
@@ -357,6 +388,9 @@ const MenteeMatches = () => {
                         onChange={(selectedOption) => handleLocationChange(selectedOption)}
                     />
 
+                    <div className='save-icon'>
+                        <img src={save} onClick={handleSave} alt="Save to Profile" /> 
+                    </div>
 
                 </div>
                 <div className="match-section">
@@ -436,7 +470,7 @@ const MenteeMatches = () => {
 
 
                     <div className='other-matches'>
-                        <button>See Other Matches</button>
+                        <button>Re-Match Me</button>
                     </div>
                 </div>
 

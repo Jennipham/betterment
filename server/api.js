@@ -535,6 +535,36 @@ router.post('/managerProfile', async (req, res) => {
     }
 });
 
+router.put('/updateUserProfile', async (req, res) => {
+    try {
+        const { email, userType, data } = req.body;
+
+        if (!email || !userType || !data) {
+            return res.status(400).json({ error: 'Invalid request parameters' });
+        }
+
+        // Assuming the user profile exists
+        const profile = await Profile.findOne({ email, userType });
+
+        if (!profile) {
+            return res.status(404).json({ error: 'User profile not found' });
+        }
+
+        // Update profile fields based on the received data
+        Object.keys(data).forEach((field) => {
+            profile.profileInfo[field] = data[field];
+        });
+
+        // Save the updated profile
+        await profile.save();
+
+        return res.json({ success: true, message: 'Profile updated successfully' });
+    } catch (error) {
+        console.error('Error updating profile:', error);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 router.post('/send-form', async (req, res) => {
     const { formMessage } = req.body;
     const tokenHeader = req.headers.authorization;

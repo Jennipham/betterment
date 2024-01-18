@@ -69,7 +69,7 @@ const customStyles = {
 };
 
 const capitaliseFirstLetter = (str) => {
-    if (str === undefined) {
+    if ( str === null || str === undefined) {
         return;
     }
     return str

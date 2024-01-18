@@ -276,7 +276,7 @@ const MentorMatches = () => {
 
 
     const capitaliseFirstLetter = (str) => {
-        if (str === undefined) {
+        if (str === null || str === undefined) {
             return;
         }
         return str.charAt(0).toUpperCase() + str.slice(1);
@@ -435,13 +435,13 @@ const MentorMatches = () => {
 
 
                     <div className='other-matches'>
-                        <button>See Other Matches</button>
+                        <button>Re-Match Me</button>
                     </div>
 
                 </div>
+            </div>
 
                 <Footer />
-                </div>
             </>
         );
 };
