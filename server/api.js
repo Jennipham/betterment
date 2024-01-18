@@ -363,23 +363,23 @@ router.post('/getReceivedRequests', async (req, res) => {
     const { email, userType } = req.body;
 
     try {
-        // Fetch user profile from the database
         const userProfile = await Profile.findOne({ email });
 
         if (!userProfile) {
             return res.status(404).json({ error: 'Profile not found' });
         }
 
-        // Extract sentRequests from the user's profile
-        const receivedRequests = userProfile.profileInfo.receivedRequests || [];
+        const filteredReceivedRequests = userProfile.profileInfo.receivedRequests.filter(
+            (request) => request.accepted === false && request.declined === false
+        );
 
-        // Return sentRequests directly without modifying expirationDate
-        res.json({ receivedRequests });
+        res.json({ receivedRequests: filteredReceivedRequests });
     } catch (error) {
         console.error('Error fetching received requests:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
-}); 
+});
+
 
 router.post('/getSentRequests', async (req, res) => {
     const { email, userType } = req.body;
