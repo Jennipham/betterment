@@ -28,7 +28,7 @@ const customStyles = {
         color: 'black',
 
     }),
-    option: (provided,state) => ({
+    option: (provided, state) => ({
         ...provided,
         backgroundColor: state.isSelected ? '#3BBED1' : 'white',
         color: state.isSelected ? 'white' : 'black',
@@ -101,7 +101,7 @@ const MenteeMatches = () => {
 
                 sessionStorage.setItem('matchProfile', JSON.stringify(response.data.profile));
                 // console.log('match',sessionStorage.getItem('matchProfile'))
-                
+
                 const userResponse = await axios.get(`http://localhost:3001/getUserDetails?email=${response.data.profile.email}`);
                 setMentorFname(userResponse.data.user.fname);
                 setMentorSname(userResponse.data.user.sname);
@@ -357,31 +357,39 @@ const MenteeMatches = () => {
                         onChange={(selectedOption) => handleLocationChange(selectedOption)}
                     />
 
-                   
+
                 </div>
                 <div className="match-section">
                     <h2 className='top-match'>Your Top Match:</h2>
                     <div className='error-message-profile-container'>
-                    {errorMessage && <p className="error-message-profile">{errorMessage}</p>}
+                        {errorMessage && <p className="error-message-profile">{errorMessage}</p>}
                     </div>
                     <div className="user-profile-box">
                         <div className="profile-left">
-                            <div className="profile-icon">
-                                <img src={black} alt="Black Profile Icon" />
-                            </div>
-                            <div className="user-info">
-                                <p>Name: {capitaliseFirstLetter(user.firstName)} {capitaliseFirstLetter(user.lastName)}</p>
-                                <p>Job Role: {capitaliseFirstLetter(user.jobRole)}</p>
-                            </div>
-                            <div className="matching-info-left">
-                                <p>Location: {capitaliseFirstLetter(user.officeLocation)}</p>
-                                <p>Development Areas: {user.developmentAreas ? user.developmentAreas.join(', ') : ''}</p>
-                                <p>Methods of Matching: {user.mentoringMethods ? mapValuesToLabels(user.mentoringMethods, methodOptions).join(', ') : ''}</p>
-                            </div>
-                            <div className="bottom-right-button">
-                                <button onClick={() => { handleEditClick() }}>Edit Profile</button>
+                            <div className="profile-left-info">
+
+                                <div className='profile-top' >
+                                    <div className="profile-icon">
+                                        <img src={black} alt="Black Profile Icon" />
+                                    </div>
+                                    <div className="user-info">
+                                        <p>Name: {capitaliseFirstLetter(user.firstName)} {capitaliseFirstLetter(user.lastName)}</p>
+                                        <p>Job Role: {capitaliseFirstLetter(user.jobRole)}</p>
+                                    </div>
+                                </div>
+
+                                <div className="matching-info-left">
+                                    <p>Location: {capitaliseFirstLetter(user.officeLocation)}</p>
+                                    <p>Development Areas: {user.developmentAreas ? user.developmentAreas.join(', ') : ''}</p>
+                                    <p>Methods of Matching: {user.mentoringMethods ? mapValuesToLabels(user.mentoringMethods, methodOptions).join(', ') : ''}</p>
+                                </div>
+
+                                <div className="bottom-right-button">
+                                    <button onClick={() => { handleEditClick() }}>Edit Profile</button>
+                                </div>
                             </div>
                         </div>
+
 
                         <div className="matching-icon">
                             {loading ? (
@@ -391,20 +399,25 @@ const MenteeMatches = () => {
                             )}
                         </div>
 
-                        <div className="mentor-profile-box">
-                          <div className="profile-right">
-                                <div className="profile-icon">
-                                    <img src={white} alt="White Profile Icon" />
-                                </div>
-                                    <div className="match-info">
-                                    <p>Name: {mentorFname && mentorSname ? `${mentorFname} ${mentorSname}` : ''}</p>
-                                    <p>Job Role: {mentorProfile && mentorProfile.profileInfo.jobRole ? capitaliseFirstLetter(mentorProfile.profileInfo.jobRole) : ''}</p>
+                        <div className="profile-right">
+                            <div className="profile-right-info">
+
+                                <div className='profile-top' >
+                                    <div className="profile-icon">
+                                        <img src={white} alt="White Profile Icon" />
                                     </div>
+                                    <div className="match-info">
+                                        <p>Name: {mentorFname && mentorSname ? `${mentorFname} ${mentorSname}` : ''}</p>
+                                        <p>Job Role: {mentorProfile && mentorProfile.profileInfo.jobRole ? capitaliseFirstLetter(mentorProfile.profileInfo.jobRole) : ''}</p>
+                                    </div>
+                                </div>
+
                                 <div className="matching-info-right">
                                     <p>Location: {mentorProfile && mentorProfile.profileInfo.officeLocation ? capitaliseFirstLetter(mentorProfile.profileInfo.officeLocation) : ''}</p>
                                     <p>Development Areas: {mentorProfile && mentorProfile.profileInfo.developmentAreas ? mentorProfile.profileInfo.developmentAreas.join(', ') : ''}</p>
                                     <p>Methods of Matching: {mentorProfile && mentorProfile.profileInfo.mentoringMethods ? mapValuesToLabels(mentorProfile.profileInfo.mentoringMethods, methodOptions).join(', ') : ''}</p>
                                 </div>
+
                                 <div className="bottom-buttons-container">
                                     <button className="full-profile-button" onClick={() => openModal(mentorProfile)}>View Full Profile</button>
                                     {isModalOpen && (
@@ -416,17 +429,18 @@ const MenteeMatches = () => {
 
                                 </div>
                             </div>
-                          
+
                         </div>
-                       
+
                     </div>
-                   
+
+
                     <div className='other-matches'>
                         <button>See Other Matches</button>
                     </div>
                 </div>
-              
-             
+
+
             </div>
 
             <Footer />

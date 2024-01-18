@@ -214,7 +214,7 @@ const Header = () => {
                 )
                         : loggedInStatus && location.pathname === '/help' ? ( //checks if logged in
                             <>
-                                {notifications === 0 ?
+                                    {notifications < 1 ?
                                     <RouterLink to="/requests">
                                         <img className='notification-icon-header' src={notification} alt="Requests" />
                                     </RouterLink> :
@@ -286,7 +286,7 @@ const Header = () => {
 
                             ) : loggedInStatus && (location.pathname === '/menteeProfile' || location.pathname === '/mentorProfile') ? ( //checks if logged in
                                 <>
-                                        {notifications === 0 ?
+                                                {notifications < 1 ?
                                             <RouterLink to="/requests">
                                                 <img className='notification-icon-header' src={notification} alt="Requests" />
                                             </RouterLink> :

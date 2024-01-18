@@ -12,14 +12,12 @@
     display: flex;
     justify-content: space-between;
     margin: 20px 0;
-    /* Adjust margin as needed */
     width: 80%;
 }
 
 .match-section {
     width: 90%;
     margin-top: 20px;
-    /* Adjust margin as needed */
 }
 
 .user-profile-box {
@@ -30,13 +28,6 @@
 
 }
 
-.mentor-profile-box {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 20px 0;
-}
-
 .profile-left {
     background-color: white;
     border-radius: 10px;
@@ -44,9 +35,8 @@
     grid-template-columns: auto 1fr;
     grid-gap: 10px;
     align-items: center;
-    height: 25em;
-    width: 35em;
-    position: relative;
+    min-height: 25em;
+    min-width: 35em;
 }
 
 .profile-right {
@@ -56,109 +46,119 @@
     grid-template-columns: auto 1fr;
     grid-gap: 10px;
     align-items: center;
-    position: relative;
     min-height: 25em;
     min-width: 35em;
 }
 
-
 .profile-icon img {
     height: 80px;
+    margin-top: 15px;
 }
 
 .matching-icon img {
     height: 80px;
+    padding: 10px;
 }
-/* 
+
+.profile-top {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+}
+
 .user-info {
-    margin: 1em 2em 1em -16em;
+    display: flex;
+    flex-direction: column;
+}
+
+.user-info p {
+    color: #3BBED1;
+    text-align: left;
 }
 
 .match-info {
-    margin: 1em 2em 1em -7em;
-} */
+    display: flex;
+    flex-direction: column;
+}
 
-.user-info-ment p {
-    color: #3BBED1;
+.match-info p {
+    color: white;
     text-align: left;
-    margin-left: -80px;
+}
+
+.profile-left-info {
+    display: flex;
+    flex-direction: column;
+
+}
+
+.profile-right-info {
+    display: flex;
+    flex-direction: column;
+
 }
 
 
-.match-info-ment p {
-    text-align: left;
-    margin-left: -220px;
+
+.matching-info-right {
+    display: flex;
+    flex-direction: column;
+    margin-left: 2em;
 }
 
 .matching-info-left {
     display: flex;
     flex-direction: column;
-    margin-left: auto;
-    margin-bottom: 2em;
-    margin-top: -6em;
-}
-
-.matching-info-right {
-    display: flex;
-    flex-direction: column;
-    margin-left: auto;
-    margin-bottom: 2em;
-    margin-top: -6em;
+    margin-left: 2em;
 }
 
 .matching-info-left p {
     color: #3BBED1;
     text-align: left;
-    display: flex;
-    flex-direction: column;
-    margin-left: 2em;
 }
 
 .matching-info-right p {
     color: white;
     text-align: left;
-    display: flex;
-    flex-direction: column;
-    margin-left: 2em;
 }
 
 .bottom-right-button {
-    position: absolute;
     bottom: 10px;
     right: 20px;
 
 }
 
 .full-profile {
-    position: absolute;
     bottom: 10px;
     right: 20px;
-
 }
 
 .bottom-buttons-container {
-    justify-content: center;
-    text-align: center;
     display: flex;
-    overflow: hidden;
+    justify-content: flex-end;
+    text-align: center;
     white-space: nowrap;
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    margin-top: 1em;
+    margin-top: auto;
+    margin-left: 200px;
 }
 
 .bottom-buttons-container button {
     font-size: 1em;
     background-color: white;
     color: #3BBED1;
-    margin-bottom: 1em;
+        margin-top: 20px;
 }
 
 .bottom-right-button button {
     font-size: 1em;
+    padding: 10px;
 }
 
+.bottom-right-button {
+    display: flex;
+    margin-left: 410px;
+    margin-top: 30px;
+}
 
 .error-message-profile {
     color: white;
@@ -177,5 +177,3 @@
     justify-content: center;
 
 }
-
-.other-matches {}
