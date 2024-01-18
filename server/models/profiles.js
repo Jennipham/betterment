@@ -25,15 +25,17 @@ const profileSchema = new mongoose.Schema({
             {
                 receiverEmail: { type: String, required: true },
                 expiration: { type: Date, required: true },
+        
             }
         ],
         receivedRequests: [
             {
                 senderEmail: { type: String, required: true },
                 expiration: { type: Date, required: true },
+                accepted: { type: Boolean, default: false },
+                declined: { type: Boolean, default: false },
             }
         ],
-        acceptedRequests: [String],
         matchedUp: [String]
     },
 });

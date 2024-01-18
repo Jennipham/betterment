@@ -128,7 +128,6 @@ router.post('/getProfile', async (req, res) => {
                     mentoringMethods: [],
                     sentRequests: [],
                     receivedRequests: [],
-                    acceptedRequests: [],
                     matchedUp: 'false',
                 },
             };
@@ -220,7 +219,7 @@ router.post('/getManagerProfile', async (req, res) => {
 });
 
 router.post('/profile', async (req, res) => {
-    const { jobRole, department, officeLocation, capacity, languages, developmentAreas, mentoringMethods, email, userType, sentRequests, receivedRequests, acceptedRequests,
+    const { jobRole, department, officeLocation, capacity, languages, developmentAreas, mentoringMethods, email, userType, sentRequests, receivedRequests,
  matchedUp } = req.body;
 
     try {
@@ -241,7 +240,6 @@ router.post('/profile', async (req, res) => {
                     mentoringMethods,
                     sentRequests,
                     receivedRequests,
-                    acceptedRequests,
                     matchedUp,
                 },
             });
@@ -257,7 +255,6 @@ router.post('/profile', async (req, res) => {
                 mentoringMethods,
                 sentRequests,
                 receivedRequests,
-                acceptedRequests,
                 matchedUp,
             };
         }
@@ -366,29 +363,20 @@ router.post('/getReceivedRequests', async (req, res) => {
     const { email, userType } = req.body;
 
     try {
-        const profile = await Profile.findOne({ email });
-        if (!profile) {
+        // Fetch user profile from the database
+        const userProfile = await Profile.findOne({ email });
+
+        if (!userProfile) {
             return res.status(404).json({ error: 'Profile not found' });
         }
 
-        const receivedRequestsEmails = profile.profileInfo.receivedRequests || [];
-        const receivedRequests = await Promise.all(
-            receivedRequestsEmails.map(async (requestEmail) => {
-                const user = await User.findOne({ email: requestEmail });
-                if (user) {
-                    return {
-                        email: user.email,
-                        firstName: user.fname,
-                        lastName: user.sname,
-                    };
-                }
-                return null;
-            })
-        );
+        // Extract sentRequests from the user's profile
+        const receivedRequests = userProfile.profileInfo.receivedRequests || [];
 
+        // Return sentRequests directly without modifying expirationDate
         res.json({ receivedRequests });
     } catch (error) {
-        console.error('Error getting received requests:', error);
+        console.error('Error fetching received requests:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 }); 
@@ -448,6 +436,29 @@ router.delete('/cancelRequest/:receiverEmail', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
+router.post('/declineRequest', async (req, res) => {
+    const { email, senderEmail } = req.body;
+
+    try {
+        const profile = await Profile.findOneAndUpdate(
+            { email, 'profileInfo.receivedRequests.senderEmail': senderEmail },
+            { $set: { 'profileInfo.receivedRequests.$.declined': true } },
+            { new: true }
+        );
+
+        if (!profile) {
+            return res.status(404).json({ error: 'Profile not found' });
+        }
+
+        // Return updated profile or success message
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Error declining request:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 
 
 

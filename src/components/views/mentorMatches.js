@@ -157,10 +157,14 @@ const MentorMatches = () => {
     const handleRequestMatch = async () => {
         try {
             setLoading(true);
+            const currentDate = new Date();
+            const expirationDate = new Date(currentDate);
+            expirationDate.setDate(expirationDate.getDate() + 14);
 
             const response = await axios.post('http://localhost:3001/requestMatch', {
                 senderEmail: user.email,
                 receiverEmail: menteeProfile.email, // Assuming you have the mentor's email in mentorProfile.email
+                expiration: expirationDate.toISOString(),
             });
 
             // Handle the response, update state, or perform any additional actions if needed

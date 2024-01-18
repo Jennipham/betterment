@@ -10,55 +10,30 @@ const Requests = () => {
     const [receivedRequests, setReceivedRequests] = useState([]);
     const [sentRequests, setSentRequests] = useState([]);
 
-    const [user, setUser] = useState({
-        firstName: sessionStorage.getItem('firstName') || 'User',
-        lastName: sessionStorage.getItem('lastName') || '',
-        userType: sessionStorage.getItem('userType') || '',
-        email: sessionStorage.getItem('email') || '',
-    });
-
-    const [matchProfile, setMatchProfile] = useState({
-        firstName: sessionStorage.getItem('firstName') || 'User',
-        lastName: sessionStorage.getItem('lastName') || '',
-        userType: sessionStorage.getItem('userType') || '',
-        email: sessionStorage.getItem('email') || '',
-        jobRole: sessionStorage.getItem('jobRole') || '',
-        officeLocation: sessionStorage.getItem('officeLocation') || '',
-        developmentAreas: sessionStorage.getItem('developmentAreas') || '',
-        mentoringMethods: sessionStorage.getItem('mentoringMethods') || '',
-        languages: sessionStorage.getItem('languages') || '',
-    });
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const email = sessionStorage.getItem('email');
                 const userType = sessionStorage.getItem('userType');
-                const firstName = sessionStorage.getItem('firstName');
-                const lastName = sessionStorage.getItem('lastName');
 
-                // Parse the string from sessionStorage to an object
-                const receivedProfiles = JSON.parse(sessionStorage.getItem('matchProfile'));
-
-                setUser({ firstName, lastName, email, userType });
-                setMatchProfile(receivedProfiles);
 
                 if (!email || !userType) {
                     console.error('User information is missing.');
                     return;
                 }
 
-                // Fetch received requests
+                // Fetch received requests directly using user information
                 const receivedResponse = await axios.post('http://localhost:3001/getReceivedRequests', {
-                    email: matchProfile.email,
-                    userType: matchProfile.userType,
+                    email,
+                    userType,
                 });
                 setReceivedRequests(receivedResponse.data.receivedRequests);
 
                 // Fetch sent requests
                 const sentResponse = await axios.post('http://localhost:3001/getSentRequests', {
-                    email: user.email,
-                    userType: user.userType,
+                    email,
+                    userType,
                 });
 
                 setSentRequests(sentResponse.data.sentRequests);
@@ -69,12 +44,17 @@ const Requests = () => {
         };
 
         fetchData();
-    }, [user.email, user.userType]); // Added dependencies to useEffect
+    }, []);
+
 
     const onRemoveSentRequest = (emailToRemove) => {
-        // Update the state to remove the sent request with the specified email
         setSentRequests(sentRequests.filter(request => request.receiverEmail !== emailToRemove));
     };
+
+    const onDecline = (declinedRequest) => {
+        setReceivedRequests(receivedRequests.filter(request => request.senderEmail !== declinedRequest.senderEmail));
+    };
+
 
     return (
         <>
@@ -84,13 +64,17 @@ const Requests = () => {
                 <div className="requests-box">
                     <h2>Received Requests</h2>
                     {receivedRequests.map((request) => (
-                        <ReceivedRequest key={request.email} request={request} />
+                        request && request.senderEmail ? (
+                            <ReceivedRequest key={request.senderEmail} request={request} onDecline= {onDecline} />
+                        ) : null
                     ))}
                 </div>
                 <div className="requests-box">
                     <h2>Sent Requests</h2>
                     {sentRequests.map((request) => (
-                        <SentRequest key={request.email} request={request} onRemoveRequest={onRemoveSentRequest} />
+                        request && request.receiverEmail ? (
+                            <SentRequest key={request.receiverEmail} request={request} onRemoveRequest={onRemoveSentRequest} />
+                        ) : null
                     ))}
                 </div>
             </div>
@@ -98,6 +82,7 @@ const Requests = () => {
             <Footer />
         </>
     );
+
 };
 
 export default Requests;

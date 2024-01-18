@@ -1,12 +1,13 @@
 import React from 'react';
 import { useState } from 'react';
 import Modal from '../utils/modal';
+import axios from 'axios';
 import profile from '../images/profile-black.png';
 import cross from '../images/cross-icon.png';
 import tick from '../images/tick-icon.png';
 import '../styles/ReceivedRequests.css';
 
-const ReceivedRequest = ({ request }) => {
+const ReceivedRequest = ({ request, onDecline }) => {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -16,6 +17,22 @@ const ReceivedRequest = ({ request }) => {
 
     const handleCloseModal = () => {
         setIsModalOpen(false);
+    };
+
+    const handleDecline = async () => {
+        try {
+            // Make API call to decline the request
+            await axios.post('http://localhost:3001/declineRequest', {
+                email: sessionStorage.getItem('email'),
+                senderEmail: request.senderEmail,
+            });
+
+            // Trigger the decline callback with the request data
+            onDecline(request);
+        } catch (error) {
+            console.error('Error declining request:', error);
+            // Handle error if the API call fails
+        }
     };
 
     return (
@@ -35,7 +52,7 @@ const ReceivedRequest = ({ request }) => {
                 <p className='received-name'>{`${request.firstName} ${request.lastName}`}</p>
             </div>
             <div className='action-buttons'>
-                <img src={cross} alt="Reject" className="action-icon" />
+                <img src={cross} alt="Reject" className="action-icon" onClick={handleDecline} />
                 <img src={tick} alt="Accept" className="action-icon" />
             </div>
         </div>
