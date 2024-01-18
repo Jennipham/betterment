@@ -88,6 +88,7 @@ const Profile = () => {
         jobRole: sessionStorage.getItem('jobRole') || '',
     });
 
+    const [receivedRequests, setReceivedRequests] = useState([]);
     const [requestsLength, setRequestsLength] = useState(0);
 
 
@@ -106,16 +107,7 @@ const Profile = () => {
         const receivedRequests = sessionStorage.getItem('receivedRequests') || '';
         const matchedUp = sessionStorage.getItem('matchedUp') || '';
 
-        const profileString = sessionStorage.getItem('profile');
-        const profile = JSON.parse(profileString);
-        const receivedRequestsLength = Array.isArray(profile?.receivedRequests)
-            ? profile?.receivedRequests.length
-            : 0;
-
-        setRequestsLength(receivedRequestsLength);
-
         setUser({ firstName, lastName, userType, email, jobRole, officeLocation, developmentAreas, mentoringMethods, languages, sentRequests, receivedRequests, matchedUp });
-        // console.log('User Information:', { firstName, lastName, userType, email, jobRole, officeLocation, developmentAreas, mentoringMethods, languages, sentRequests, receivedRequests, matchedUp });
     }, []);
 
     
@@ -251,6 +243,32 @@ const Profile = () => {
             // Handle error, show a message, etc.
         }
     };
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+
+                if (!user.email || !user.userType) {
+                    console.error('User information is missing.');
+                    return;
+                }
+
+                // Fetch received requests directly using user information
+                const receivedResponse = await axios.post('http://localhost:3001/getReceivedRequests', {
+                    email: user.email,
+                    userType: user.userType,
+                });
+                setReceivedRequests(receivedResponse.data.receivedRequests);
+                setRequestsLength(receivedResponse.data.receivedRequests.length);
+
+    
+            } catch (error) {
+                console.error('Error fetching requests:', error);
+            }
+        };
+
+        fetchData();
+    }, []);
 
 
 

@@ -19,6 +19,8 @@ const Header = () => {
     const [loggedInStatus, setLoggedInStatus] = useState(false);
     const [notifications, setNotifications] = useState(0);
 
+    const [receivedRequests, setReceivedRequests] = useState([]);
+    const [requestsLength, setRequestsLength] = useState(0);
 
     const isAuthenticated = () => {
         const token = sessionStorage.getItem('token');
@@ -65,20 +67,34 @@ const Header = () => {
         const languages = sessionStorage.getItem('languages') || '';
         
         const profileString = sessionStorage.getItem('profile');
-        const profile = JSON.parse(profileString);
-        
         setUser({ firstName, lastName, userType, email, jobRole, officeLocation, developmentAreas, mentoringMethods, languages });
         // console.log('User Information:', { firstName, lastName, userType, email, jobRole, officeLocation, developmentAreas, mentoringMethods, languages });
    
-        const receivedRequestsLength = Array.isArray(profile?.receivedRequests)
-            ? profile?.receivedRequests.length
-            : 0;
+    }, []);
 
-        setNotifications(receivedRequestsLength);
-        // console.log('profile', profile);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
 
+                if (!user.email || !user.userType) {
+                    console.error('User information is missing.');
+                    return;
+                }
 
-        // console.log('notification count', notifications);
+                // Fetch received requests directly using user information
+                const receivedResponse = await axios.post('http://localhost:3001/getReceivedRequests', {
+                    email: user.email,
+                    userType: user.userType,
+                });
+                setReceivedRequests(receivedResponse.data.receivedRequests);
+                setNotifications(receivedResponse.data.receivedRequests);
+
+            } catch (error) {
+                console.error('Error fetching requests:', error);
+            }
+        };
+
+        fetchData();
     }, []);
 
     const handleLogout = async () => {
@@ -152,7 +168,7 @@ const Header = () => {
 
                 ) : loggedInStatus && location.pathname === '/profileSettings' ? ( //checks if logged in
                     <>
-                            {notifications === 0 ?
+                            {notifications < 1 ?
                                 <RouterLink to="/requests">
                                     <img className='notification-icon-header' src={notification} alt="Requests" />
                                 </RouterLink> :
