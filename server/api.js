@@ -41,7 +41,33 @@ router.post('/signup', async (req, res) => {
         });
 
         await newUser.save();
-        const token = jwt.sign({ userId: newUser._id, userType: newUser.userType, email:newUser.email, }, secretKey, { expiresIn: '1h' });
+
+        // Create a profile entry with default values
+        const newProfile = new Profile({
+            email,
+            userType,
+            profileInfo: {
+                jobRole: '',
+                department: '',
+                officeLocation: '',
+                capacity: '',
+                languages: [],
+                developmentAreas: [],
+                mentoringMethods: [],
+                sentRequests: [],
+                receivedRequests: [],
+                matchedUp: [],
+            },
+        });
+
+        await newProfile.save();
+
+        const token = jwt.sign(
+            { userId: newUser._id, userType: newUser.userType, email: newUser.email },
+            secretKey,
+            { expiresIn: '1h' }
+        );
+
         res.status(201).json({
             message: 'User registered successfully',
             token,
@@ -49,13 +75,13 @@ router.post('/signup', async (req, res) => {
             lastName: newUser.sname,
             userType: newUser.userType,
             email: newUser.email,
-
         });
     } catch (error) {
         console.error('Error during registration:', error);
         res.status(500).json({ error: 'Registration failed' });
     }
 });
+
 
 router.get('/check-email', async (req, res) => {
     const { email } = req.query;
