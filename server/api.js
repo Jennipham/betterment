@@ -288,9 +288,17 @@ router.get('/getUserDetails', async (req, res) => {
 
 router.get('/getRandomMentorProfile', async (req, res) => {
     try {
-        const mentorProfiles = await Profile.find({ userType: 'mentor' });
+        // Get all mentor profiles that haven't sent accepted match requests
+        const mentorProfiles = await Profile.find({
+            userType: 'mentor',
+            $nor: [
+                { 'profileInfo.receivedRequests.accepted': { $ne: true } },
+                { 'profileInfo.sentRequests.accepted': { $ne: true } },
+            ],
+        });
+
         if (mentorProfiles.length === 0) {
-            return res.status(404).json({ error: 'No mentor profiles found' });
+            return res.status(404).json({ error: 'No available mentor profiles' });
         }
 
         const randomMentorProfile = mentorProfiles[Math.floor(Math.random() * mentorProfiles.length)];
@@ -300,6 +308,8 @@ router.get('/getRandomMentorProfile', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
+
 
 router.get('/getRandomMenteeProfile', async (req, res) => {
     try {

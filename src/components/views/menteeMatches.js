@@ -109,8 +109,11 @@ const MenteeMatches = () => {
 
             } catch (error) {
                 console.error('Error fetching data:', error);
-                setErrorMessage('Error Finding Match.');
-
+                if (error.response && error.response.status === 404) {
+                    setErrorMessage('No Mentors Currently Available - Please try again later.');
+                } else {
+                    setErrorMessage('Error Finding Match.');
+                }
             }
         };
 
