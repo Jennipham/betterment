@@ -91,6 +91,9 @@ const Profile = () => {
     const [receivedRequests, setReceivedRequests] = useState([]);
     const [requestsLength, setRequestsLength] = useState(0);
 
+    const [successMessage, setSuccessMessage] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
+
 
     useEffect(() => {
         // Retrieve user information from sessionStorage
@@ -155,6 +158,7 @@ const Profile = () => {
                 sessionStorage.setItem('profile', JSON.stringify(response.data.profile.profileInfo));
 
             } catch (error) {
+                setErrorMessage('Error Fetching Profile Data');
                 console.error('Error fetching profile data:', error);
             }
         };
@@ -264,6 +268,7 @@ const Profile = () => {
     
             } catch (error) {
                 console.error('Error fetching requests:', error);
+                setErrorMessage('Error Fetching Requests');
             }
         };
 
@@ -282,6 +287,9 @@ const Profile = () => {
                         <p>{saveMessage}</p>
                     </div>
                 )}
+                <div className='error-message-profile-container'>
+                    {errorMessage && <p className="error-message-profile">{errorMessage}</p>}
+                </div>
 
                 <div className='header-settings'>
                     <div className="text-center">
