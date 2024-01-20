@@ -61,6 +61,7 @@ const MenteeMatches = () => {
     const [mentorSname, setMentorSname] = useState('');
 
     const [errorMessage, setErrorMessage] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
     const [loading, setLoading] = useState(false);
 
 
@@ -298,6 +299,13 @@ const MenteeMatches = () => {
         });
     };
 
+    const handleSuccessMessage = (message) => {
+        setSuccessMessage(message);
+        setTimeout(() => {
+            setSuccessMessage('');
+        }, 5000); // 5000 milliseconds (5 seconds)
+    };
+
     const handleSave = async () => {
         try {
             setLoading(true);
@@ -320,6 +328,7 @@ const MenteeMatches = () => {
             // Handle the response, update state, or perform any additional actions if needed
             console.log('Profile updated successfully:', response.data);
             setLoading(false);
+            handleSuccessMessage('Profile Successfully Updated!');
 
         } catch (error) {
             setLoading(false);
@@ -337,6 +346,9 @@ const MenteeMatches = () => {
             <Header />
 
             <div className="mentee-profile-container">
+                <div className='success-message-profile-container'>
+                    {successMessage && <p className="success-message-profile">{successMessage}</p>}
+                </div>
                 <div className="filter-section">
                     <Select
                         options={languageOptions}

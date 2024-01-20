@@ -111,6 +111,14 @@ const AdminSettings = () => {
         }
     };
 
+    const handleSuccessMessage = (message) => {
+        setSuccessMessage(message);
+        setTimeout(() => {
+            setSuccessMessage('');
+        }, 5000); // 5000 milliseconds (5 seconds)
+    };
+
+    
     const handleSaveClick = async () => {
         try {
             // Send the form data to the backend API endpoint
@@ -138,7 +146,7 @@ const AdminSettings = () => {
 
 
             console.log('Profile saved successfully:', response.data);
-            setSuccessMessage('Profile saved Successfully!');
+            handleSuccessMessage('Profile saved Successfully!');
         } catch (error) {
             console.error('Error saving profile:', error);
             setErrorMessage('Error Saving Profile - Please try again later.');

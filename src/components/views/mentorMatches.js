@@ -7,6 +7,8 @@ import '../styles/MentorMatches.css';
 import white from '../images/profile-white.png';
 import black from '../images/profile-black.png';
 import connect from '../images/connect-icon.png';
+import save from '../images/save-icon.png';
+import reset from '../images/reset-icon.png';
 import Loader from '../utils/loader';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -58,6 +60,7 @@ const MentorMatches = () => {
     const [menteeSname, setMenteeSname] = useState('');
 
     const [errorMessage, setErrorMessage] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
     const [loading, setLoading] = useState(false);
 
 
@@ -108,7 +111,7 @@ const MentorMatches = () => {
             } catch (error) {
                 console.error('Error fetching data:', error);
                 if (error.response && error.response.status === 404) {
-                    setErrorMessage('No Mentors Currently Available - Please try again later.');
+                    setErrorMessage('No Mentees Currently Available - Please try again later.');
                 } else {
                     setErrorMessage('Error Finding Match.');
                 }
@@ -246,35 +249,30 @@ const MentorMatches = () => {
     };
     const [selectedLanguages, setSelectedLanguages] = useState([]);
 
-    const handleLanguagesChange = (selectedOption) => {
-        setSelectedLanguages(selectedOption);
+    const handleLanguagesChange = (selectedOptions) => {
+        const selectedValues = selectedOptions ? selectedOptions.map(option => option.value) : [];
+        setSelectedLanguages(selectedValues);
     };
 
     const [selectedDevelopmentAreas, setSelectedDevelopmentAreas] = useState([]);
 
-    const handleDevelopmentAreasChange = (selectedOption) => {
-        setSelectedDevelopmentAreas(selectedOption);
+    const handleDevelopmentAreasChange = (selectedOptions) => {
+        const selectedValues = selectedOptions ? selectedOptions.map(option => option.value) : [];
+        setSelectedDevelopmentAreas(selectedValues);
     };
 
     const [selectedMethods, setSelectedMethods] = useState([]);
 
-    const handleMethodsChange = (selectedOption) => {
-        setSelectedMethods(selectedOption);
+    const handleMethodsChange = (selectedOptions) => {
+        const selectedValues = selectedOptions ? selectedOptions.map(option => option.value) : [];
+        setSelectedMethods(selectedValues);
     };
-
-    console.log('methods', selectedMethods);
 
     const [selectedLocation, setSelectedLocation] = useState('');
 
     const handleLocationChange = (selectedOption) => {
-        // Assuming selectedOption is an object with a value property
         const selectedValue = selectedOption ? selectedOption.value : '';
-
-        // Update the selectedLocation state
         setSelectedLocation(selectedValue);
-
-        // You can perform additional actions if needed
-        console.log('Selected Location:', selectedValue);
     };
 
 
@@ -300,11 +298,56 @@ const MentorMatches = () => {
         });
     };
 
+    const handleSuccessMessage = (message) => {
+        setSuccessMessage(message);
+        setTimeout(() => {
+            setSuccessMessage('');
+        }, 5000); // 5000 milliseconds (5 seconds)
+    };
+
+    const handleSave = async () => {
+        try {
+            setLoading(true);
+
+            // Prepare the data to be saved
+            const dataToSave = {
+                languages: selectedLanguages,
+                developmentAreas: selectedDevelopmentAreas,
+                mentoringMethods: selectedMethods,
+                officeLocation: selectedLocation,
+            };
+
+            // Send a PUT request to update the user's profile
+            const response = await axios.put('http://localhost:3001/updateUserProfile', {
+                email: user.email,
+                userType: user.userType,
+                data: dataToSave,
+            });
+
+            // Handle the response, update state, or perform any additional actions if needed
+            console.log('Profile updated successfully:', response.data);
+            setLoading(false);
+            handleSuccessMessage('Profile Successfully Updated!');
+
+        } catch (error) {
+            setLoading(false);
+            console.error('Error updating profile:', error);
+            setErrorMessage('Error Updating Profile');
+        }
+    };
+
+    const handleReset = () => {
+        window.location.reload();
+    };
+
     return (
         <>
             <Header />
 
             <div className="mentor-profile-container">
+                <div className='success-message-profile-container'>
+                    {successMessage && <p className="success-message-profile">{successMessage}</p>}
+                </div>
                 <div className="filter-section">
                     <Select
                         options={languageOptions}
@@ -313,12 +356,10 @@ const MentorMatches = () => {
                         isMulti={true}
                         hideSelectedOptions={false}
                         controlShouldRenderValue={false}
-                        components={{
-                            MultiValue: CheckboxOption,
-                        }}
                         value={languageOptions.filter(option => selectedLanguages.includes(option.value))}
-                        onChange={handleLanguagesChange}
+                        onChange={(selectedOptions) => handleLanguagesChange(selectedOptions)}
                     />
+
 
                     <Select
                         options={developmentAreaOptions}
@@ -327,12 +368,8 @@ const MentorMatches = () => {
                         isMulti={true}
                         hideSelectedOptions={false}
                         controlShouldRenderValue={false}
-                        components={{
-                            MultiValue: CheckboxOption,
-                        }}
                         value={developmentAreaOptions.filter(option => selectedDevelopmentAreas.includes(option.value))}
-                        onChange={handleDevelopmentAreasChange}
-
+                        onChange={(selectedOptions) => handleDevelopmentAreasChange(selectedOptions)}
                     />
 
                     <Select
@@ -342,11 +379,8 @@ const MentorMatches = () => {
                         isMulti={true}
                         hideSelectedOptions={false}
                         controlShouldRenderValue={false}
-                        components={{
-                            MultiValue: CheckboxOption,
-                        }}
                         value={methodOptions.filter(option => selectedMethods.includes(option.value))}
-                        onChange={handleMethodsChange}
+                        onChange={(selectedOptions) => handleMethodsChange(selectedOptions)}
 
                     />
 
@@ -355,9 +389,17 @@ const MentorMatches = () => {
                         options={locationOptions}
                         placeholder="Office Location"
                         styles={customStyles}
-                        value={selectedLocation} // Find the corresponding option
+                        value={locationOptions.find(option => option.value === selectedLocation)}
                         onChange={(selectedOption) => handleLocationChange(selectedOption)}
-                    />
+                    />                    
+
+                    <div className='save-icon'>
+                        <img src={save} onClick={handleSave} alt="Save to Profile" title="Save to Profile" />
+                    </div>
+
+                    <div className='reset-icon'>
+                        <img src={reset} onClick={handleReset} alt="Reset Filters" title="Reset Filters" />
+                    </div>
 
 
                 </div>
