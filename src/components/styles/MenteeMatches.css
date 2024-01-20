@@ -65,6 +65,11 @@
     cursor: pointer;
 }
 
+.reset-icon img {
+    height: 35px;
+    cursor: pointer;
+}
+
 .profile-top {
     display: flex;
     flex-direction: row;

@@ -7,7 +7,8 @@ import '../styles/MenteeMatches.css';
 import white from '../images/profile-white.png';
 import black from '../images/profile-black.png';
 import connect from '../images/connect-icon.png';
-import save from '../images/save-icon.png'
+import save from '../images/save-icon.png';
+import reset from '../images/reset-icon.png';
 import Loader from '../utils/loader';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -327,6 +328,10 @@ const MenteeMatches = () => {
         }
     };
 
+    const handleReset = () => {
+        window.location.reload();
+    };
+
     return (
         <>
             <Header />
@@ -378,7 +383,11 @@ const MenteeMatches = () => {
                     />                    
 
                     <div className='save-icon'>
-                        <img src={save} onClick={handleSave} alt="Save to Profile" /> 
+                        <img src={save} onClick={handleSave} alt="Save to Profile" title="Save to Profile" /> 
+                    </div>
+
+                    <div className='reset-icon'>
+                        <img src={reset} onClick={handleReset} alt="Reset Filters" title="Reset Filters" />
                     </div>
 
                 </div>
