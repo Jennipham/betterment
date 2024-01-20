@@ -246,38 +246,29 @@ const MenteeMatches = () => {
     const [selectedLanguages, setSelectedLanguages] = useState([]);
 
     const handleLanguagesChange = (selectedOptions) => {
-        // Extract the values from selectedOptions object
     const selectedValues = selectedOptions ? selectedOptions.map(option => option.value) : [];
-
-        // Update the selectedLanguages state
         setSelectedLanguages(selectedValues);
     };
 
     const [selectedDevelopmentAreas, setSelectedDevelopmentAreas] = useState([]);
 
-    const handleDevelopmentAreasChange = (selectedOption) => {
-        setSelectedDevelopmentAreas(selectedOption);
+    const handleDevelopmentAreasChange = (selectedOptions) => {
+        const selectedValues = selectedOptions ? selectedOptions.map(option => option.value) : [];
+        setSelectedDevelopmentAreas(selectedValues);
     };
 
     const [selectedMethods, setSelectedMethods] = useState([]);
 
-    const handleMethodsChange = (selectedOption) => {
-        setSelectedMethods(selectedOption);
+    const handleMethodsChange = (selectedOptions) => {
+        const selectedValues = selectedOptions ? selectedOptions.map(option => option.value) : [];
+        setSelectedMethods(selectedValues);
     };
-
-    console.log('methods', selectedMethods);
 
     const [selectedLocation, setSelectedLocation] = useState('');
 
     const handleLocationChange = (selectedOption) => {
-        // Assuming selectedOption is an object with a value property
         const selectedValue = selectedOption ? selectedOption.value : '';
-
-        // Update the selectedLocation state
         setSelectedLocation(selectedValue);
-
-        // You can perform additional actions if needed
-        console.log('Selected Location:', selectedValue);
     };
 
 
@@ -310,8 +301,8 @@ const MenteeMatches = () => {
             // Prepare the data to be saved
             const dataToSave = {
                 languages: selectedLanguages,
-                developmentAreas: selectedDevelopmentAreas.map(option => option.value),
-                mentoringMethods: selectedMethods.map(option => option.value),
+                developmentAreas: selectedDevelopmentAreas,
+                mentoringMethods: selectedMethods,
                 officeLocation: selectedLocation,
             };
 
@@ -358,12 +349,8 @@ const MenteeMatches = () => {
                         isMulti={true}
                         hideSelectedOptions={false}
                         controlShouldRenderValue={false}
-                        components={{
-                            MultiValue: CheckboxOption,
-                        }}
                         value={developmentAreaOptions.filter(option => selectedDevelopmentAreas.includes(option.value))}
-                        onChange={handleDevelopmentAreasChange}
-
+                        onChange={(selectedOptions) => handleDevelopmentAreasChange(selectedOptions)}
                     />
 
                     <Select
@@ -373,11 +360,8 @@ const MenteeMatches = () => {
                         isMulti={true}
                         hideSelectedOptions={false}
                         controlShouldRenderValue={false}
-                        components={{
-                            MultiValue: CheckboxOption,
-                        }}
                         value={methodOptions.filter(option => selectedMethods.includes(option.value))}
-                        onChange={handleMethodsChange}
+                        onChange={(selectedOptions) => handleMethodsChange(selectedOptions)}
 
                     />
 
@@ -386,9 +370,9 @@ const MenteeMatches = () => {
                         options={locationOptions}
                         placeholder="Office Location"
                         styles={customStyles}
-                        value={selectedLocation} // Find the corresponding option
+                        value={locationOptions.find(option => option.value === selectedLocation)}
                         onChange={(selectedOption) => handleLocationChange(selectedOption)}
-                    />
+                    />                    
 
                     <div className='save-icon'>
                         <img src={save} onClick={handleSave} alt="Save to Profile" /> 
