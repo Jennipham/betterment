@@ -16,6 +16,7 @@ import MentorMatches from './components/views/mentorMatches';
 import NoPermissions from './components/views/noPermissions';
 import Requests from './components/views/requests';
 import ProtectedRoute from './components/utils/protectedRoute';
+import ExpiredSession from './components/views/expiredSession';
 
 
 function App() {
@@ -34,6 +35,7 @@ function App() {
           <Route path="/fullprofile" element={<ProtectedRoute><FullProfile /></ProtectedRoute>} />
           <Route path="/help" element={<ProtectedRoute><Help /></ProtectedRoute>} />
           <Route path="/error" element={<NoPermissions />} />
+          <Route path="/expired" element={<ExpiredSession />} />
 
           <Route path="/profileSettings" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="/adminSettings" element={<ProtectedRoute><AdminSettings /></ProtectedRoute>} />

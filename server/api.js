@@ -105,7 +105,7 @@ router.post('/login', async (req, res) => {
         console.error('Error during login:', error);
         res.status(500).json({ error: 'Login failed' });
     }
-});
+});-
 
 router.post('/getProfile', async (req, res) => {
     try {

@@ -36,6 +36,11 @@ const Header = () => {
             const isTokenExpired = Date.now() >= decodedToken.exp * 1000;
             if
                 (!isTokenExpired) { setLoggedInStatus(true); }// Return true if the token is not expired, otherwise false
+            else {
+                sessionStorage.clear();
+                setLoggedInStatus(false);
+                navigate('/expired', { replace: true });
+            }
         } catch (error) {
             console.error('Error decoding token:', error);
             setLoggedInStatus(false);
@@ -52,8 +57,19 @@ const Header = () => {
 
 
     useEffect(() => {
-
         isAuthenticated();
+
+        const tokenCheckInterval = setInterval(() => {
+            isAuthenticated();
+        }, 60000);
+
+        return () => {
+            clearInterval(tokenCheckInterval); 
+        };
+    }, []);
+
+    useEffect(() => {
+
 
         // Retrieve user information from sessionStorage
         const firstName = sessionStorage.getItem('firstName');
