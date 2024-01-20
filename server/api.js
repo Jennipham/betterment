@@ -313,7 +313,14 @@ router.get('/getRandomMentorProfile', async (req, res) => {
 
 router.get('/getRandomMenteeProfile', async (req, res) => {
     try {
-        const menteeProfiles = await Profile.find({ userType: 'mentee' });
+        const menteeProfiles = await Profile.find({
+            userType: 'mentor',
+            $nor: [
+                { 'profileInfo.receivedRequests.accepted': { $ne: true } },
+                { 'profileInfo.sentRequests.accepted': { $ne: true } },
+            ],
+        });
+        
         if (menteeProfiles.length === 0) {
             return res.status(404).json({ error: 'No mentor profiles found' });
         }
