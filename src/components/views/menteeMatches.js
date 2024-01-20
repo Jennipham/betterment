@@ -225,9 +225,9 @@ const MenteeMatches = () => {
             <input
                 type="checkbox"
                 checked={isSelected}
-                onChange={() => selectProps.onChange({ label })} // Use selectProps.onChange
+                onChange={() => selectProps.onChange(selectProps.value)} // Use selectProps.onChange with the correct value
             />
-            <span onClick={() => selectProps.onChange({ label })}>{label}</span>
+            <span onClick={() => selectProps.onChange(selectProps.value)}>{label}</span>
         </div>
     );
 
@@ -245,8 +245,12 @@ const MenteeMatches = () => {
     };
     const [selectedLanguages, setSelectedLanguages] = useState([]);
 
-    const handleLanguagesChange = (selectedOption) => {
-        setSelectedLanguages(selectedOption);
+    const handleLanguagesChange = (selectedOptions) => {
+        // Extract the values from selectedOptions object
+    const selectedValues = selectedOptions ? selectedOptions.map(option => option.value) : [];
+
+        // Update the selectedLanguages state
+        setSelectedLanguages(selectedValues);
     };
 
     const [selectedDevelopmentAreas, setSelectedDevelopmentAreas] = useState([]);
@@ -305,7 +309,7 @@ const MenteeMatches = () => {
 
             // Prepare the data to be saved
             const dataToSave = {
-                languages: selectedLanguages.map(option => option.value),
+                languages: selectedLanguages,
                 developmentAreas: selectedDevelopmentAreas.map(option => option.value),
                 mentoringMethods: selectedMethods.map(option => option.value),
                 officeLocation: selectedLocation,
@@ -342,12 +346,10 @@ const MenteeMatches = () => {
                         isMulti={true}
                         hideSelectedOptions={false}
                         controlShouldRenderValue={false}
-                        components={{
-                            MultiValue: CheckboxOption,
-                        }}
                         value={languageOptions.filter(option => selectedLanguages.includes(option.value))}
-                        onChange={handleLanguagesChange}
+                        onChange={(selectedOptions) => handleLanguagesChange(selectedOptions)}
                     />
+
 
                     <Select
                         options={developmentAreaOptions}
