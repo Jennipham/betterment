@@ -13,6 +13,9 @@ const Help = () => {
     const user = location.state?.user || { email: 'guest@example.com' };
     const [formMessage, setFormMessage] = useState('');
 
+    const [successMessage, setSuccessMessage] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
+
     const faqData = [
         {
             question: "What is BetterMent?",
@@ -56,13 +59,13 @@ const Help = () => {
             );
 
             if (response.status === 200) {
-                alert('Form submitted successfully!');
+               setSuccessMessage('Form submitted successfully!');
             } else {
-                alert('Failed to submit form. Please try again later.');
+                setErrorMessage('Failed to submit form. Please try again later.');
             }
         } catch (error) {
             console.error('Error submitting form:', error);
-            alert('Failed to submit form. Please try again later.');
+            setErrorMessage('Failed to submit form. Please try again later.');
         }
     };
 
@@ -75,6 +78,12 @@ const Help = () => {
                 <Faqs faqData={faqData} />
                 </div>
                 <h2 className="help-header">Contact Us</h2>
+                <div className='error-message-profile-container'>
+                    {errorMessage && <p className="error-message-profile">{errorMessage}</p>}
+                </div>
+                <div className='success-message-profile-container'>
+                    {successMessage && <p className="success-message-profile">{successMessage}</p>}
+                </div>
                 <div className='contact-form'>
                 <form onSubmit={handleSubmit}>
                         <label className='contact-label'>
