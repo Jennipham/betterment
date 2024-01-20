@@ -49,12 +49,21 @@ const Login = () => {
                 
             } else {
                 setLoading(false);
-                setErrorMessage('Invalid email or password. Please try again.');
             }
         } catch (error) {
             setLoading(false);
+            if (error.response) {
+                if (error.response.status === 404) {
+                    setErrorMessage('User not found.');
+                } else if (error.response.status === 401) {
+                    setErrorMessage('Incorrect Password.');
+                } else {
+                    setErrorMessage('Error during login.');
+                }
+            } else {
+                setErrorMessage('An error occurred. Please try again later.');
+            }
             console.error('Error:', error);
-            setErrorMessage('An error occurred. Please try again later.');
         }
     };
 

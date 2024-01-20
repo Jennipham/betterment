@@ -82,7 +82,7 @@ router.post('/login', async (req, res) => {
         const user = await User.findOne({ email });
 
         if (!user) {
-            return res.status(401).json({ loggedIn: false, error: 'User not found' });
+            return res.status(404).json({ loggedIn: false, error: 'User not found' });
         }
 
         // Compare the provided password with the stored hashed password
@@ -320,7 +320,7 @@ router.get('/getRandomMenteeProfile', async (req, res) => {
                 { 'profileInfo.sentRequests.accepted': { $ne: true } },
             ],
         });
-        
+
         if (menteeProfiles.length === 0) {
             return res.status(404).json({ error: 'No mentor profiles found' });
         }
