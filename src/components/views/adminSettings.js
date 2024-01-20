@@ -66,6 +66,9 @@ const AdminSettings = () => {
     const [isEditingDepartment, setIsEditingDepartment] = useState(false);
     const [departmentInput, setDepartmentInput] = useState('');
 
+    const [successMessage, setSuccessMessage] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
+
     useEffect(() => {
         const fetchProfileData = async () => {
             try {
@@ -82,6 +85,7 @@ const AdminSettings = () => {
                 }));
             } catch (error) {
                 console.error('Error fetching profile data:', error);
+                setErrorMessage('Error fetching profile data');
             }
         };
 
@@ -134,9 +138,10 @@ const AdminSettings = () => {
 
 
             console.log('Profile saved successfully:', response.data);
+            setSuccessMessage('Profile saved Successfully!');
         } catch (error) {
             console.error('Error saving profile:', error);
-            // Handle error, show a message, etc.
+            setErrorMessage('Error Saving Profile - Please try again later.');
         }
     };
 
@@ -150,6 +155,13 @@ const AdminSettings = () => {
                     <div className='account-background'>
                         <p className="account-type">Account Type: Manager</p>
                     </div>
+                </div>
+
+                <div className='error-message-profile-container'>
+                    {errorMessage && <p className="error-message-profile">{errorMessage}</p>}
+                </div>
+                <div className='success-message-profile-container'>
+                    {successMessage && <p className="success-message-profile">{successMessage}</p>}
                 </div>
 
                 <div className="profile-container">
