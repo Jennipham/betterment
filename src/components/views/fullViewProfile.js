@@ -20,6 +20,8 @@ const FullProfile = () => {
     const [mentorFname, setMentorFname] = useState('');
     const [mentorSname, setMentorSname] = useState('');
 
+    const [errorMessage, setErrorMessage] = useState('');
+
     const mapValuesToLabels = (values, options) => {
         return values.map(value => {
             const option = options.find(option => option.value === value);
@@ -100,6 +102,7 @@ const FullProfile = () => {
                 }
             } catch (error) {
                 console.error('Error fetching mentor data:', error);
+                setErrorMessage('Error Fetching Mentor Information');
             }
         };
         fetchMentorData();
@@ -111,6 +114,9 @@ const FullProfile = () => {
                 <div className="profile-box">
                     <div className="full-profile-icon">
                         <img src={white} alt="White Profile Icon" />
+                    </div>
+                    <div className='error-message-profile-container'>
+                        {errorMessage && <p className="error-message-profile">{errorMessage}</p>}
                     </div>
                     <div className="profile-header">
                         <h1>{mentorFname && mentorSname ? `${mentorFname} ${mentorSname}` : ''}</h1>
