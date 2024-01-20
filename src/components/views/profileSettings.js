@@ -91,7 +91,6 @@ const Profile = () => {
     const [receivedRequests, setReceivedRequests] = useState([]);
     const [requestsLength, setRequestsLength] = useState(0);
 
-    const [successMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
 

@@ -10,6 +10,7 @@ const Requests = () => {
     const [receivedRequests, setReceivedRequests] = useState([]);
     const [sentRequests, setSentRequests] = useState([]);
 
+    const [errorMessage, setErrorMessage] = useState('');
 
     useEffect(() => {
         const fetchData = async () => {
@@ -40,6 +41,7 @@ const Requests = () => {
 
             } catch (error) {
                 console.error('Error fetching requests:', error);
+                setErrorMessage('Error fetching requests:');
             }
         };
 
@@ -65,6 +67,9 @@ const Requests = () => {
             <Header />
 
             <div className="requests-page">
+                <div className='error-message-profile-container'>
+                    {errorMessage && <p className="error-message-profile">{errorMessage}</p>}
+                </div>
                 <div className="requests-box">
                     <h2>Received Requests</h2>
                     {receivedRequests.map((request) => (
