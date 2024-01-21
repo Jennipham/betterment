@@ -97,6 +97,10 @@ const Header = () => {
                     return;
                 }
 
+                if (user.userType === 'admin') {
+                    return;
+                }
+
                 // Fetch received requests directly using user information
                 const receivedResponse = await axios.post('http://localhost:3001/getReceivedRequests', {
                     email: user.email,
@@ -139,8 +143,14 @@ const Header = () => {
             <div className="logo">
                 {loggedInStatus ? (
                     user.userType === 'admin' ? (
-                        <RouterLink to="/managerSettings">Profile</RouterLink>
-                    ) : (
+                        <RouterLink
+                            to={{
+                                pathname: "/adminSettings",
+                                state: { user: { userType: user.userType, email: user.email } }
+                            }}
+                        >
+                            <img src={logo} alt="BetterMent Logo" />
+                        </RouterLink>                    ) : (
                         <RouterLink
                             to={{
                                 pathname: "/profileSettings",

@@ -14,7 +14,6 @@
     float: right;
 }
 
-/* Centered text styles */
 .text-center {
     text-align: center;
 }
@@ -23,6 +22,8 @@
 .profile-heading {
     font-size: 3em;
     margin-bottom: -20px;
+
+
 }
 
 /* Account type styles */
@@ -42,15 +43,14 @@
 }
 
 /* Box styles */
-.profile-box {
+.profile-settings-box {
     width: 45%;
     padding: 20px;
     border: none;
-    background-color: #007785;
     border-radius: 10px;
-
     display: flex;
     flex-direction: column;
+    background-color: #007785;
 
 }
 
@@ -63,16 +63,17 @@
     border-radius: 10px;
     padding: 10px 20px;
     justify-content: space-between;
-
+    width: 600px;
 
 }
 
 .dropdown-title {
     color: white;
-    background: #3BBED1;
+    background-color: #3BBED1;
     display: inline-block;
     padding: 10px 20px;
     border-radius: 10px;
+    width: 600px;
 
 }
 
@@ -95,12 +96,12 @@
 
 .save-info button {
     padding: 10px 20px;
-    width: 10%;
+    width: 50%;
     margin-bottom: 20px;
 }
 
 .save-button {
-    width: 15%;
+    width: 25%;
     font-size: 1em;
 }
 
@@ -109,6 +110,132 @@
     font-size: 1em;
 }
 
-.domain-field {
+.job-role-field {
     width: 40%;
+}
+
+.job-role {
+    text-align: left;
+    text-transform: capitalize;
+}
+
+/* Add these styles to your existing CSS or create a new stylesheet */
+.save-message {
+    padding: 1px 0px 1px 0px;
+    text-align: center;
+    max-width: 500px;
+    border-radius: 10px;
+    margin: 0 auto;
+}
+
+.success {
+    background-color: rgb(5, 147, 5);
+    color: white;
+}
+
+.error {
+    background-color: rgb(208, 51, 51);
+    color: white;
+}
+
+.loader-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.find-coach-button:hover {
+    background-color: #fff;
+    color: #007785;
+}
+
+.full-profile-button:hover {
+    background-color: #3BBED1;
+    color: white;
+}
+
+.match-request-button:hover {
+    background-color: #3BBED1;
+    color: white;
+}
+
+.notification-container {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    flex-direction: column;
+    margin-right: 40px;
+    margin-top: -90px;
+    text-align: center;
+}
+
+.notification-icon {
+    width: auto;
+    height: 60px;
+}
+
+.notification-caption {
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    margin-top: 2px;
+}
+
+.header-settings {
+    text-align: center;
+}
+
+.more-info-icon {
+    height: 25px;
+    width: auto;
+}
+
+.editable-container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+/* Tooltip container */
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip .tooltip-text {
+    color: black;
+    visibility: visible;
+    opacity: 1;
+}
+
+
+/* Show the tooltip text on hover */
+.tooltip:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+    color: black;
+}
+
+.tooltip-container {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip-content {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: white;
+    color: black;
+    padding: 5px;
+    border: 2px solid white;
+    z-index: 999;
+    border-radius: 10px;
+}
+
+.tooltip-content p {
+    color: black;
+    font-size: small;
+
 }

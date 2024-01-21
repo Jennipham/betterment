@@ -1,30 +1,49 @@
 import React from 'react';
 import Header from '../utils/header';
 import Footer from '../utils/footer';
+import Loader from '../utils/loader';
 import editIcon from '../images/EditIcon.png';
+import notification from '../images/notification-icon.png';
+import moreInfo from '../images/more-info1.png';
+import Tooltip from '../utils/tooltip';
 import Select from 'react-select';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useLocation } from 'react-router-dom';
+import '../styles/ProfileSettings.css';
 
-import '../styles/AdminSettings.css';
-
-const pairingOptions = [
-    { value: 'default', label: 'BetterMent Algorithm' },
-    { value: 'manual', label: 'Manual User Pairing' },
-    { value: 'manager', label: 'Assigned by Manager' },
-
+const languageOptions = [
+    { value: 'Afrikaans', label: 'Afrikaans' },
+    { value: 'English', label: 'English' },
+    { value: 'French', label: 'French' },
+    { value: 'German', label: 'German' },
+    { value: 'Hindi', label: 'Hindi' },
+    { value: 'Hungarian', label: 'Hungarian' },
+    { value: 'Marathi', label: 'Marathi' },
+    { value: 'Italian', label: 'Italian' },
+    { value: 'Portuguese', label: 'Portuguese' },
+    { value: 'Romanian', label: 'Romanian' },
+    { value: 'Spanish', label: 'Spanish' },
+    { value: 'Swedish', label: 'Swedish' },
+    { value: 'Turkish', label: 'Turkish' },
 ];
 
-const blindOptions = [
-    { value: 'on', label: 'On' },
-    { value: 'off', label: 'Off' },
+const blindMatchingOptions = [
+    { value: 'On', label: 'On' },
+    { value: 'Off', label: 'Off' },
+]
+
+const matchingMethodOptions = [
+    { value: 'Algorithm', label: 'BetterMent Algorithm' },
+    { value: 'Manual', label: 'Manual Matching' },
+    { value: 'Random', label: 'Random Matching' },
 ]
 
 const customStyles = {
     control: (provided) => ({
         ...provided,
         backgroundColor: 'white', // Change the background color of the control
+        fontFamily: 'agrandir wide light, sans- serif',
+        fontWeight: 'bold',
     }),
     placeholder: (provided) => ({
         ...provided,
@@ -36,38 +55,52 @@ const customStyles = {
     }),
 };
 
-const capitaliseFirstLetter = (str) => {
-    if (str === null || str === undefined) {
-        return;
-    }
-    return str
-        .split(' ')
-        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ');
-};
-
 const AdminSettings = () => {
 
-    const location = useLocation();
-    const user = location.state?.user || { userType: '', email: '' };
-    const { userType, email } = user;
+    const [user, setUser] = useState({
+        firstName: sessionStorage.getItem('firstName') || 'User',
+        lastName: sessionStorage.getItem('lastName') || '',
+        userType: sessionStorage.getItem('userType') || '',
+        email: sessionStorage.getItem('email') || '',
+    });
+
+    const [errorMessage, setErrorMessage] = useState('');
+
+
+    useEffect(() => {
+        // Retrieve user information from sessionStorage
+        const firstName = sessionStorage.getItem('firstName');
+        const lastName = sessionStorage.getItem('lastName');
+        const userType = sessionStorage.getItem('userType');
+        const email = sessionStorage.getItem('email');
+
+        setUser({ firstName, lastName, userType, email});
+    }, []);
+
 
     const [formData, setFormData] = useState({
         domain: '',
-        department: '',
-        officeLocation: '',
-        mentoringMethods: [],
+        orgName: '',
+        matchingMethod: '',
         blindMatching: '',
     });
 
     const [isEditingDomain, setIsEditingDomain] = useState(false);
     const [domainInput, setDomainInput] = useState('');
 
-    const [isEditingDepartment, setIsEditingDepartment] = useState(false);
-    const [departmentInput, setDepartmentInput] = useState('');
+    const [isEditingOrgName, setIsEditingOrgName] = useState(false);
+    const [orgNameInput, setOrgNameInput] = useState('');
 
-    const [successMessage, setSuccessMessage] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
+    const [isEditingMatchingMethod, setIsEditingMatchingMethod] = useState(false);
+    const [matchingMethodInput, setMatchingMethodInput] = useState([]);
+
+    const [isEditingBlindMatching, setIsEditingBlindMatching] = useState(false);
+    const [blindMatchingInput, setBlindMatchingInput] = useState(true);
+
+    const [saveMessage, setSaveMessage] = useState(null);
+    const [loading, setLoading] = useState(false);
+
+
 
     useEffect(() => {
         const fetchProfileData = async () => {
@@ -79,193 +112,254 @@ const AdminSettings = () => {
 
                 setFormData((prevData) => ({
                     ...prevData,
-                    ...response.data.profile.profileInfo,
-                    mentoringMethods: response.data.profile.profileInfo.mentoringMethods || [], // Ensure 'languages' is an array
-                    
+                    ...response.data.profileInfo,
+                
                 }));
+                sessionStorage.setItem('profile', JSON.stringify(response.data.profileInfo));
+
             } catch (error) {
+                setErrorMessage('Error Fetching Profile Data');
                 console.error('Error fetching profile data:', error);
-                setErrorMessage('Error fetching profile data');
             }
         };
 
         fetchProfileData();
     }, [user.email, user.userType]);
 
+
     const handleInputChange = (field, value) => {
         setFormData((prevData) => ({ ...prevData, [field]: value }));
     };
 
-    const handleMultiInputChange = (field, selectedOptions) => {
-        const capitalizedOptions = selectedOptions.map(option => option.charAt(0).toUpperCase() + option.slice(1));
-        setFormData((prevData) => ({ ...prevData, [field]: capitalizedOptions }));
-    };
-
     const handleEditClick = (attribute) => {
-        if (attribute === 'Organisation Domain') {
+        if (attribute === 'Domain') {
             setIsEditingDomain(true);
         }
 
-        if (attribute === 'Department') {
-            setIsEditingDepartment(true);
+        if (attribute === 'OrgName') {
+            setIsEditingOrgName(true);
+        }
+
+        if (attribute === 'Matching Method') {
+            setIsEditingMatchingMethod(true);
+        }
+
+        if (attribute === 'Blind Matching') {
+            setIsEditingBlindMatching(true);
         }
     };
 
-    const handleSuccessMessage = (message) => {
-        setSuccessMessage(message);
-        setTimeout(() => {
-            setSuccessMessage('');
-        }, 5000); // 5000 milliseconds (5 seconds)
-    };
 
-    
+
     const handleSaveClick = async () => {
+        setLoading(true);
+
         try {
             // Send the form data to the backend API endpoint
             const updatedDomain = isEditingDomain ? domainInput.trim() : formData.domain.trim();
-            const updatedDepartment = isEditingDepartment ? departmentInput.trim() : formData.department.trim();
+            const updatedOrgName = isEditingOrgName ? orgNameInput.trim() : formData.orgName.trim();
+            const updatedMatchingMethod = isEditingMatchingMethod ? matchingMethodInput.trim() : formData.matchingMethod.trim();
+            const updatedBlindMatching = isEditingBlindMatching ? blindMatchingInput.trim() : formData.blindMatching.trim();
+
 
             const response = await axios.post('http://localhost:3001/managerProfile', {
                 ...formData,
                 email: user.email,
                 userType: user.userType,
                 domain: updatedDomain,
-                department: updatedDepartment,
+                orgName: updatedOrgName,
+                matchingMethod: updatedMatchingMethod,
+                blindMatching: updatedBlindMatching,
+
             });
 
             // Update formData with the response from the server
             setFormData((prevData) => ({
                 ...prevData,
                 domain: response.data.domain || updatedDomain,
-                department: response.data.department || updatedDepartment,
+                orgName: response.data.orgName || updatedOrgName,
+                matchingMethod: response.data.matchingMethod || updatedMatchingMethod,
+                blindMatching: response.data.updatedBlindMatching || updatedBlindMatching,
 
             }));
 
             setIsEditingDomain(false);
-            setIsEditingDepartment(false);
+            setIsEditingOrgName(false);
+            setIsEditingMatchingMethod(false);
+            setIsEditingBlindMatching(false);
+
+            setLoading(false);
+
+            setSaveMessage('Profile saved successfully');
+
+            setTimeout(() => {
+                setSaveMessage(null);
+            }, 5000);
 
 
             console.log('Profile saved successfully:', response.data);
-            handleSuccessMessage('Profile saved Successfully!');
+            // You can add a success message or redirect the user after a successful save
         } catch (error) {
             console.error('Error saving profile:', error);
-            setErrorMessage('Error Saving Profile - Please try again later.');
+            setSaveMessage('Error saving profile');
+            setLoading(false);
+
+            setTimeout(() => {
+                setSaveMessage(null);
+            }, 5000);
+
+            // Handle error, show a message, etc.
         }
     };
+
 
     return (
         <>
             <div className='profile-page'>
-                <Header  />
+                <Header />
 
-                <div className="text-center">
-                    <h2 className="profile-heading">Profile Settings</h2>
-                    <div className='account-background'>
-                        <p className="account-type">Account Type: Manager</p>
+                {saveMessage && (
+                    <div className={`save-message ${saveMessage.includes('successfully') ? 'success' : 'error'}`}>
+                        <p>{saveMessage}</p>
                     </div>
-                </div>
-
+                )}
                 <div className='error-message-profile-container'>
                     {errorMessage && <p className="error-message-profile">{errorMessage}</p>}
                 </div>
-                <div className='success-message-profile-container'>
-                    {successMessage && <p className="success-message-profile">{successMessage}</p>}
+
+                <div className='header-settings'>
+                    <div className="text-center">
+                        <h2 className="profile-heading">Profile Settings</h2>
+                        <div className='account-background'>
+                            <p className="account-type">Account Type: {user.userType && user.userType.charAt(0).toUpperCase() + user.userType.slice(1)} </p>
+                        </div>
+                    </div>
+
+                    
                 </div>
 
                 <div className="profile-container">
-                    {/* Left Box */}
-                    <div className="profile-box">
 
-                        <p className="editable-attribute">
-                            <span className="attribute-label">Organisation Domain:</span>
-                            {isEditingDomain ? (
-                                <>
-                                    <input
-                                        className='domain-field'
-                                        type="text"
-                                        value={isEditingDomain ? domainInput : formData.domain}
-                                        onChange={(e) => setDomainInput(e.target.value)}
-                                    />
-                                    <button className='save-button' onClick={handleSaveClick}>Save</button>
-                                    <button className='cancel-button' onClick={() => setIsEditingDomain(false)}>Cancel</button>
-                                </>
-                            ) : (
-                                <>
-                                    <span className='job-role'>{formData.domain}</span>
-                                    <span className='edit-icon-container' onClick={() => handleEditClick('Organisation Domain')}>
-                                        <img src={editIcon} alt="Edit" className="edit-icon" />
-                                    </span>
-                                </>
-                            )}
-                        </p>
+                    <div className="profile-settings-box">
 
-                        {/* Add input fields for editable attributes */}
-                        <p className="editable-attribute">
-                            <span className="attribute-label">Department:</span>
-                            {isEditingDepartment ? (
-                                <>
-                                    <input
-                                        className='job-role-field'
-                                        type="text"
-                                        value={isEditingDepartment ? departmentInput : formData.department}
-                                        onChange={(e) => setDepartmentInput(e.target.value)}
-                                    />
-                                    <button className='save-button' onClick={handleSaveClick}>Save</button>
-                                    <button className='cancel-button' onClick={() => setIsEditingDepartment(false)}>Cancel</button>
-                                </>
-                            ) : (
-                                <>
-                                    <span className='job-role'>{formData.department}</span>
-                                    <span className='edit-icon-container' onClick={() => handleEditClick('Department')}>
-                                        <img src={editIcon} alt="Edit" className="edit-icon" />
-                                    </span>
-                                </>
-                            )}
-                        </p>
+                        <div className='editable-container'>
+
+                            <p className="editable-attribute">
+                                <span className="attribute-label">Organisation Name:</span>
+                                {isEditingOrgName ? (
+                                    <>
+                                        <input
+                                            className='job-role-field'
+                                            type="text"
+                                            value={isEditingOrgName ? orgNameInput : formData.orgName}
+                                            onChange={(e) => setOrgNameInput(e.target.value)}
+                                        />
+                                        <button className='save-button' onClick={handleSaveClick}>Save</button>
+                                        <button className='cancel-button' onClick={() => setIsEditingOrgName(false)}>Cancel</button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <span className='job-role'>{formData.orgName}</span>
+                                        <span className='edit-icon-container' onClick={() => handleEditClick('OrgName')}>
+                                            <img src={editIcon} alt="Edit" className="edit-icon" />
+                                        </span>
+                                    </>
+                                )}
+                            </p>
+
+                            <Tooltip text="The name of your Company/Business">
+                                <img src={moreInfo} alt="More Info" className="more-info-icon" />
+                            </Tooltip>
+
+                        </div>
+                        <div className='editable-container'>
+                            <p className="editable-attribute">
+                                <span className="attribute-label">Company Domain Name</span>
+                                {isEditingDomain ? (
+                                    <>
+                                        <input
+                                            className='job-role-field'
+                                            type="text"
+                                            value={isEditingDomain ? domainInput : formData.domain}
+                                            onChange={(e) => setDomainInput(e.target.value)}
+                                        />
+                                        <button className='save-button' onClick={handleSaveClick}>Save</button>
+                                        <button className='cancel-button' onClick={() => setIsEditingDomain(false)}>Cancel</button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <span className='job-role'>{formData.domain}</span>
+                                        <span className='edit-icon-container' onClick={() => handleEditClick('Domain')}>
+                                            <img src={editIcon} alt="Edit" className="edit-icon" />
+                                        </span>
+                                    </>
+                                )}
+                            </p>
+                            <Tooltip text="E.g 'student.bham.ac.uk">
+                                <img src={moreInfo} alt="More Info" className="more-info-icon" />
+                            </Tooltip>
+
+                        </div>
+
                     </div>
 
                     {/* Right Box */}
-                    <div className="profile-box">
-                        <p className='dropdown-title'>
-                            Method of Pairing:
-                            <Select
-                                isMulti={true}
-                                options={pairingOptions}
-                                placeholder="Select Method"
-                                styles={customStyles}
-                                value={
-                                    formData.mentoringMethods
-                                        ? formData.mentoringMethods.map((pairing) => ({
-                                            value: pairing,
-                                            label: capitaliseFirstLetter(pairing),
-                                        }))
-                                        : null
-                                }
-                                onChange={(selectedOptions) =>
-                                    handleMultiInputChange('mentoringMethods', selectedOptions.map(option => option.value))
-                                }
-                            />
-                        </p>
-                        <p className='dropdown-title'>
-                            Blind Matching:
-                            <Select
-                                isMulti={false}
-                                placeholder="Select Preference"
-                                options={blindOptions}
-                                styles={customStyles}
-                                value={formData.blindMatching ? { value: formData.blindMatching, label: capitaliseFirstLetter(formData.blindMatching) } : null}
-                                onChange={(selectedOption) =>
-                                    handleInputChange('blindMatching', selectedOption.value)
-                                }
-                            />
-                        </p>
-                    
+                    <div className="profile-settings-box">
+                        <div className='editable-container'>
+
+                            <p className='dropdown-title'>
+                                Matching Method:
+                                <Select
+                                    isMulti={false}
+                                    options={matchingMethodOptions}
+                                    placeholder="Select Matching Method"
+                                    styles={customStyles}
+                                    value={formData.matchingMethod ? { value: formData.matchingMethod, label: formData.matchingMethod } : null}
+                                    onChange={(selectedOption) =>
+                                        handleInputChange('Matching Method', selectedOption.value)
+                                    }
+                                />
+                            </p>
+                            <Tooltip text="Your preferred method for matches to be made">
+                                <img src={moreInfo} alt="More Info" className="more-info-icon" />
+                            </Tooltip>
+                        </div>
+                        <div className='editable-container'>
+
+                            <p className='dropdown-title'>
+                                Blind Matching:
+                                <Select
+                                    isMulti={false}
+                                    placeholder="Select Preference"
+                                    options={blindMatchingOptions}
+                                    styles={customStyles}
+                                    value={formData.blindMatching ? { value: formData.blindMatching, label: formData.blindMatching } : null}
+                                    onChange={(selectedOption) =>
+                                        handleInputChange('Blind Matching', selectedOption.value)
+                                    }
+                                />
+                            </p>
+                            <Tooltip text="Withholds users' names in matching to prevent bias">
+                                <img src={moreInfo} alt="More Info" className="more-info-icon" />
+                            </Tooltip>
+                        </div>
+                        
                     </div>
                 </div>
-                <div className='save-info'>
-                    <button onClick={handleSaveClick}>Save</button>
-                </div>
+                {loading ? (
+                    <div className='loader-container'>
+
+                        <Loader />
+                    </div>
+                ) : (
+                    <div className='save-info'>
+                        <button onClick={handleSaveClick}>Save</button>
+                    </div>
+
+                )}
+
             </div>
+
             <Footer />
         </>
     );

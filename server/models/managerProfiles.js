@@ -13,9 +13,8 @@ const managerProfileSchema = new mongoose.Schema({
     },
     profileInfo: {
         domain: String,
-        department: String,
-        officeLocation: String,
-        mentoringMethods: [String],
+        orgName: String,
+        matchingMethod: String,
         blindMatching: String,
     },
 });

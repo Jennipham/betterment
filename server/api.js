@@ -42,22 +42,39 @@ router.post('/signup', async (req, res) => {
 
         await newUser.save();
 
-        // Create a profile entry with default values
-        const newProfile = new Profile({
-            email,
-            userType,
-            profileInfo: {
-                jobRole: '',
-                department: '',
-                officeLocation: '',
-                capacity: '',
-                languages: [],
-                developmentAreas: [],
-                mentoringMethods: [],
-                sentRequests: [],
-                receivedRequests: [],
-                available: true},
-        });
+        let newProfile;
+
+        // Check user type and create the corresponding profile
+        if (userType === 'admin') {
+            newProfile = new ManagerProfile({
+                email,
+                userType,
+                profileInfo: {
+                    domain: '',
+                    orgName: '',
+                    department: '',
+                    matchingMethod: '',
+                    blindMatching: '',
+                },
+            });
+        } else {
+            newProfile = new Profile({
+                email,
+                userType,
+                profileInfo: {
+                    jobRole: '',
+                    department: '',
+                    officeLocation: '',
+                    capacity: '',
+                    languages: [],
+                    developmentAreas: [],
+                    mentoringMethods: [],
+                    sentRequests: [],
+                    receivedRequests: [],
+                    available: true,
+                },
+            });
+        }
 
         await newProfile.save();
 
@@ -80,6 +97,7 @@ router.post('/signup', async (req, res) => {
         res.status(500).json({ error: 'Registration failed' });
     }
 });
+
 
 
 router.get('/check-email', async (req, res) => {
@@ -196,29 +214,29 @@ router.post('/getManagerProfile', async (req, res) => {
 
         const profile = await ManagerProfile.findOne({ email });
 
+
         if (!profile) {
             console.log('Profile not found for email:', email);
             const defaultProfile = {
-                email: email,
-                userType: '',
-                profileInfo: {
-                   domain: '',
-        department: '',
-        officeLocation: '',
-        mentoringMethods: [],
-        blindMatching: '', 
-                },
+                    email,
+                    userType,
+                    profileInfo: {
+                        domain: '',
+                        orgName: '',
+                        department: '',
+                        matchingMethod: '',
+                        blindMatching: '',
+                    },
             };
 
-            // Sign a token with default values
             const token = jwt.sign(
-                { userId: '', email, userType: '' }, // Use email directly from req.user
+                { userId: profile._id, email: profile.email, userType: profile.userType },
                 secretKey,
                 { expiresIn: '1h' }
             );
 
             return res.json({
-                profile: defaultProfile,
+                defaultProfile,
                 token,
                 email,
                 userType: '',
@@ -535,7 +553,7 @@ router.post('/declineRequest', async (req, res) => {
 
 
 router.post('/managerProfile', async (req, res) => {
-    const { domain, department, officeLocation, mentoringMethods, blindMatching, email, userType, } = req.body;
+    const { domain, department, matchingMethod, blindMatching, email, userType, } = req.body;
 
     try {
         let profile = await ManagerProfile.findOne({ email });
@@ -548,8 +566,7 @@ router.post('/managerProfile', async (req, res) => {
                 profileInfo: {
                     domain,
                     department,
-                    officeLocation,
-                    mentoringMethods,
+                    matchingMethod,
                     blindMatching,
                 },
             });
@@ -558,8 +575,7 @@ router.post('/managerProfile', async (req, res) => {
             profile.profileInfo = {
                 domain,
                 department,
-                officeLocation,
-                mentoringMethods,
+                matchingMethod,
                 blindMatching,
             };
         }
