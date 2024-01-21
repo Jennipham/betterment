@@ -64,6 +64,8 @@ const MenteeMatches = () => {
     const [successMessage, setSuccessMessage] = useState('');
     const [loading, setLoading] = useState(false);
 
+    const [matchingMethod, setMatchingMethod] = useState('manual');
+
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -346,63 +348,67 @@ const MenteeMatches = () => {
             <Header />
 
             <div className="mentee-profile-container">
+
                 <div className='success-message-profile-container'>
                     {successMessage && <p className="success-message-profile">{successMessage}</p>}
                 </div>
-                <div className="filter-section">
-                    <Select
-                        options={languageOptions}
-                        placeholder={selectedLanguages.length > 0 ? `Languages (${selectedLanguages.length})` : 'Languages'}
-                        styles={{ ...customStyles, ...customStylesWithCheckbox }}
-                        isMulti={true}
-                        hideSelectedOptions={false}
-                        controlShouldRenderValue={false}
-                        value={languageOptions.filter(option => selectedLanguages.includes(option.value))}
-                        onChange={(selectedOptions) => handleLanguagesChange(selectedOptions)}
-                    />
+
+                {matchingMethod === 'manual' ? (
+                    <div className="filter-section">
+                        <Select
+                            options={languageOptions}
+                            placeholder={selectedLanguages.length > 0 ? `Languages (${selectedLanguages.length})` : 'Languages'}
+                            styles={{ ...customStyles, ...customStylesWithCheckbox }}
+                            isMulti={true}
+                            hideSelectedOptions={false}
+                            controlShouldRenderValue={false}
+                            value={languageOptions.filter(option => selectedLanguages.includes(option.value))}
+                            onChange={(selectedOptions) => handleLanguagesChange(selectedOptions)}
+                        />
 
 
-                    <Select
-                        options={developmentAreaOptions}
-                        placeholder={selectedDevelopmentAreas.length > 0 ? `Development Areas (${selectedDevelopmentAreas.length})` : 'Development Areas'}
-                        styles={{ ...customStyles, ...customStylesWithCheckbox }}
-                        isMulti={true}
-                        hideSelectedOptions={false}
-                        controlShouldRenderValue={false}
-                        value={developmentAreaOptions.filter(option => selectedDevelopmentAreas.includes(option.value))}
-                        onChange={(selectedOptions) => handleDevelopmentAreasChange(selectedOptions)}
-                    />
+                        <Select
+                            options={developmentAreaOptions}
+                            placeholder={selectedDevelopmentAreas.length > 0 ? `Development Areas (${selectedDevelopmentAreas.length})` : 'Development Areas'}
+                            styles={{ ...customStyles, ...customStylesWithCheckbox }}
+                            isMulti={true}
+                            hideSelectedOptions={false}
+                            controlShouldRenderValue={false}
+                            value={developmentAreaOptions.filter(option => selectedDevelopmentAreas.includes(option.value))}
+                            onChange={(selectedOptions) => handleDevelopmentAreasChange(selectedOptions)}
+                        />
 
-                    <Select
-                        options={methodOptions}
-                        placeholder={selectedMethods.length > 0 ? `Mentoring Methods (${selectedMethods.length})` : 'Mentoring Methods'}
-                        styles={{ ...customStyles, ...customStylesWithCheckbox }}
-                        isMulti={true}
-                        hideSelectedOptions={false}
-                        controlShouldRenderValue={false}
-                        value={methodOptions.filter(option => selectedMethods.includes(option.value))}
-                        onChange={(selectedOptions) => handleMethodsChange(selectedOptions)}
+                        <Select
+                            options={methodOptions}
+                            placeholder={selectedMethods.length > 0 ? `Mentoring Methods (${selectedMethods.length})` : 'Mentoring Methods'}
+                            styles={{ ...customStyles, ...customStylesWithCheckbox }}
+                            isMulti={true}
+                            hideSelectedOptions={false}
+                            controlShouldRenderValue={false}
+                            value={methodOptions.filter(option => selectedMethods.includes(option.value))}
+                            onChange={(selectedOptions) => handleMethodsChange(selectedOptions)}
 
-                    />
+                        />
 
-                    <Select
-                        isMulti={false}
-                        options={locationOptions}
-                        placeholder="Office Location"
-                        styles={customStyles}
-                        value={locationOptions.find(option => option.value === selectedLocation)}
-                        onChange={(selectedOption) => handleLocationChange(selectedOption)}
-                    />                    
+                        <Select
+                            isMulti={false}
+                            options={locationOptions}
+                            placeholder="Office Location"
+                            styles={customStyles}
+                            value={locationOptions.find(option => option.value === selectedLocation)}
+                            onChange={(selectedOption) => handleLocationChange(selectedOption)}
+                        />
 
-                    <div className='save-icon'>
-                        <img src={save} onClick={handleSave} alt="Save to Profile" title="Save to Profile" /> 
+                        <div className='save-icon'>
+                            <img src={save} onClick={handleSave} alt="Save to Profile" title="Save to Profile" />
+                        </div>
+
+                        <div className='reset-icon'>
+                            <img src={reset} onClick={handleReset} alt="Reset Filters" title="Reset Filters" />
+                        </div>
+
                     </div>
-
-                    <div className='reset-icon'>
-                        <img src={reset} onClick={handleReset} alt="Reset Filters" title="Reset Filters" />
-                    </div>
-
-                </div>
+                ) : <></>}
                 <div className="match-section">
                     <h2 className='top-match'>Your Top Match:</h2>
                     <div className='error-message-profile-container'>
