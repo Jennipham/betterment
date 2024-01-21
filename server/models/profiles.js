@@ -37,7 +37,7 @@ const profileSchema = new mongoose.Schema({
                 declined: { type: Boolean, default: false },
             }
         ],
-        matchedUp: [String],
+        available: { type: Boolean, default: true },
     },
 });
 

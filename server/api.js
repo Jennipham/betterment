@@ -56,8 +56,7 @@ router.post('/signup', async (req, res) => {
                 mentoringMethods: [],
                 sentRequests: [],
                 receivedRequests: [],
-                matchedUp: [],
-            },
+                available: true},
         });
 
         await newProfile.save();
@@ -154,7 +153,7 @@ router.post('/getProfile', async (req, res) => {
                     mentoringMethods: [],
                     sentRequests: [],
                     receivedRequests: [],
-                    matchedUp: 'false',
+                    available: 'true',
                 },
             };
 
@@ -246,7 +245,7 @@ router.post('/getManagerProfile', async (req, res) => {
 
 router.post('/profile', async (req, res) => {
     const { jobRole, department, officeLocation, capacity, languages, developmentAreas, mentoringMethods, email, userType, sentRequests, receivedRequests,
- matchedUp } = req.body;
+ available } = req.body;
 
     try {
         let profile = await Profile.findOne({ email });
@@ -266,7 +265,7 @@ router.post('/profile', async (req, res) => {
                     mentoringMethods,
                     sentRequests,
                     receivedRequests,
-                    matchedUp,
+                    available,
                 },
             });
         } else {
@@ -281,7 +280,7 @@ router.post('/profile', async (req, res) => {
                 mentoringMethods,
                 sentRequests,
                 receivedRequests,
-                matchedUp,
+                available,
             };
         }
 
@@ -317,10 +316,7 @@ router.get('/getRandomMentorProfile', async (req, res) => {
         // Get all mentor profiles that haven't sent accepted match requests
         const mentorProfiles = await Profile.find({
             userType: 'mentor',
-            $nor: [
-                { 'profileInfo.receivedRequests.accepted': { $ne: true } },
-                { 'profileInfo.sentRequests.accepted': { $ne: true } },
-            ],
+            'profileInfo.available': true,
         });
 
         if (mentorProfiles.length === 0) {
@@ -340,11 +336,9 @@ router.get('/getRandomMentorProfile', async (req, res) => {
 router.get('/getRandomMenteeProfile', async (req, res) => {
     try {
         const menteeProfiles = await Profile.find({
-            userType: 'mentor',
-            $nor: [
-                { 'profileInfo.receivedRequests.accepted': { $ne: true } },
-                { 'profileInfo.sentRequests.accepted': { $ne: true } },
-            ],
+            userType: 'mentee',
+            'profileInfo.available': true,
+
         });
 
         if (menteeProfiles.length === 0) {
