@@ -11,22 +11,6 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../styles/ProfileSettings.css';
 
-const languageOptions = [
-    { value: 'Afrikaans', label: 'Afrikaans' },
-    { value: 'English', label: 'English' },
-    { value: 'French', label: 'French' },
-    { value: 'German', label: 'German' },
-    { value: 'Hindi', label: 'Hindi' },
-    { value: 'Hungarian', label: 'Hungarian' },
-    { value: 'Marathi', label: 'Marathi' },
-    { value: 'Italian', label: 'Italian' },
-    { value: 'Portuguese', label: 'Portuguese' },
-    { value: 'Romanian', label: 'Romanian' },
-    { value: 'Spanish', label: 'Spanish' },
-    { value: 'Swedish', label: 'Swedish' },
-    { value: 'Turkish', label: 'Turkish' },
-];
-
 const blindMatchingOptions = [
     { value: 'On', label: 'On' },
     { value: 'Off', label: 'Off' },
@@ -112,10 +96,10 @@ const AdminSettings = () => {
 
                 setFormData((prevData) => ({
                     ...prevData,
-                    ...response.data.profileInfo,
+                    ...response.data.profile.profileInfo,
                 
                 }));
-                sessionStorage.setItem('profile', JSON.stringify(response.data.profileInfo));
+                sessionStorage.setItem('profile', JSON.stringify(response.data.profile.profileInfo));
 
             } catch (error) {
                 setErrorMessage('Error Fetching Profile Data');
@@ -140,11 +124,11 @@ const AdminSettings = () => {
             setIsEditingOrgName(true);
         }
 
-        if (attribute === 'Matching Method') {
+        if (attribute === 'matchingMethod') {
             setIsEditingMatchingMethod(true);
         }
 
-        if (attribute === 'Blind Matching') {
+        if (attribute === 'blindMatching') {
             setIsEditingBlindMatching(true);
         }
     };
@@ -179,8 +163,7 @@ const AdminSettings = () => {
                 domain: response.data.domain || updatedDomain,
                 orgName: response.data.orgName || updatedOrgName,
                 matchingMethod: response.data.matchingMethod || updatedMatchingMethod,
-                blindMatching: response.data.updatedBlindMatching || updatedBlindMatching,
-
+                blindMatching: response.data.blindMatching || updatedBlindMatching,
             }));
 
             setIsEditingDomain(false);
@@ -309,14 +292,15 @@ const AdminSettings = () => {
 
                             <p className='dropdown-title'>
                                 Matching Method:
+                                
                                 <Select
                                     isMulti={false}
                                     options={matchingMethodOptions}
                                     placeholder="Select Matching Method"
                                     styles={customStyles}
-                                    value={formData.matchingMethod ? { value: formData.matchingMethod, label: formData.matchingMethod } : null}
+                                    value={matchingMethodOptions.find(option => option.value === formData.matchingMethod) || null}
                                     onChange={(selectedOption) =>
-                                        handleInputChange('Matching Method', selectedOption.value)
+                                        handleInputChange('matchingMethod', selectedOption.value)
                                     }
                                 />
                             </p>
@@ -333,9 +317,9 @@ const AdminSettings = () => {
                                     placeholder="Select Preference"
                                     options={blindMatchingOptions}
                                     styles={customStyles}
-                                    value={formData.blindMatching ? { value: formData.blindMatching, label: formData.blindMatching } : null}
+                                    value={blindMatchingOptions.find(option => option.value === formData.blindMatching ) || null}
                                     onChange={(selectedOption) =>
-                                        handleInputChange('Blind Matching', selectedOption.value)
+                                        handleInputChange('blindMatching', selectedOption.value)
                                     }
                                 />
                             </p>
@@ -364,5 +348,6 @@ const AdminSettings = () => {
         </>
     );
 };
+
 
 export default AdminSettings;
