@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 100vh;
+    height: 100%;
     padding: 20px;
     background-color: #3BBED1;
     padding-bottom: 100px;
@@ -155,6 +155,23 @@
     color: #3BBED1;
     margin-top: 20px;
 }
+
+
+.bottom-buttons-container-manual {
+    display: flex;
+    justify-content: flex-end;
+    text-align: center;
+    white-space: nowrap;
+    margin-left: 200px;
+}
+
+.bottom-buttons-container-manual button {
+    font-size: 1em;
+    background-color: #3BBED1;
+    color: white;
+    margin-top: 5px;
+}
+
 .bottom-right-button button {
     font-size: 1em;
     padding: 10px;
@@ -182,4 +199,27 @@
     align-items: center;
     justify-content: center;
 
+}
+
+.mentor-profiles {
+    display: flex;
+    flex-direction: row;
+}
+
+.mentor-profiles-box {
+    display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 20px 10px;
+}
+
+.profile-mentor {
+    background-color: white;
+    border-radius: 10px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-gap: 10px;
+    align-items: center;
+    min-height: 22em;
+    min-width: 25em;
 }

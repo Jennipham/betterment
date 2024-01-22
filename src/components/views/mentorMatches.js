@@ -63,6 +63,8 @@ const MentorMatches = () => {
     const [successMessage, setSuccessMessage] = useState('');
     const [loading, setLoading] = useState(false);
 
+    const [matchingMethod, setMatchingMethod] = useState('manual');
+
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -96,29 +98,42 @@ const MentorMatches = () => {
 
 
     useEffect(() => {
-        const fetchRandomMenteeProfile = async () => {
+        const fetchMenteeProfile = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/getRandomMenteeProfile');
-                setMenteeProfile(response.data.profile);
+                let response;
 
-                sessionStorage.setItem('matchProfile', JSON.stringify(response.data.profile));
-                console.log('match', sessionStorage.getItem('matchProfile'))
+                if (matchingMethod === 'random') {
+                    response = await axios.get('http://localhost:3001/getRandomMenteeProfile');
+                    const userResponse = await axios.get(`http://localhost:3001/getUserDetails?email=${response.data.profile.email}`);
+                    setMenteeProfile(response.data.profile);
+                    setMenteeFname(userResponse.data.user.fname);
+                    setMenteeSname(userResponse.data.user.sname);
+                    sessionStorage.setItem('matchProfile', JSON.stringify(response.data.profile));
 
-                const userResponse = await axios.get(`http://localhost:3001/getUserDetails?email=${response.data.profile.email}`);
-                setMenteeFname(userResponse.data.user.fname);
-                setMenteeSname(userResponse.data.user.sname);
+                }
+
+                else if (matchingMethod === 'manual') {
+                    response = await axios.get(`http://localhost:3001/getFilteredMenteeProfile`, {
+                        params: {
+                            language: selectedLanguages.join(','),
+                            developmentAreas: selectedDevelopmentAreas.join(','),
+                            mentoringMethods: selectedMethods.join(','),
+                        },
+                    });
+                    setMenteeProfile(response.data.profile);
+                }
 
             } catch (error) {
                 console.error('Error fetching data:', error);
                 if (error.response && error.response.status === 404) {
-                    setErrorMessage('No Mentees Currently Available - Please try again later.');
+                    setErrorMessage('No Mentors Currently Available - Please try again later.');
                 } else {
                     setErrorMessage('Error Finding Match.');
                 }
             }
         };
 
-        fetchRandomMenteeProfile();
+        fetchMenteeProfile();
     }, []);
 
     useEffect(() => {
@@ -340,6 +355,17 @@ const MentorMatches = () => {
         window.location.reload();
     };
 
+    function chunkArray(array, size) {
+        return array.reduce((chunks, item, index) => {
+            if (index % size === 0) {
+                chunks.push([item]);
+            } else {
+                chunks[chunks.length - 1].push(item);
+            }
+            return chunks;
+        }, []);
+    }
+
     return (
         <>
             <Header />
@@ -348,6 +374,8 @@ const MentorMatches = () => {
                 <div className='success-message-profile-container'>
                     {successMessage && <p className="success-message-profile">{successMessage}</p>}
                 </div>
+                {matchingMethod === 'manual' ? (
+                    <>
                 <div className="filter-section">
                     <Select
                         options={languageOptions}
@@ -391,7 +419,7 @@ const MentorMatches = () => {
                         styles={customStyles}
                         value={locationOptions.find(option => option.value === selectedLocation)}
                         onChange={(selectedOption) => handleLocationChange(selectedOption)}
-                    />                    
+                    />
 
                     <div className='save-icon'>
                         <img src={save} onClick={handleSave} alt="Save to Profile" title="Save to Profile" />
@@ -403,91 +431,145 @@ const MentorMatches = () => {
 
 
                 </div>
-                <div className="match-section">
-                    <h2 className='top-match'>Your Top Match:</h2>
-                    <div className='error-message-profile-container'>
-                        {errorMessage && <p className="error-message-profile">{errorMessage}</p>}
+
+                <h2 className='top-match'>Your Matches:</h2>
+
+                <div className="mentor-profiles">
+                    {menteeProfile ? (
+                        chunkArray(menteeProfile, 2).map((row, rowIndex) => (
+                            <div key={rowIndex} className="mentor-profile-row">
+                                {row.map((mentor, index) => (
+                                    <div key={index} className="mentor-profiles-box">
+                                        <div className="profile-mentor">
+                                            <div className="profile-left-info">
+                                                <div className='profile-top'>
+                                                    <div className="profile-icon">
+                                                        <img src={black} alt="Black Profile Icon" />
+                                                    </div>
+                                                    <div className="user-info">
+                                                        <p>Name: {mentor.email}</p>
+                                                        <p>Job Role: {mentor.profileInfo.jobRole ? capitaliseFirstLetter(mentor.profileInfo.jobRole) : 'Not specified'}</p>
+                                                    </div>
+                                                </div>
+
+                                                <div className="matching-info-left">
+                                                    <p>Location: {mentor.profileInfo.officeLocation ? capitaliseFirstLetter(mentor.profileInfo.officeLocation) : 'Not specified'}</p>
+                                                    <p>Development Areas: {mentor.profileInfo.developmentAreas ? mentor.profileInfo.developmentAreas.join(', ') : 'Not specified'}</p>
+                                                    <p>Methods of Matching: {mentor.profileInfo.mentoringMethods ? mentor.profileInfo.mentoringMethods.join(', ') : 'Not specified'}</p>
+                                                </div>
+
+                                                <div className="bottom-buttons-container-manual">
+                                                    <button className="full-profile-button" onClick={() => openModal(menteeProfile)}>View Full Profile</button>
+                                                    {isModalOpen && (
+                                                        <Modal onClose={handleCloseModal}>
+                                                            <iframe title="Full Profile" src="/fullprofile" width="100%" height="100%" />
+                                                        </Modal>
+                                                    )}
+                                                    <button className='match-request-button' onClick={() => { handleRequestMatch() }}>Request Match</button>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+
+
+                        ))
+                    ) : (
+                        errorMessage && <p className="error-message-profile">{errorMessage}</p>
+                    )}
+                </div>
+            </>
+            ) : (
+            <div className="match-section">
+                <h2 className='top-match'>Your Top Match:</h2>
+                <div className='error-message-profile-container'>
+                    {errorMessage && <p className="error-message-profile">{errorMessage}</p>}
+                </div>
+                <div className="user-profile-box">
+                    <div className="profile-left">
+                        <div className="profile-left-info">
+
+                            <div className='profile-top' >
+                                <div className="profile-icon">
+                                    <img src={black} alt="Black Profile Icon" />
+                                </div>
+                                <div className="user-info">
+                                    <p>Name: {capitaliseFirstLetter(user.firstName)} {capitaliseFirstLetter(user.lastName)}</p>
+                                    <p>Job Role: {capitaliseFirstLetter(user.jobRole)}</p>
+                                </div>
+                            </div>
+
+                            <div className="matching-info-left">
+                                <p>Location: {capitaliseFirstLetter(user.officeLocation)}</p>
+                                <p>Development Areas: {user.developmentAreas ? user.developmentAreas.join(', ') : ''}</p>
+                                <p>Methods of Matching: {user.mentoringMethods ? mapValuesToLabels(user.mentoringMethods, methodOptions).join(', ') : ''}</p>
+                            </div>
+
+                            <div className="bottom-right-button">
+                                <button onClick={() => { handleEditClick() }}>Edit Profile</button>
+                            </div>
+                        </div>
                     </div>
-                    <div className="user-profile-box">
-                        <div className="profile-left">
-                            <div className="profile-left-info">
 
-                                <div className='profile-top' >
-                                    <div className="profile-icon">
-                                        <img src={black} alt="Black Profile Icon" />
-                                    </div>
-                                    <div className="user-info">
-                                        <p>Name: {capitaliseFirstLetter(user.firstName)} {capitaliseFirstLetter(user.lastName)}</p>
-                                        <p>Job Role: {capitaliseFirstLetter(user.jobRole)}</p>
-                                    </div>
-                                </div>
 
-                                <div className="matching-info-left">
-                                    <p>Location: {capitaliseFirstLetter(user.officeLocation)}</p>
-                                    <p>Development Areas: {user.developmentAreas ? user.developmentAreas.join(', ') : ''}</p>
-                                    <p>Methods of Matching: {user.mentoringMethods ? mapValuesToLabels(user.mentoringMethods, methodOptions).join(', ') : ''}</p>
-                                </div>
+                    <div className="matching-icon">
+                        {loading ? (
+                            <Loader />
+                        ) : (
+                            <img src={connect} alt="Connect Icon" />
+                        )}
+                    </div>
 
-                                <div className="bottom-right-button">
-                                    <button onClick={() => { handleEditClick() }}>Edit Profile</button>
+                    <div className="profile-right">
+                        <div className="profile-right-info">
+
+                            <div className='profile-top' >
+                                <div className="profile-icon">
+                                    <img src={white} alt="White Profile Icon" />
                                 </div>
+                                <div className="match-info">
+                                    <p>Name: {menteeFname && menteeSname ? `${menteeFname} ${menteeSname}` : ''}</p>
+                                    <p>Job Role: {menteeProfile && menteeProfile.profileInfo.jobRole ? capitaliseFirstLetter(menteeProfile.profileInfo.jobRole) : ''}</p>
+                                </div>
+                            </div>
+
+                            <div className="matching-info-right">
+                                <p>Location: {menteeProfile && menteeProfile.profileInfo.officeLocation ? capitaliseFirstLetter(menteeProfile.profileInfo.officeLocation) : ''}</p>
+                                <p>Development Areas: {menteeProfile && menteeProfile.profileInfo.developmentAreas ? menteeProfile.profileInfo.developmentAreas.join(', ') : ''}</p>
+                                <p>Methods of Matching: {menteeProfile && menteeProfile.profileInfo.mentoringMethods ? mapValuesToLabels(menteeProfile.profileInfo.mentoringMethods, methodOptions).join(', ') : ''}</p>
+                            </div>
+
+                            <div className="bottom-buttons-container">
+                                <button className="full-profile-button" onClick={() => openModal(menteeProfile)}>View Full Profile</button>
+                                {isModalOpen && (
+                                    <Modal onClose={handleCloseModal}>
+                                        <iframe title="Full Profile" src="/fullprofile" width="100%" height="100%" />
+                                    </Modal>
+                                )}
+                                <button className='match-request-button' onClick={() => { handleRequestMatch() }}>Request Match</button>
+
                             </div>
                         </div>
 
-
-                        <div className="matching-icon">
-                            {loading ? (
-                                <Loader />
-                            ) : (
-                                <img src={connect} alt="Connect Icon" />
-                            )}
-                        </div>
-
-                        <div className="profile-right">
-                            <div className="profile-right-info">
-
-                                <div className='profile-top' >
-                                    <div className="profile-icon">
-                                        <img src={white} alt="White Profile Icon" />
-                                    </div>
-                                    <div className="match-info">
-                                        <p>Name: {menteeFname && menteeSname ? `${menteeFname} ${menteeSname}` : ''}</p>
-                                        <p>Job Role: {menteeProfile && menteeProfile.profileInfo.jobRole ? capitaliseFirstLetter(menteeProfile.profileInfo.jobRole) : ''}</p>
-                                    </div>
-                                </div>
-
-                                <div className="matching-info-right">
-                                    <p>Location: {menteeProfile && menteeProfile.profileInfo.officeLocation ? capitaliseFirstLetter(menteeProfile.profileInfo.officeLocation) : ''}</p>
-                                    <p>Development Areas: {menteeProfile && menteeProfile.profileInfo.developmentAreas ? menteeProfile.profileInfo.developmentAreas.join(', ') : ''}</p>
-                                    <p>Methods of Matching: {menteeProfile && menteeProfile.profileInfo.mentoringMethods ? mapValuesToLabels(menteeProfile.profileInfo.mentoringMethods, methodOptions).join(', ') : ''}</p>
-                                </div>
-
-                                <div className="bottom-buttons-container">
-                                    <button className="full-profile-button" onClick={() => openModal(menteeProfile)}>View Full Profile</button>
-                                    {isModalOpen && (
-                                        <Modal onClose={handleCloseModal}>
-                                            <iframe title="Full Profile" src="/fullprofile" width="100%" height="100%" />
-                                        </Modal>
-                                    )}
-                                    <button className='match-request-button' onClick={() => { handleRequestMatch() }}>Request Match</button>
-
-                                </div>
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <div className='other-matches'>
-                        <button>Re-Match Me</button>
                     </div>
 
                 </div>
-            </div>
 
-                <Footer />
+
+                <div className='other-matches'>
+                    <button>Re-Match Me</button>
+                </div>
+
+            </div>
+             )}
+
+        </div >
+
+
+            <Footer />
             </>
         );
 };
-            export default MentorMatches;
+export default MentorMatches;

@@ -349,6 +349,72 @@ router.get('/getRandomMentorProfile', async (req, res) => {
     }
 });
 
+router.get('/getFilteredMentorProfile', async (req, res) => {
+    try {
+        const { language, developmentAreas, mentoringMethods } = req.query;
+
+        const filter = {
+            userType: 'mentor'
+        };
+
+        if (language && language.length > 0) {
+            filter['profileInfo.languages'] = { $in: language.split(',') };
+        }
+
+        if (developmentAreas && developmentAreas.length > 0) {
+            filter['profileInfo.developmentAreas'] = { $in: developmentAreas.split(',') };
+        }
+
+        if (mentoringMethods && mentoringMethods.length > 0) {
+            filter['profileInfo.mentoringMethods'] = { $in: mentoringMethods.split(',') };
+        }
+
+        const filteredMentorProfiles = await Profile.find(filter);
+
+        if (filteredMentorProfiles.length === 0) {
+            return res.status(404).json({ error: 'No mentor profiles found' });
+        }
+
+        res.json({ profile: filteredMentorProfiles });
+    } catch (error) {
+        console.error('Error fetching filtered mentor profiles:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+router.get('/getFilteredMenteeProfile', async (req, res) => {
+    try {
+        const { language, developmentAreas, mentoringMethods } = req.query;
+
+        const filter = {
+            // userType: 'mentee'
+        };
+
+        if (language && language.length > 0) {
+            filter['profileInfo.languages'] = { $in: language.split(',') };
+        }
+
+        if (developmentAreas && developmentAreas.length > 0) {
+            filter['profileInfo.developmentAreas'] = { $in: developmentAreas.split(',') };
+        }
+
+        if (mentoringMethods && mentoringMethods.length > 0) {
+            filter['profileInfo.mentoringMethods'] = { $in: mentoringMethods.split(',') };
+        }
+
+        const filteredMentorProfiles = await Profile.find(filter);
+
+        if (filteredMentorProfiles.length === 0) {
+            return res.status(404).json({ error: 'No mentor profiles found' });
+        }
+
+        res.json({ profile: filteredMentorProfiles });
+    } catch (error) {
+        console.error('Error fetching filtered mentor profiles:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 
 
 router.get('/getRandomMenteeProfile', async (req, res) => {
