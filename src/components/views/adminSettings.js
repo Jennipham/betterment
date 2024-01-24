@@ -63,14 +63,10 @@ const AdminSettings = () => {
 
 
     const [formData, setFormData] = useState({
-        domain: '',
         orgName: '',
         matchingMethod: 'Algorithm',
         blindMatching: 'On',
     });
-
-    const [isEditingDomain, setIsEditingDomain] = useState(false);
-    const [domainInput, setDomainInput] = useState('');
 
     const [isEditingOrgName, setIsEditingOrgName] = useState(false);
     const [orgNameInput, setOrgNameInput] = useState('');
@@ -116,9 +112,6 @@ const AdminSettings = () => {
     };
 
     const handleEditClick = (attribute) => {
-        if (attribute === 'Domain') {
-            setIsEditingDomain(true);
-        }
 
         if (attribute === 'OrgName') {
             setIsEditingOrgName(true);
@@ -140,7 +133,6 @@ const AdminSettings = () => {
 
         try {
             // Send the form data to the backend API endpoint
-            const updatedDomain = isEditingDomain ? domainInput.trim() : formData.domain.trim();
             const updatedOrgName = isEditingOrgName ? orgNameInput.trim() : formData.orgName.trim();
             const updatedMatchingMethod = isEditingMatchingMethod ? matchingMethodInput.trim() : formData.matchingMethod.trim();
             const updatedBlindMatching = isEditingBlindMatching ? blindMatchingInput.trim() : formData.blindMatching.trim();
@@ -150,7 +142,6 @@ const AdminSettings = () => {
                 ...formData,
                 email: user.email,
                 userType: user.userType,
-                domain: updatedDomain,
                 orgName: updatedOrgName,
                 matchingMethod: updatedMatchingMethod,
                 blindMatching: updatedBlindMatching,
@@ -160,13 +151,11 @@ const AdminSettings = () => {
             // Update formData with the response from the server
             setFormData((prevData) => ({
                 ...prevData,
-                domain: response.data.domain || updatedDomain,
                 orgName: response.data.orgName || updatedOrgName,
                 matchingMethod: response.data.matchingMethod || updatedMatchingMethod,
                 blindMatching: response.data.blindMatching || updatedBlindMatching,
             }));
 
-            setIsEditingDomain(false);
             setIsEditingOrgName(false);
             setIsEditingMatchingMethod(false);
             setIsEditingBlindMatching(false);
@@ -251,34 +240,6 @@ const AdminSettings = () => {
                             </p>
 
                             <Tooltip text="The name of your Company/Business">
-                                <img src={moreInfo} alt="More Info" className="more-info-icon" />
-                            </Tooltip>
-
-                        </div>
-                        <div className='editable-container'>
-                            <p className="editable-attribute">
-                                <span className="attribute-label">Company Domain Name</span>
-                                {isEditingDomain ? (
-                                    <>
-                                        <input
-                                            className='job-role-field'
-                                            type="text"
-                                            value={isEditingDomain ? domainInput : formData.domain}
-                                            onChange={(e) => setDomainInput(e.target.value)}
-                                        />
-                                        <button className='save-button' onClick={handleSaveClick}>Save</button>
-                                        <button className='cancel-button' onClick={() => setIsEditingDomain(false)}>Cancel</button>
-                                    </>
-                                ) : (
-                                    <>
-                                        <span className='job-role'>{formData.domain}</span>
-                                        <span className='edit-icon-container' onClick={() => handleEditClick('Domain')}>
-                                            <img src={editIcon} alt="Edit" className="edit-icon" />
-                                        </span>
-                                    </>
-                                )}
-                            </p>
-                            <Tooltip text="E.g 'student.bham.ac.uk">
                                 <img src={moreInfo} alt="More Info" className="more-info-icon" />
                             </Tooltip>
 
