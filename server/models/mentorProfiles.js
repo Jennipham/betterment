@@ -13,7 +13,7 @@ const mentorProfileSchema = new mongoose.Schema({
         required: true,
     },
     profileInfo: {
-        // Add fields specific to the user's profile
+        signUpDate: { type: Date, default: Date.now },
         jobRole: String,
         department: String,
         officeLocation: String,

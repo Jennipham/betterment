@@ -63,6 +63,7 @@ router.post('/signup', async (req, res) => {
                 email,
                 userType,
                 profileInfo: {
+                    signUpDate: new Date(),
                     jobRole: '',
                     department: '',
                     officeLocation: '',
@@ -83,6 +84,7 @@ router.post('/signup', async (req, res) => {
                 email,
                 userType,
                 profileInfo: {
+                    signUpDate: new Date(),
                     jobRole: '',
                     department: '',
                     officeLocation: '',
@@ -186,6 +188,7 @@ router.post('/login', async (req, res) => {
                         email: email,
                         userType: '',
                         profileInfo: {
+                            signUpDate: new Date(),
                             jobRole: '',
                             department: '',
                             capacity: '1',
@@ -209,6 +212,7 @@ router.post('/login', async (req, res) => {
                         email: email,
                         userType: '',
                         profileInfo: {
+                            signUpDate: new Date(),
                             jobRole: '',
                             department: '',
                             capacity: '1',
@@ -312,6 +316,7 @@ router.post('/profile', async (req, res) => {
                     email: email,
                     userType: userType,
                     profileInfo: {
+                        signUpDate,
                         jobRole,
                         department,
                         capacity,
@@ -327,6 +332,7 @@ router.post('/profile', async (req, res) => {
             } else {
                 // Update existing profile
                 profile.profileInfo = {
+                    signUpDate,
                     jobRole,
                     department,
                     officeLocation,
@@ -347,6 +353,7 @@ router.post('/profile', async (req, res) => {
                     email: email,
                     userType: userType,
                     profileInfo: {
+                        signUpDate,
                         jobRole,
                         department,
                         officeLocation,
@@ -363,6 +370,7 @@ router.post('/profile', async (req, res) => {
             } else {
                 // Update existing profile
                 profile.profileInfo = {
+                    signUpDate,
                     jobRole,
                     department,
                     officeLocation,
