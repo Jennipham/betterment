@@ -10,6 +10,8 @@ import '../styles/ReceivedRequests.css';
 const ReceivedRequest = ({ request, onDecline, onAccept }) => {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const userType = sessionStorage.getItem('userType');
+
 
     const openModal = () => {
         setIsModalOpen(true);
@@ -25,6 +27,7 @@ const ReceivedRequest = ({ request, onDecline, onAccept }) => {
             await axios.post('http://localhost:3001/declineRequest', {
                 email: sessionStorage.getItem('email'),
                 senderEmail: request.senderEmail,
+                userType: userType,
             });
 
             // Trigger the decline callback with the request data
@@ -40,6 +43,7 @@ const ReceivedRequest = ({ request, onDecline, onAccept }) => {
             await axios.post('http://localhost:3001/acceptRequest', {
                 email: sessionStorage.getItem('email'),
                 senderEmail: request.senderEmail,
+                userType: userType,
             });
 
             onAccept(request);

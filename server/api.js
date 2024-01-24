@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 const nodemailer = require('nodemailer');
 const User = require('./models/user');
-const Profile = require('./models/profiles');
+const MenteeProfile = require('./models/menteeProfiles');
+const MentorProfile = require('./models/mentorProfiles');
 const ManagerProfile = require('./models/managerProfiles');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
@@ -57,8 +58,8 @@ router.post('/signup', async (req, res) => {
                     blindMatching: '',
                 },
             });
-        } else {
-            newProfile = new Profile({
+        } else if (userType === 'mentee') {
+            newProfile = new MenteeProfile({
                 email,
                 userType,
                 profileInfo: {
@@ -73,6 +74,28 @@ router.post('/signup', async (req, res) => {
                     receivedRequests: [],
                     available: true,
                 },
+
+            });
+        }
+
+        else if (userType === 'mentor') {
+            newProfile = new MentorProfile({
+                email,
+                userType,
+                profileInfo: {
+                    jobRole: '',
+                    department: '',
+                    officeLocation: '',
+                    capacity: '',
+                    level: '',
+                    languages: [],
+                    developmentAreas: [],
+                    mentoringMethods: [],
+                    sentRequests: [],
+                    receivedRequests: [],
+                    available: true,
+                },
+
             });
         }
 
@@ -150,63 +173,77 @@ router.post('/login', async (req, res) => {
     }
 });-
 
-router.post('/getProfile', async (req, res) => {
-    try {
-        const { email, userType } = req.body; // Use req.user to get the user information
+    router.post('/getProfile', async (req, res) => {
+        try {
+            const { email, userType } = req.body;
+            let profile, defaultProfile;
 
-        const profile = await Profile.findOne({ email });
+            if (userType === 'mentee') {
+                profile = await MenteeProfile.findOne({ email });
+                if (!profile) {
+                    console.log('Profile not found for email:', email);
+                    defaultProfile = {
+                        email: email,
+                        userType: '',
+                        profileInfo: {
+                            jobRole: '',
+                            department: '',
+                            capacity: '1',
+                            officeLocation: '',
+                            languages: [],
+                            developmentAreas: [],
+                            mentoringMethods: [],
+                            sentRequests: [],
+                            receivedRequests: [],
+                            available: 'true',
+                        },
+                    };
+                }
+            }
 
-        if (!profile) {
-            console.log('Profile not found for email:', email);
-            const defaultProfile = {
-                email: email,
-                userType: '',
-                profileInfo: {
-                    jobRole: '',
-                    department: '',
-                    capacity: '1',
-                    officeLocation: '',
-                    languages: [],
-                    developmentAreas: [],
-                    mentoringMethods: [],
-                    sentRequests: [],
-                    receivedRequests: [],
-                    available: 'true',
-                },
-            };
+            if (userType === 'mentor') {
+                profile = await MentorProfile.findOne({ email });
+                if (!profile) {
+                    console.log('Profile not found for email:', email);
+                    defaultProfile = {
+                        email: email,
+                        userType: '',
+                        profileInfo: {
+                            jobRole: '',
+                            department: '',
+                            capacity: '1',
+                            level: '',
+                            officeLocation: '',
+                            languages: [],
+                            developmentAreas: [],
+                            mentoringMethods: [],
+                            sentRequests: [],
+                            receivedRequests: [],
+                            available: 'true',
+                        },
+                    };
+                }
+            }
 
-            // Sign a token with default values
+            profile = profile || defaultProfile;
+
             const token = jwt.sign(
-                { userId: '', email, userType: '' }, // Use email directly from req.user
+                { userId: profile._id || '', email, userType: profile.userType || '' },
                 secretKey,
                 { expiresIn: '1h' }
             );
 
-            return res.json({
-                profile: defaultProfile,
+            res.json({
+                profile,
                 token,
                 email,
-                userType: '',
+                userType: profile.userType || '',
             });
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({ message: 'Internal Server Error' });
         }
-
-        const token = jwt.sign(
-            { userId: profile._id, email: profile.email, userType: profile.userType },
-            secretKey,
-            { expiresIn: '1h' }
-        );
-
-        res.json({
-            profile,
-            token,
-            email: profile.email,
-            userType: profile.userType,
-        });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Internal Server Error' });
-    }
-});
+    });
 
 router.post('/getManagerProfile', async (req, res) => {
     try {
@@ -262,44 +299,83 @@ router.post('/getManagerProfile', async (req, res) => {
 });
 
 router.post('/profile', async (req, res) => {
-    const { jobRole, department, officeLocation, capacity, languages, developmentAreas, mentoringMethods, email, userType, sentRequests, receivedRequests,
- available } = req.body;
+    const { jobRole, department, officeLocation, capacity, languages, developmentAreas, mentoringMethods, email, userType, sentRequests, receivedRequests, available } = req.body;
 
     try {
-        let profile = await Profile.findOne({ email });
+        let profile;
 
-        if (!profile) {
-            // Create a new profile if it doesn't exist
-            profile = new Profile({
-                email: email,
-                userType: userType,
-                profileInfo: {
+        if (userType === 'mentee') {
+            profile = await MenteeProfile.findOne({ email });
+            if (!profile) {
+                // Create a new profile if it doesn't exist
+                profile = new MenteeProfile({
+                    email: email,
+                    userType: userType,
+                    profileInfo: {
+                        jobRole,
+                        department,
+                        capacity,
+                        officeLocation,
+                        languages,
+                        developmentAreas,
+                        mentoringMethods,
+                        sentRequests,
+                        receivedRequests,
+                        available,
+                    },
+                });
+            } else {
+                // Update existing profile
+                profile.profileInfo = {
                     jobRole,
                     department,
-                    capacity,
                     officeLocation,
+                    capacity,
                     languages,
                     developmentAreas,
                     mentoringMethods,
                     sentRequests,
                     receivedRequests,
                     available,
-                },
-            });
-        } else {
-            // Update existing profile
-            profile.profileInfo = {
-                jobRole,
-                department,
-                officeLocation,
-                capacity,
-                languages,
-                developmentAreas,
-                mentoringMethods,
-                sentRequests,
-                receivedRequests,
-                available,
-            };
+                };
+            }
+        } else if (userType === 'mentor') {
+            profile = await MentorProfile.findOne({ email });
+            if (!profile) {
+                // Create a new profile if it doesn't exist
+                profile = new MentorProfile({
+                    email: email,
+                    userType: userType,
+                    profileInfo: {
+                        jobRole,
+                        department,
+                        officeLocation,
+                        capacity,
+                        level: '',
+                        languages,
+                        developmentAreas,
+                        mentoringMethods,
+                        sentRequests,
+                        receivedRequests,
+                        available,
+                    },
+                });
+            } else {
+                // Update existing profile
+                profile.profileInfo = {
+                    jobRole,
+                    department,
+                    officeLocation,
+                    capacity,
+                    level: '',
+                    languages,
+                    developmentAreas,
+                    mentoringMethods,
+                    sentRequests,
+                    receivedRequests,
+                    available,
+                };
+            }
         }
 
         await profile.save();
@@ -332,8 +408,7 @@ router.get('/getUserDetails', async (req, res) => {
 router.get('/getRandomMentorProfile', async (req, res) => {
     try {
         // Get all mentor profiles that haven't sent accepted match requests
-        const mentorProfiles = await Profile.find({
-            userType: 'mentor',
+        const mentorProfiles = await MentorProfile.find({
             'profileInfo.available': true,
         });
 
@@ -369,7 +444,7 @@ router.get('/getFilteredMentorProfile', async (req, res) => {
             filter['profileInfo.mentoringMethods'] = { $in: mentoringMethods.split(',') };
         }
 
-        const filteredMentorProfiles = await Profile.find(filter);
+        const filteredMentorProfiles = await MentorProfile.find(filter);
 
         if (filteredMentorProfiles.length === 0) {
             return res.status(404).json({ error: 'No mentor profiles found' });
@@ -387,7 +462,7 @@ router.get('/getFilteredMenteeProfile', async (req, res) => {
         const { language, developmentAreas, mentoringMethods } = req.query;
 
         const filter = {
-            // userType: 'mentee'
+            userType: 'mentee'
         };
 
         if (language && language.length > 0) {
@@ -402,15 +477,15 @@ router.get('/getFilteredMenteeProfile', async (req, res) => {
             filter['profileInfo.mentoringMethods'] = { $in: mentoringMethods.split(',') };
         }
 
-        const filteredMentorProfiles = await Profile.find(filter);
+        const filteredMentorProfiles = await MenteeProfile.find(filter);
 
         if (filteredMentorProfiles.length === 0) {
-            return res.status(404).json({ error: 'No mentor profiles found' });
+            return res.status(404).json({ error: 'No mentee profiles found' });
         }
 
         res.json({ profile: filteredMentorProfiles });
     } catch (error) {
-        console.error('Error fetching filtered mentor profiles:', error);
+        console.error('Error fetching filtered mentee profiles:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
@@ -419,14 +494,12 @@ router.get('/getFilteredMenteeProfile', async (req, res) => {
 
 router.get('/getRandomMenteeProfile', async (req, res) => {
     try {
-        const menteeProfiles = await Profile.find({
-            userType: 'mentee',
+        const menteeProfiles = await MenteeProfile.find({
             'profileInfo.available': true,
-
         });
 
         if (menteeProfiles.length === 0) {
-            return res.status(404).json({ error: 'No mentor profiles found' });
+            return res.status(404).json({ error: 'No mentee profiles found' });
         }
 
         const randomMenteeProfile = menteeProfiles[Math.floor(Math.random() * menteeProfiles.length)];
@@ -449,28 +522,54 @@ router.get('/getMatches', async (req, res) => {
 });
 
 router.post('/requestMatch', async (req, res) => {
-    const { senderEmail, receiverEmail, expiration } = req.body;
+    const { senderEmail, receiverEmail, expiration, userType } = req.body;
 
     try {
-        // Check if the match request already exists
-        const senderProfile = await Profile.findOne({ email: senderEmail });
-        if (senderProfile && senderProfile.profileInfo.sentRequests.some(request => request.receiverEmail === receiverEmail)) {
-            return res.status(400).json({ error: 'Match request already sent' });
+        if (userType === 'mentee') {
+            const senderProfile = await MenteeProfile.findOne({ email: senderEmail });
+      
+            if (senderProfile && senderProfile.profileInfo.sentRequests.some(request => request.receiverEmail === receiverEmail)) {
+                return res.status(400).json({ error: 'Match request already sent' });
+            }
+
+            const receiverProfile = await Profile.findOne({ email: receiverEmail });
+
+            if (!senderProfile || !receiverProfile) {
+                return res.status(404).json({ error: 'Profile not found' });
+            }
+
+            // Update sender's sentRequests and receiver's receivedRequests
+            senderProfile.profileInfo.sentRequests.push({ receiverEmail, expiration });
+            receiverProfile.profileInfo.receivedRequests.push({ senderEmail, expiration });
+
+            // Save the changes to the database
+            await senderProfile.save();
+            await receiverProfile.save();
+            
         }
 
-        const receiverProfile = await Profile.findOne({ email: receiverEmail });
+        if (userType === 'mentor') {
+            const senderProfile = await MentorProfile.findOne({ email: senderEmail });
 
-        if (!senderProfile || !receiverProfile) {
-            return res.status(404).json({ error: 'Profile not found' });
+            if (senderProfile && senderProfile.profileInfo.sentRequests.some(request => request.receiverEmail === receiverEmail)) {
+                return res.status(400).json({ error: 'Match request already sent' });
+            }
+
+            const receiverProfile = await Profile.findOne({ email: receiverEmail });
+
+            if (!senderProfile || !receiverProfile) {
+                return res.status(404).json({ error: 'Profile not found' });
+            }
+
+            // Update sender's sentRequests and receiver's receivedRequests
+            senderProfile.profileInfo.sentRequests.push({ receiverEmail, expiration });
+            receiverProfile.profileInfo.receivedRequests.push({ senderEmail, expiration });
+
+            // Save the changes to the database
+            await senderProfile.save();
+            await receiverProfile.save();
+
         }
-
-        // Update sender's sentRequests and receiver's receivedRequests
-        senderProfile.profileInfo.sentRequests.push({ receiverEmail, expiration });
-        receiverProfile.profileInfo.receivedRequests.push({ senderEmail, expiration });
-
-        // Save the changes to the database
-        await senderProfile.save();
-        await receiverProfile.save();
 
         res.json({ success: true, message: 'Match request sent successfully' });
     } catch (error) {
@@ -484,17 +583,35 @@ router.post('/getReceivedRequests', async (req, res) => {
     const { email, userType } = req.body;
 
     try {
-        const userProfile = await Profile.findOne({ email });
+        if (userType === 'mentee') {
+            const userProfile = await MenteeProfile.findOne({ email });
 
-        if (!userProfile) {
-            return res.status(404).json({ error: 'Profile not found' });
+            if (!userProfile) {
+                return res.status(404).json({ error: 'Profile not found' });
+            }
+
+            const filteredReceivedRequests = userProfile.profileInfo.receivedRequests.filter(
+                (request) => request.accepted === false && request.declined === false
+            );
+            res.json({ receivedRequests: filteredReceivedRequests });
+
         }
 
-        const filteredReceivedRequests = userProfile.profileInfo.receivedRequests.filter(
-            (request) => request.accepted === false && request.declined === false
-        );
+        else if (userType === 'mentor') {
+            const userProfile = await MentorProfile.findOne({ email });
 
-        res.json({ receivedRequests: filteredReceivedRequests });
+            if (!userProfile) {
+                return res.status(404).json({ error: 'Profile not found' });
+            }
+
+            const filteredReceivedRequests = userProfile.profileInfo.receivedRequests.filter(
+                (request) => request.accepted === false && request.declined === false
+            );
+            res.json({ receivedRequests: filteredReceivedRequests });
+
+        }
+
+
     } catch (error) {
         console.error('Error fetching received requests:', error);
         res.status(500).json({ error: 'Internal Server Error' });
@@ -506,18 +623,29 @@ router.post('/getSentRequests', async (req, res) => {
     const { email, userType } = req.body;
 
     try {
-        // Fetch user profile from the database
-        const userProfile = await Profile.findOne({ email });
+        if (userType === 'mentee') {
+            const userProfile = await MenteeProfile.findOne({ email });
 
-        if (!userProfile) {
-            return res.status(404).json({ error: 'Profile not found' });
+            if (!userProfile) {
+                return res.status(404).json({ error: 'Profile not found' });
+            }
+
+            // Extract sentRequests from the user's profile
+            const sentRequests = userProfile.profileInfo.sentRequests || [];
+            res.json({ sentRequests });
         }
 
-        // Extract sentRequests from the user's profile
-        const sentRequests = userProfile.profileInfo.sentRequests || [];
+        else if (userType === 'mentor') {
+            const userProfile = await MentorProfile.findOne({ email });
 
-        // Return sentRequests directly without modifying expirationDate
-        res.json({ sentRequests });
+            if (!userProfile) {
+                return res.status(404).json({ error: 'Profile not found' });
+            }
+
+            // Extract sentRequests from the user's profile
+            const sentRequests = userProfile.profileInfo.sentRequests || [];
+            res.json({ sentRequests });
+        }
     } catch (error) {
         console.error('Error fetching sent requests:', error);
         res.status(500).json({ error: 'Internal Server Error' });
@@ -526,30 +654,55 @@ router.post('/getSentRequests', async (req, res) => {
 
 
 router.delete('/cancelRequest/:receiverEmail', async (req, res) => {
-    const { email } = req.body;
+    const { email, userType } = req.body;
     const { receiverEmail } = req.params;
 
     try {
-        // Find the profile and remove the canceled request from sentRequests
-        const profile = await Profile.findOneAndUpdate(
-            { email },
-            { $pull: { 'profileInfo.sentRequests': { receiverEmail: receiverEmail } } },
-            { new: true }
-        );
 
-        if (!profile) {
-            return res.status(404).json({ error: 'Profile not found' });
+        if (userType === 'mentee') {
+            const profile = await MenteeProfile.findOneAndUpdate(
+                { email },
+                { $pull: { 'profileInfo.sentRequests': { receiverEmail: receiverEmail } } },
+                { new: true }
+            );
+
+            if (!profile) {
+                return res.status(404).json({ error: 'Profile not found' });
+            }
+
+            const receiverProfile = await MentorProfile.findOneAndUpdate(
+                { 'profileInfo.receivedRequests.senderEmail': email },
+                { $pull: { 'profileInfo.receivedRequests': { senderEmail: email } } },
+                { new: true }
+            );
+
+            if (!receiverProfile) {
+                return res.status(404).json({ error: 'Receiver profile not found' });
+            }
         }
 
-        const receiverProfile = await Profile.findOneAndUpdate(
-            { 'profileInfo.receivedRequests.senderEmail': email },
-            { $pull: { 'profileInfo.receivedRequests': { senderEmail: email } } },
-            { new: true }
-        );
+        if (userType === 'mentor') {
+            const profile = await MentorProfile.findOneAndUpdate(
+                { email },
+                { $pull: { 'profileInfo.sentRequests': { receiverEmail: receiverEmail } } },
+                { new: true }
+            );
 
-        if (!receiverProfile) {
-            return res.status(404).json({ error: 'Receiver profile not found' });
+            if (!profile) {
+                return res.status(404).json({ error: 'Profile not found' });
+            }
+
+            const receiverProfile = await MenteeProfile.findOneAndUpdate(
+                { 'profileInfo.receivedRequests.senderEmail': email },
+                { $pull: { 'profileInfo.receivedRequests': { senderEmail: email } } },
+                { new: true }
+            );
+
+            if (!receiverProfile) {
+                return res.status(404).json({ error: 'Receiver profile not found' });
+            }
         }
+
 
         res.json({ success: true });
     } catch (error) {
@@ -559,32 +712,58 @@ router.delete('/cancelRequest/:receiverEmail', async (req, res) => {
 });
 
 router.post('/acceptRequest', async (req, res) => {
-    const { email, senderEmail } = req.body;
+    const { email, senderEmail, userType } = req.body;
 
     try {
-        // Update the received request
-        await Profile.updateOne(
-            { email },
-            {
-                $set: {
-                    'profileInfo.receivedRequests.$[elem].accepted': true,
-                },
-            },
-            {
-                arrayFilters: [
-                    {
-                        'elem.senderEmail': senderEmail,
-                        'elem.accepted': false, // Only update if not already accepted
+        if (userType === 'mentee') {
+            await MenteeProfile.updateOne(
+                { email },
+                {
+                    $set: {
+                        'profileInfo.receivedRequests.$[elem].accepted': true,
                     },
-                ],
-            }
-        );
+                },
+                {
+                    arrayFilters: [
+                        {
+                            'elem.senderEmail': senderEmail,
+                            'elem.accepted': false, // Only update if not already accepted
+                        },
+                    ],
+                }
+            );
 
-        // Update the sent request
-        await Profile.updateOne(
-            { 'profileInfo.sentRequests.receiverEmail': email },
-            { $set: { 'profileInfo.sentRequests.$.accepted': true } }
-        );
+            // Update the sent request
+            await MenteeProfile.updateOne(
+                { 'profileInfo.sentRequests.receiverEmail': email },
+                { $set: { 'profileInfo.sentRequests.$.accepted': true } }
+            );
+        }
+
+        if (userType === 'mentor') {
+            await MentorProfile.updateOne(
+                { email },
+                {
+                    $set: {
+                        'profileInfo.receivedRequests.$[elem].accepted': true,
+                    },
+                },
+                {
+                    arrayFilters: [
+                        {
+                            'elem.senderEmail': senderEmail,
+                            'elem.accepted': false, // Only update if not already accepted
+                        },
+                    ],
+                }
+            );
+
+            // Update the sent request
+            await MentorProfile.updateOne(
+                { 'profileInfo.sentRequests.receiverEmail': email },
+                { $set: { 'profileInfo.sentRequests.$.accepted': true } }
+            );
+        }
 
         res.json({ success: true });
     } catch (error) {
@@ -594,20 +773,36 @@ router.post('/acceptRequest', async (req, res) => {
 });
 
 router.post('/declineRequest', async (req, res) => {
-    const { email, senderEmail } = req.body;
+    const { email, senderEmail, userType } = req.body;
 
     try {
-        const profile = await Profile.findOneAndUpdate(
-            { email, 'profileInfo.receivedRequests.senderEmail': senderEmail },
-            { $set: { 'profileInfo.receivedRequests.$.declined': true } },
-            { new: true }
-        );
+        if (userType === 'mentee') {
 
-        if (!profile) {
-            return res.status(404).json({ error: 'Profile not found' });
+            const profile = await MenteeProfile.findOneAndUpdate(
+                { email, 'profileInfo.receivedRequests.senderEmail': senderEmail },
+                { $set: { 'profileInfo.receivedRequests.$.declined': true } },
+                { new: true }
+            );
+
+            if (!profile) {
+                return res.status(404).json({ error: 'Profile not found' });
+            }
+
         }
 
-        // Return updated profile or success message
+        if (userType === 'mentor') {
+
+            const profile = await MentorProfile.findOneAndUpdate(
+                { email, 'profileInfo.receivedRequests.senderEmail': senderEmail },
+                { $set: { 'profileInfo.receivedRequests.$.declined': true } },
+                { new: true }
+            );
+
+            if (!profile) {
+                return res.status(404).json({ error: 'Profile not found' });
+            }
+
+        }
         res.json({ success: true });
     } catch (error) {
         console.error('Error declining request:', error);
@@ -662,20 +857,37 @@ router.put('/updateUserProfile', async (req, res) => {
             return res.status(400).json({ error: 'Invalid request parameters' });
         }
 
-        // Assuming the user profile exists
-        const profile = await Profile.findOne({ email, userType });
+        if (userType === 'mentee') {
+            const profile = await MenteeProfile.findOne({ email, userType });
 
-        if (!profile) {
-            return res.status(404).json({ error: 'User profile not found' });
+            if (!profile) {
+                return res.status(404).json({ error: 'User profile not found' });
+            }
+
+            // Update profile fields based on the received data
+            Object.keys(data).forEach((field) => {
+                profile.profileInfo[field] = data[field];
+            });
+
+            // Save the updated profile
+            await profile.save();
         }
 
-        // Update profile fields based on the received data
-        Object.keys(data).forEach((field) => {
-            profile.profileInfo[field] = data[field];
-        });
+        if (userType === 'mentor') {
+            const profile = await MentorProfile.findOne({ email, userType });
 
-        // Save the updated profile
-        await profile.save();
+            if (!profile) {
+                return res.status(404).json({ error: 'User profile not found' });
+            }
+
+            // Update profile fields based on the received data
+            Object.keys(data).forEach((field) => {
+                profile.profileInfo[field] = data[field];
+            });
+
+            // Save the updated profile
+            await profile.save();
+        }
 
         return res.json({ success: true, message: 'Profile updated successfully' });
     } catch (error) {

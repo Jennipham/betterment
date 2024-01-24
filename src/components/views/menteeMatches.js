@@ -188,6 +188,7 @@ const MenteeMatches = () => {
                 senderEmail: user.email,
                 receiverEmail: mentorProfile.email, // Assuming you have the mentor's email in mentorProfile.email
                 expiration: expirationDate.toISOString(),
+                userType: user.userType,
             });
 
             // Handle the response, update state, or perform any additional actions if needed

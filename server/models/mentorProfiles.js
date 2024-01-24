@@ -2,7 +2,7 @@
 const { Binary } = require('mongodb');
 const mongoose = require('mongoose');
 
-const profileSchema = new mongoose.Schema({
+const mentorProfileSchema = new mongoose.Schema({
     email: {
         type: String,
         required: true,
@@ -18,15 +18,16 @@ const profileSchema = new mongoose.Schema({
         department: String,
         officeLocation: String,
         capacity: String,
-        languages:[String],
-        developmentAreas:[String],
+        level: String,
+        languages: [String],
+        developmentAreas: [String],
         mentoringMethods: [String],
         sentRequests: [
             {
                 receiverEmail: { type: String, required: true },
                 expiration: { type: Date, required: true },
                 accepted: { type: Boolean, default: false },
-      
+
             }
         ],
         receivedRequests: [
@@ -41,7 +42,7 @@ const profileSchema = new mongoose.Schema({
     },
 });
 
-const Profile = mongoose.model('Profiles', profileSchema, 'Profiles');
+const MentorProfile = mongoose.model('MentorProfiles', mentorProfileSchema, 'MentorProfiles');
 
 
-module.exports = Profile;
+module.exports = MentorProfile;

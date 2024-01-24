@@ -12,6 +12,7 @@ const SentRequest = ({ request, onRemoveRequest }) => {
     console.log('sent', request);
 
     const email = sessionStorage.getItem('email');
+    const userType = sessionStorage.getItem('userType');
     const [loading, setLoading] = useState(false);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -29,7 +30,7 @@ const SentRequest = ({ request, onRemoveRequest }) => {
         try {
             // Make API call to delete the email from sentRequests
             await axios.delete(`http://localhost:3001/cancelRequest/${request.receiverEmail}`, {
-                data: { email: email }
+                data: { email: email, userType: userType }
             });
             // Update the UI by removing the request from the list
             onRemoveRequest(request.receiverEmail);  // Pass the correct email here
