@@ -65,8 +65,8 @@ const AdminSettings = () => {
     const [formData, setFormData] = useState({
         domain: '',
         orgName: '',
-        matchingMethod: '',
-        blindMatching: '',
+        matchingMethod: 'Algorithm',
+        blindMatching: 'On',
     });
 
     const [isEditingDomain, setIsEditingDomain] = useState(false);

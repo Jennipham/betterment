@@ -14,7 +14,7 @@ const matchingController = require('./controllers/matching');
 require('dotenv').config();
 
 const secretKey = process.env.JWT_SECRET;
-const saltRounds = 10; 
+const saltRounds = 10;
 
 const contactPass = process.env.CONTACT_PASS;
 
@@ -173,7 +173,7 @@ router.post('/login', async (req, res) => {
         console.error('Error during login:', error);
         res.status(500).json({ error: 'Login failed' });
     }
-});-
+}); -
 
     router.post('/getProfile', async (req, res) => {
         try {
@@ -251,56 +251,44 @@ router.post('/login', async (req, res) => {
 
 router.post('/getManagerProfile', async (req, res) => {
     try {
-        const { email, userType } = req.body; // Use req.user to get the user information
+        const { email, userType } = req.body;
+        let profile = await ManagerProfile.findOne({ email });
 
-        const profile = await ManagerProfile.findOne({ email });
-
+        let defaultProfile = {
+            email,
+            userType,
+            profileInfo: {
+                domain: '',
+                orgName: '',
+                department: '',
+                matchingMethod: '',
+                blindMatching: '',
+            },
+        };
 
         if (!profile) {
             console.log('Profile not found for email:', email);
-            const defaultProfile = {
-                    email,
-                    userType,
-                    profileInfo: {
-                        domain: '',
-                        orgName: '',
-                        department: '',
-                        matchingMethod: '',
-                        blindMatching: '',
-                    },
-            };
-
-            const token = jwt.sign(
-                { userId: profile._id, email: profile.email, userType: profile.userType },
-                secretKey,
-                { expiresIn: '1h' }
-            );
-
-            return res.json({
-                defaultProfile,
-                token,
-                email,
-                userType: '',
-            });
+            profile = defaultProfile;
         }
 
         const token = jwt.sign(
-            { userId: profile._id, email: profile.email, userType: profile.userType },
+            { userId: profile._id || '', email, userType: profile.userType || '' },
             secretKey,
             { expiresIn: '1h' }
         );
 
-        res.json({
+        return res.json({
             profile,
             token,
-            email: profile.email,
-            userType: profile.userType,
+            email,
+            userType: profile.userType || '',
         });
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: 'Internal Server Error' });
     }
 });
+
 
 router.post('/profile', async (req, res) => {
     const { jobRole, department, officeLocation, capacity, languages, developmentAreas, mentoringMethods, email, userType, sentRequests, receivedRequests, available } = req.body;
@@ -535,7 +523,7 @@ router.post('/requestMatch', async (req, res) => {
     try {
         if (userType === 'mentee') {
             const senderProfile = await MenteeProfile.findOne({ email: senderEmail });
-      
+
             if (senderProfile && senderProfile.profileInfo.sentRequests.some(request => request.receiverEmail === receiverEmail)) {
                 return res.status(400).json({ error: 'Match request already sent' });
             }
@@ -553,7 +541,7 @@ router.post('/requestMatch', async (req, res) => {
             // Save the changes to the database
             await senderProfile.save();
             await receiverProfile.save();
-            
+
         }
 
         if (userType === 'mentor') {
