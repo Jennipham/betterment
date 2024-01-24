@@ -12,7 +12,6 @@ const managerProfileSchema = new mongoose.Schema({
         required: true,
     },
     profileInfo: {
-        domain: String,
         orgName: String,
         matchingMethod: String,
         blindMatching: String,

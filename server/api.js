@@ -51,7 +51,6 @@ router.post('/signup', async (req, res) => {
                 email,
                 userType,
                 profileInfo: {
-                    domain: '',
                     orgName: '',
                     department: '',
                     matchingMethod: '',
@@ -258,7 +257,6 @@ router.post('/getManagerProfile', async (req, res) => {
             email,
             userType,
             profileInfo: {
-                domain: '',
                 orgName: '',
                 department: '',
                 matchingMethod: '',
@@ -291,7 +289,7 @@ router.post('/getManagerProfile', async (req, res) => {
 
 
 router.post('/profile', async (req, res) => {
-    const { jobRole, department, officeLocation, capacity, languages, developmentAreas, mentoringMethods, email, userType, sentRequests, receivedRequests, available } = req.body;
+    const { signUpDate, jobRole, department, officeLocation, capacity, languages, developmentAreas, mentoringMethods, email, userType, sentRequests, receivedRequests, available } = req.body;
 
     try {
         let profile;
@@ -346,7 +344,7 @@ router.post('/profile', async (req, res) => {
                         department,
                         officeLocation,
                         capacity,
-                        level: '',
+                        level,
                         languages,
                         developmentAreas,
                         mentoringMethods,
@@ -363,7 +361,7 @@ router.post('/profile', async (req, res) => {
                     department,
                     officeLocation,
                     capacity,
-                    level: '',
+                    level,
                     languages,
                     developmentAreas,
                     mentoringMethods,
@@ -810,7 +808,7 @@ router.post('/declineRequest', async (req, res) => {
 
 
 router.post('/managerProfile', async (req, res) => {
-    const { domain, orgName, matchingMethod, blindMatching, email, userType, } = req.body;
+    const { orgName, matchingMethod, blindMatching, email, userType, } = req.body;
 
     try {
         let profile = await ManagerProfile.findOne({ email });
@@ -821,7 +819,6 @@ router.post('/managerProfile', async (req, res) => {
                 email: email,
                 userType: userType,
                 profileInfo: {
-                    domain,
                     orgName,
                     matchingMethod,
                     blindMatching,
@@ -830,7 +827,6 @@ router.post('/managerProfile', async (req, res) => {
         } else {
             // Update existing profile
             profile.profileInfo = {
-                domain,
                 orgName,
                 matchingMethod,
                 blindMatching,
