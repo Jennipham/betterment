@@ -515,7 +515,7 @@ router.get('/getMatches', async (req, res) => {
     }
 });
 
-router.post('/requestMatch', async (req, res) => {
+router.post('/shortlist', async (req, res) => {
     const { senderEmail, receiverEmail, expiration, userType } = req.body;
 
     try {
