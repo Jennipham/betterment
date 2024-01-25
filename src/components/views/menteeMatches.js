@@ -177,14 +177,14 @@ const MenteeMatches = () => {
         fetchProfileData();
     }, [user.email, user.userType]);
 
-    const handleShortlist = async () => {
+    const handleRequestMatch = async () => {
         try {
             setLoading(true);
             const currentDate = new Date();
             const expirationDate = new Date(currentDate);
             expirationDate.setDate(expirationDate.getDate() + 14);
 
-            const response = await axios.post('http://localhost:3001/shortlist', {
+            const response = await axios.post('http://localhost:3001/requestMatch', {
                 senderEmail: user.email,
                 receiverEmail: mentorProfile.email, // Assuming you have the mentor's email in mentorProfile.email
                 expiration: expirationDate.toISOString(),
@@ -192,13 +192,13 @@ const MenteeMatches = () => {
             });
 
             // Handle the response, update state, or perform any additional actions if needed
-            console.log('Sucessfully Shortlisted:', response.data);
+            console.log('Match request sent successfully:', response.data);
             setLoading(false);
 
         } catch (error) {
             setLoading(false);
-            console.error('Error adding to shortlist:', error);
-            setErrorMessage('Error adding to shortlist');
+            console.error('Error sending match request:', error);
+            setErrorMessage('Error sending Match Request');
         }
     };
 
@@ -471,7 +471,7 @@ const MenteeMatches = () => {
                                                                     <iframe title="Full Profile" src="/fullprofile" width="100%" height="100%" />
                                                                 </Modal>
                                                             )}
-                                                            <button className='match-request-button' onClick={() => { handleShortlist() }}>Add to Shortlist</button>
+                                                            <button className='match-request-button' onClick={() => { handleRequestMatch() }}>Request Match</button>
 
                                                         </div>
                                                     </div>
@@ -555,7 +555,7 @@ const MenteeMatches = () => {
                                                     <iframe title="Full Profile" src="/fullprofile" width="100%" height="100%" />
                                                 </Modal>
                                             )}
-                                            <button className='match-request-button' onClick={() => { handleShortlist() }}>Add to Shortlist</button>
+                                            <button className='match-request-button' onClick={() => { handleRequestMatch() }}>Request Match</button>
 
                                         </div>
                                     </div>
