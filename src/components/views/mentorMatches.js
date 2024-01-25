@@ -55,7 +55,7 @@ const MentorMatches = () => {
         jobRole: sessionStorage.getItem('jobRole') || '',
     });
 
-    const [menteeProfile, setMenteeProfile] = useState(null);
+    const [menteeProfile, setMenteeProfile] = useState([]);
     const [menteeFname, setMenteeFname] = useState('');
     const [menteeSname, setMenteeSname] = useState('');
 
@@ -175,7 +175,7 @@ const MentorMatches = () => {
         fetchProfileData();
     }, [user.email, user.userType]);
 
-    const handleRequestMatch = async () => {
+    const handleRequestMatch = async (menteeEmail) => {
         try {
             setLoading(true);
             const currentDate = new Date();
@@ -184,7 +184,7 @@ const MentorMatches = () => {
 
             const response = await axios.post('http://localhost:3001/requestMatch', {
                 senderEmail: user.email,
-                receiverEmail: menteeProfile.email, // Assuming you have the mentor's email in mentorProfile.email
+                receiverEmail: menteeEmail, // Assuming you have the mentor's email in mentorProfile.email
                 expiration: expirationDate.toISOString(),
                 userType: user.userType,
             });
@@ -439,7 +439,7 @@ const MentorMatches = () => {
                     {menteeProfile ? (
                         chunkArray(menteeProfile, 2).map((row, rowIndex) => (
                             <div key={rowIndex} className="mentor-profile-row">
-                                {row.map((mentor, index) => (
+                                {row.map((mentee, index) => (
                                     <div key={index} className="mentor-profiles-box">
                                         <div className="profile-mentor">
                                             <div className="profile-left-info">
@@ -448,15 +448,15 @@ const MentorMatches = () => {
                                                         <img src={black} alt="Black Profile Icon" />
                                                     </div>
                                                     <div className="user-info">
-                                                        <p>Name: {mentor.email}</p>
-                                                        <p>Job Role: {mentor.profileInfo.jobRole ? capitaliseFirstLetter(mentor.profileInfo.jobRole) : 'Not specified'}</p>
+                                                        <p>Name: {mentee.email}</p>
+                                                        <p>Job Role: {mentee.profileInfo.jobRole ? capitaliseFirstLetter(mentee.profileInfo.jobRole) : 'Not specified'}</p>
                                                     </div>
                                                 </div>
 
                                                 <div className="matching-info-left">
-                                                    <p>Location: {mentor.profileInfo.officeLocation ? capitaliseFirstLetter(mentor.profileInfo.officeLocation) : 'Not specified'}</p>
-                                                    <p>Development Areas: {mentor.profileInfo.developmentAreas ? mentor.profileInfo.developmentAreas.join(', ') : 'Not specified'}</p>
-                                                    <p>Methods of Matching: {mentor.profileInfo.mentoringMethods ? mentor.profileInfo.mentoringMethods.join(', ') : 'Not specified'}</p>
+                                                    <p>Location: {mentee.profileInfo.officeLocation ? capitaliseFirstLetter(mentee.profileInfo.officeLocation) : 'Not specified'}</p>
+                                                    <p>Development Areas: {mentee.profileInfo.developmentAreas ? mentee.profileInfo.developmentAreas.join(', ') : 'Not specified'}</p>
+                                                    <p>Methods of Matching: {mentee.profileInfo.mentoringMethods ? mentee.profileInfo.mentoringMethods.join(', ') : 'Not specified'}</p>
                                                 </div>
 
                                                 <div className="bottom-buttons-container-manual">
@@ -466,7 +466,7 @@ const MentorMatches = () => {
                                                             <iframe title="Full Profile" src="/fullprofile" width="100%" height="100%" />
                                                         </Modal>
                                                     )}
-                                                    <button className='match-request-button' onClick={() => { handleRequestMatch() }}>Request Match</button>
+                                                    <button className='match-request-button' onClick={() => { handleRequestMatch(mentee.email) }}>Request Match</button>
 
                                                 </div>
                                             </div>
@@ -549,7 +549,7 @@ const MentorMatches = () => {
                                         <iframe title="Full Profile" src="/fullprofile" width="100%" height="100%" />
                                     </Modal>
                                 )}
-                                <button className='match-request-button' onClick={() => { handleRequestMatch() }}>Request Match</button>
+                                <button className='match-request-button' onClick={() => { handleRequestMatch(menteeProfile.email) }}>Request Match</button>
 
                             </div>
                         </div>

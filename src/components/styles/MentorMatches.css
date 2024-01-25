@@ -177,3 +177,22 @@
     justify-content: center;
 
 }
+
+.mentor-profiles {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.mentor-profile-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.mentor-profiles-box {
+    display: flex;
+    /* justify-content: space-between; */
+    align-items: center;
+    margin: 20px 10px;
+}

@@ -71,15 +71,12 @@ const Requests = () => {
                     {errorMessage && <p className="error-message-profile">{errorMessage}</p>}
                 </div>
                 <div className="requests-box">
-                    <h2>Received Requests</h2>
+                    <h2>Shortlist</h2>
                     {receivedRequests.map((request) => (
                         request && request.senderEmail ? (
                             <ReceivedRequest key={request.senderEmail} request={request} onDecline= {onDecline} onAccept = {onAccept} />
                         ) : null
                     ))}
-                </div>
-                <div className="requests-box">
-                    <h2>Sent Requests</h2>
                     {sentRequests.map((request) => (
                         request && request.receiverEmail ? (
                             <SentRequest key={request.receiverEmail} request={request} onRemoveRequest={onRemoveSentRequest} />

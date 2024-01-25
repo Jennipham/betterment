@@ -56,7 +56,7 @@ const MenteeMatches = () => {
         jobRole: sessionStorage.getItem('jobRole') || '',
     });
 
-    const [mentorProfile, setMentorProfile] = useState(null);
+    const [mentorProfile, setMentorProfile] = useState([]);
     const [mentorFname, setMentorFname] = useState('');
     const [mentorSname, setMentorSname] = useState('');
 
@@ -122,6 +122,8 @@ const MenteeMatches = () => {
                         },
                     });
                     setMentorProfile(response.data.profile);
+                    sessionStorage.setItem('matchProfile', JSON.stringify(response.data.profile));
+                    
                 }
 
             } catch (error) {
@@ -177,7 +179,7 @@ const MenteeMatches = () => {
         fetchProfileData();
     }, [user.email, user.userType]);
 
-    const handleRequestMatch = async () => {
+    const handleRequestMatch = async (mentorEmail) => {
         try {
             setLoading(true);
             const currentDate = new Date();
@@ -186,7 +188,7 @@ const MenteeMatches = () => {
 
             const response = await axios.post('http://localhost:3001/requestMatch', {
                 senderEmail: user.email,
-                receiverEmail: mentorProfile.email, // Assuming you have the mentor's email in mentorProfile.email
+                receiverEmail: mentorEmail,
                 expiration: expirationDate.toISOString(),
                 userType: user.userType,
             });
@@ -201,6 +203,7 @@ const MenteeMatches = () => {
             setErrorMessage('Error sending Match Request');
         }
     };
+    
 
     const languageOptions = [
         { value: 'Afrikaans', label: 'Afrikaans' },
@@ -471,7 +474,7 @@ const MenteeMatches = () => {
                                                                     <iframe title="Full Profile" src="/fullprofile" width="100%" height="100%" />
                                                                 </Modal>
                                                             )}
-                                                            <button className='match-request-button' onClick={() => { handleRequestMatch() }}>Request Match</button>
+                                                            <button className='match-request-button' onClick={() => { handleRequestMatch(mentor.email) }}>Request Match</button>
 
                                                         </div>
                                                     </div>
@@ -555,7 +558,7 @@ const MenteeMatches = () => {
                                                     <iframe title="Full Profile" src="/fullprofile" width="100%" height="100%" />
                                                 </Modal>
                                             )}
-                                            <button className='match-request-button' onClick={() => { handleRequestMatch() }}>Request Match</button>
+                                            <button className='match-request-button' onClick={() => { handleRequestMatch(mentorProfile.email) }}>Request Match</button>
 
                                         </div>
                                     </div>

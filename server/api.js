@@ -526,7 +526,7 @@ router.post('/requestMatch', async (req, res) => {
                 return res.status(400).json({ error: 'Match request already sent' });
             }
 
-            const receiverProfile = await Profile.findOne({ email: receiverEmail });
+            const receiverProfile = await MentorProfile.findOne({ email: receiverEmail });
 
             if (!senderProfile || !receiverProfile) {
                 return res.status(404).json({ error: 'Profile not found' });
@@ -549,7 +549,7 @@ router.post('/requestMatch', async (req, res) => {
                 return res.status(400).json({ error: 'Match request already sent' });
             }
 
-            const receiverProfile = await Profile.findOne({ email: receiverEmail });
+            const receiverProfile = await MenteeProfile.findOne({ email: receiverEmail });
 
             if (!senderProfile || !receiverProfile) {
                 return res.status(404).json({ error: 'Profile not found' });
