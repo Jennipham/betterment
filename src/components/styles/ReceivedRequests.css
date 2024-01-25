@@ -1,3 +1,9 @@
+.received-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
 .request-box-received {
     display: flex;
     align-items: center;
@@ -55,6 +61,11 @@ cursor: pointer;
 .action-icon {
     cursor: pointer;
     margin-left: 5px;
+}
+
+.received-icon {
+    height: 40px;
+    padding: 10px;
 }
 
 .action-buttons {

@@ -1,6 +1,7 @@
 import React from 'react';
 import profile from '../images/profile-black.png';
 import cross from '../images/cross-icon.png';
+import sent from '../images/sent-icon.png';
 import axios from 'axios';
 import Loader from '../utils/loader';
 import Modal from '../utils/modal';
@@ -47,31 +48,36 @@ const SentRequest = ({ request, onRemoveRequest }) => {
     const isExpired = currentDate > expirationDate;
 
     return (
-    <>
-        {
-            loading?(
-                        <Loader />
-                    ) : (
-                        <div className={`request-box-sent ${isExpired ? 'expired-request' : ''}`}>
-                            <div className='icon-box'>
-                                <button className="match-profile-button" onClick={() => openModal(request)}>
-                                    <img className='request-profile-icon' src={profile} alt="Profile Icon" />
-                                </button>
-                                <button className="view-profile" onClick={() => openModal(request)}>View Full Profile</button>
-                                {isModalOpen && (
-                                    <Modal onClose={handleCloseModal}>
-                                        <iframe title="Full Profile" src="/fullprofile" width="100%" height="100%" />
-                                    </Modal>
-                                )}
-            </div>
-            <div className="sent-profile-info">
-                <p className='sent-name'>{`${request.firstName} ${request.lastName}`}</p>
-            </div>
-            <div className='action-buttons'>
-                <img src={cross} alt="Cancel" className="action-icon" onClick={handleCancelClick} />
-            </div>
-        </div>
-    )
+        <>
+            {
+                loading ? (
+                    <Loader />
+                ) : (
+                        <div className='sent-container'>
+
+                    <div className={`request-box-sent ${isExpired ? 'expired-request' : ''}`}>
+                        <div className='icon-box'>
+                            <button className="match-profile-button" onClick={() => openModal(request)}>
+                                <img className='request-profile-icon' src={profile} alt="Profile Icon" />
+                            </button>
+                            <button className="view-profile" onClick={() => openModal(request)}>View Full Profile</button>
+                            {isModalOpen && (
+                                <Modal onClose={handleCloseModal}>
+                                    <iframe title="Full Profile" src="/fullprofile" width="100%" height="100%" />
+                                </Modal>
+                            )}
+                        </div>
+                        <div className="sent-profile-info">
+                            <p className='sent-name'>{`${request.firstName} ${request.lastName}`}</p>
+                        </div>
+                        <div className='action-buttons'>
+                            <img src={cross} alt="Cancel" className="action-icon" onClick={handleCancelClick} />
+                        </div>
+                            </div>
+                            <img className='sent-icon' src={sent} alt="Sent Request" title='Sent Request' />
+
+                            </div>
+                )
             }</>);
 };
 

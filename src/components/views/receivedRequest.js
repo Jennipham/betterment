@@ -5,6 +5,7 @@ import axios from 'axios';
 import profile from '../images/profile-black.png';
 import cross from '../images/cross-icon.png';
 import tick from '../images/tick-icon.png';
+import received from '../images/received-icon.png';
 import '../styles/ReceivedRequests.css';
 
 const ReceivedRequest = ({ request, onDecline, onAccept }) => {
@@ -53,6 +54,7 @@ const ReceivedRequest = ({ request, onDecline, onAccept }) => {
     };
 
     return (
+        <div className='received-container'>
         <div className="request-box-received">
             <div className='icon-box'>
                 <button className="match-profile-button" onClick={() => openModal(request)}>
@@ -72,7 +74,10 @@ const ReceivedRequest = ({ request, onDecline, onAccept }) => {
                 <img src={cross} alt="Reject" className="action-icon" onClick={handleDecline} />
                 <img src={tick} alt="Accept" className="action-icon" onClick={handleAccept} />
             </div>
-        </div>
+            </div>
+            <img className='received-icon' src={received} alt="Received Request" title='Received Request' />
+
+            </div>
     );
 };
 
