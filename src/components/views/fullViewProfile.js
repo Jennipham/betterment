@@ -4,21 +4,21 @@ import Footer from '../utils/footer';
 import { useState, useEffect } from 'react';
 import white from '../images/profile-white.png';
 import axios from 'axios';
-
+import { useParams } from 'react-router-dom';
 
 const FullProfile = () => {
 
-    const [user, setUser] = useState({
-        firstName: sessionStorage.getItem('firstName') || 'User',
-        lastName: sessionStorage.getItem('lastName') || '',
-        userType: sessionStorage.getItem('userType') || '',
-        email: sessionStorage.getItem('email') || '',
-        jobRole: sessionStorage.getItem('jobRole') || '',
-    });
+    const { email } = useParams();
 
-    const [mentorProfile, setMentorProfile] = useState(null);
-    const [mentorFname, setMentorFname] = useState('');
-    const [mentorSname, setMentorSname] = useState('');
+
+
+    const [matchFname, setMatchFname] = useState('');
+    const [matchSname, setMatchSname] = useState('');
+    const [matchUserType, setMatchUserType] = useState('');
+    const [matchProfile, setMatchProfile] = useState(null);
+
+
+
 
     const [errorMessage, setErrorMessage] = useState('');
 
@@ -28,40 +28,6 @@ const FullProfile = () => {
             return option ? option.label : value;
         });
     };
-    const languageOptions = [
-        { value: 'Afrikaans', label: 'Afrikaans' },
-        { value: 'English', label: 'English' },
-        { value: 'French', label: 'French' },
-        { value: 'German', label: 'German' },
-        { value: 'Hindi', label: 'Hindi' },
-        { value: 'Hungarian', label: 'Hungarian' },
-        { value: 'Marathi', label: 'Marathi' },
-        { value: 'Italian', label: 'Italian' },
-        { value: 'Portuguese', label: 'Portuguese' },
-        { value: 'Romanian', label: 'Romanian' },
-        { value: 'Spanish', label: 'Spanish' },
-        { value: 'Swedish', label: 'Swedish' },
-        { value: 'Turkish', label: 'Turkish' },
-    ];
-
-    const locationOptions = [
-        { value: 'location', label: 'Location' },
-
-    ];
-
-    const developmentAreaOptions = [
-        { value: 'Career', label: 'Career Decision' },
-        { value: 'Communication', label: 'Communication' },
-        { value: 'Confidence', label: 'Confidence' },
-        { value: 'Conflict', label: 'Conflict' },
-        { value: 'Goals', label: 'Goal Setting' },
-        { value: 'Obstacles', label: 'Obstacles' },
-        { value: 'Resilience', label: 'Resilience' },
-        { value: 'Stakeholders', label: 'Stakeholder Conversations' },
-        { value: 'Time', label: 'Time Management' },
-        { value: 'Wellbeing', label: 'Wellbeing' },
-        { value: 'Balance', label: 'Work / Life Balance' },
-    ]
 
     const methodOptions = [
         { value: 'InPerson', label: 'In Person Sessions' },
@@ -74,39 +40,42 @@ const FullProfile = () => {
         }
         return str.charAt(0).toUpperCase() + str.slice(1);
     };
-
     useEffect(() => {
-        const fetchUserData = async () => {
-            // Fetch user data from session storage
-            const firstName = sessionStorage.getItem('firstName');
-            const lastName = sessionStorage.getItem('lastName');
-            const userType = sessionStorage.getItem('userType');
-            const email = sessionStorage.getItem('email');
-            const jobRole = sessionStorage.getItem('jobRole') || '';
-            const mentorProfile = sessionStorage.getItem('matchProfile');
-
-
-            setUser({ firstName, lastName, userType, email, jobRole });
-            setMentorProfile(mentorProfile ? JSON.parse(mentorProfile) : null);
-        };
-        fetchUserData();
-    }, []);
-
-    useEffect(() => {
-        const fetchMentorData = async () => {
+        const fetchRequestData = async () => {
             try {
-                if (mentorProfile && mentorProfile.email) {
-                    const response = await axios.get(`http://localhost:3001/getUserDetails?email=${mentorProfile.email}`);
-                    setMentorFname(response.data.user.fname);
-                    setMentorSname(response.data.user.sname);
+                if (email) {
+                    const response = await axios.get(`http://localhost:3001/getUserDetails?email=${email}`);
+                    setMatchFname(response.data.user.fname);
+                    setMatchSname(response.data.user.sname);
+                    setMatchUserType(response.data.user.userType);
                 }
             } catch (error) {
                 console.error('Error fetching mentor data:', error);
                 setErrorMessage('Error Fetching Mentor Information');
             }
         };
-        fetchMentorData();
-    }, [mentorProfile]);
+        fetchRequestData();
+    }, [email]);
+
+    useEffect(() => {
+        const fetchRequestProfile = async () => {
+            try {
+                if (matchUserType !== '') {
+        const userResponse = await axios.post('http://localhost:3001/getProfile', {
+            email: email,
+            userType: matchUserType,
+        });
+
+        setMatchProfile(userResponse.data.profile);
+    }
+} catch (error) {
+    console.error('Error fetching mentor data:', error);
+    setErrorMessage('Error Fetching Mentor Information');
+}
+        };
+fetchRequestProfile();
+    }, [email, matchUserType]);
+
 
     return (
         <>
@@ -119,23 +88,20 @@ const FullProfile = () => {
                         {errorMessage && <p className="error-message-profile">{errorMessage}</p>}
                     </div>
                     <div className="profile-header">
-                        <h1>{mentorFname && mentorSname ? `${mentorFname} ${mentorSname}` : ''}</h1>
-                        <p className="job-role">Job Role: {mentorProfile && mentorProfile.profileInfo.jobRole ? capitaliseFirstLetter(mentorProfile.profileInfo.jobRole) : ''}</p>
+                        <h1>{matchFname && matchSname ? `${matchFname} ${matchSname}` : ''}</h1>
+                        <p className="job-role">Job Role: {matchProfile && matchProfile.profileInfo.jobRole ? capitaliseFirstLetter(matchProfile.profileInfo.jobRole) : ''}</p>
 
                     </div>
                     <div className='match-profile-info'>
                         <div className="profile-info">
-                            <p>Department: {mentorProfile && mentorProfile.profileInfo.department ? capitaliseFirstLetter(mentorProfile.profileInfo.department) : ''}</p>
-                            <p>Location: {mentorProfile && mentorProfile.profileInfo.officeLocation ? capitaliseFirstLetter(mentorProfile.profileInfo.officeLocation) : ''}</p>
-                            <p>Languages: {mentorProfile && mentorProfile.profileInfo.languages ? mentorProfile.profileInfo.languages.join(', ') : ''}</p>
+                            <p>Department: {matchProfile && matchProfile.profileInfo.department ? capitaliseFirstLetter(matchProfile.profileInfo.department) : ''}</p>
+                            <p>Location: {matchProfile && matchProfile.profileInfo.officeLocation ? capitaliseFirstLetter(matchProfile.profileInfo.officeLocation) : ''}</p>
+                            <p>Languages: {matchProfile && matchProfile.profileInfo.languages ? matchProfile.profileInfo.languages.join(', ') : ''}</p>
                         </div>
                         <div className="profile-info">
-                            <p>Development Areas: {mentorProfile && mentorProfile.profileInfo.developmentAreas ? mentorProfile.profileInfo.developmentAreas.join(', ') : ''}</p>
-                            <p>Methods of Matching: {mentorProfile && mentorProfile.profileInfo.mentoringMethods ? mapValuesToLabels(mentorProfile.profileInfo.mentoringMethods, methodOptions).join(', ') : ''}</p>
+                            <p>Development Areas: {matchProfile && matchProfile.profileInfo.developmentAreas ? matchProfile.profileInfo.developmentAreas.join(', ') : ''}</p>
+                            <p>Methods of Matching: {matchProfile && matchProfile.profileInfo.matchingMethods ? mapValuesToLabels(matchProfile.profileInfo.mentoringMethods, methodOptions).join(', ') : ''}</p>
                         </div>
-                    </div>
-                    <div className="bottom-buttons-container">
-                        <button className='match-request-button'>Request Match</button>
                     </div>
                 </div>
             </div>

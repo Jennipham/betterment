@@ -32,7 +32,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signupSuccess" element={<ProtectedRoute><Welcome /></ProtectedRoute>} />
           <Route path="/termsofuse" element={<TermsOfUse />} />
-          <Route path="/fullprofile" element={<ProtectedRoute><FullProfile /></ProtectedRoute>} />
+          <Route path="/fullprofile/:email" element={<ProtectedRoute><FullProfile/></ProtectedRoute>} />
           <Route path="/help" element={<ProtectedRoute><Help /></ProtectedRoute>} />
           <Route path="/error" element={<NoPermissions />} />
           <Route path="/expired" element={<ExpiredSession />} />

@@ -289,7 +289,7 @@ router.post('/getManagerProfile', async (req, res) => {
 
 
 router.post('/profile', async (req, res) => {
-    const { signUpDate, jobRole, department, officeLocation, capacity, languages, developmentAreas, mentoringMethods, email, userType, sentRequests, receivedRequests, available } = req.body;
+    const { signUpDate, jobRole, department, officeLocation, capacity, languages, level, developmentAreas, mentoringMethods, email, userType, sentRequests, receivedRequests, available } = req.body;
 
     try {
         let profile;
