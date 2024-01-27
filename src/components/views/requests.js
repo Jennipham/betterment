@@ -9,6 +9,8 @@ import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 
 
 const Requests = () => {
+    const [daysLeft, setDaysLeft] = useState(14);
+
     const [receivedRequests, setReceivedRequests] = useState([]);
     const [sentRequests, setSentRequests] = useState([]);
 
@@ -16,64 +18,14 @@ const Requests = () => {
 
     const [allRequests, setAllRequests] = useState([]);
 
-    // const onDragEnd = async (result) => {
-    //     if (!result.destination) {
-    //         return; // Dropped outside the list
-    //     }
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setDaysLeft(prevDays => prevDays - 1);
+        }, 24 * 60 * 60 * 1000); // Update every 24 hours
 
-    //     const sourceIndex = result.source.index;
-    //     const destinationIndex = result.destination.index;
+        return () => clearInterval(interval); // Cleanup interval on component unmount
 
-    //     // If the drag is within receivedRequests
-    //     if (result.source.droppableId === 'allRequests' && result.destination?.droppableId === 'allRequests') {
-    //         const updatedReceivedRequests = allRequests
-    //             .filter(request => request && request.type === 'received' && request._id)
-    //             .map(request => ({ ...request }));
-
-    //         const [reorderedReceivedItem] = updatedReceivedRequests.splice(sourceIndex, 1);
-    //         updatedReceivedRequests.splice(destinationIndex, 0, reorderedReceivedItem);
-
-    //         const updatedAllRequests = allRequests
-    //             .filter(request => request && request.type !== 'received' && request._id)
-    //             .concat(updatedReceivedRequests)
-    //             .sort((a, b) => a.index - b.index);
-
-    //         setAllRequests(updatedAllRequests);
-    //     }
-
-    //     // If the drag is within sentRequests
-    //     if (result.source.droppableId === 'allRequests' && result.destination?.droppableId === 'allRequests') {
-    //         const updatedSentRequests = allRequests
-    //             .filter(request => request && request.type === 'sent' && request._id)
-    //             .map(request => ({ ...request }));
-
-    //         const [reorderedSentItem] = updatedSentRequests.splice(sourceIndex, 1);
-    //         updatedSentRequests.splice(destinationIndex, 0, reorderedSentItem);
-
-    //         // Filter out null entries
-    //         const filteredSentRequests = updatedSentRequests.filter(Boolean);
-
-    //         const updatedAllRequests = allRequests
-    //             .filter(request => request.type !== 'sent')
-    //             .concat(filteredSentRequests)
-    //             .sort((a, b) => a.index - b.index);
-
-    //         setAllRequests(updatedAllRequests);
-    //     }
-
-    //     const email = sessionStorage.getItem('email');
-    //     const userType = sessionStorage.getItem('userType');
-
-    //     // try {
-    //     //     await axios.post('http://localhost:3001/updateRequestOrder', { allRequests, userType, email });
-    //     //     console.log('Successfully updated order on the server');
-    //     // } catch (error) {
-    //     //     console.error('Error updating order on the server:', error);
-    //     // }
-
-    //     console.log('After Drag:', allRequests);
-    // };
-
+    }, []);
 
     const onDragEnd = async (result) => {
         if (!result.destination) {
@@ -191,6 +143,8 @@ const Requests = () => {
                 </div>
                 <div className="requests-box">
                     <h2>Shortlist</h2>
+                    <span className='round-countdown'>Next Matching Round: {daysLeft} days </span>
+
                     <DragDropContext onDragEnd={onDragEnd}>
                         <Droppable droppableId="allRequests">
                             {(provided) => (
