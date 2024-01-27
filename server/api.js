@@ -654,47 +654,67 @@ router.post('/getSentRequests', async (req, res) => {
     }
 });
 
-router.post('/updateRequestOrder', async (req, res) => {
+router.post('/getShortlistOrder', async (req, res) => {
+    const { email, userType } = req.body;
+
     try {
-        const { updatedRequests, email, userType } = req.body;
+        let profileModel;
 
-        // Update the order based on the user type
+        // Choose the appropriate model based on user type
         if (userType === 'mentee') {
-            const updatedSentRequests = updatedRequests.filter(request => request.type === 'sent');
-            const updatedReceivedRequests = updatedRequests.filter(request => request.type === 'received');
-
-            await MenteeProfile.findOneAndUpdate(
-                { email },
-                {
-                    $set: {
-                        'profileInfo.sentRequests': updatedSentRequests,
-                        'profileInfo.receivedRequests': updatedReceivedRequests,
-                    },
-                },
-                { new: true }
-            );
+            profileModel = MenteeProfile;
         } else if (userType === 'mentor') {
-            const updatedSentRequests = updatedRequests.filter(request => request.type === 'sent');
-            const updatedReceivedRequests = updatedRequests.filter(request => request.type === 'received');
-
-            await MentorProfile.findOneAndUpdate(
-                { email },
-                {
-                    $set: {
-                        'profileInfo.sentRequests': updatedSentRequests,
-                        'profileInfo.receivedRequests': updatedReceivedRequests,
-                    },
-                },
-                { new: true }
-            );
+            profileModel = MentorProfile;
         } else {
-            return res.status(400).json({ error: 'Invalid user type' });
+            return res.status(400).json({ message: 'Invalid user type' });
         }
 
-        res.status(200).json({ message: 'Order updated successfully' });
+        // Find the user profile and return the shortlist order
+        const userProfile = await profileModel.findOne({ email });
+        if (!userProfile) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        return res.status(200).json({ shortlistOrder: userProfile.profileInfo.shortlistOrder || [] });
+    } catch (error) {
+        console.error('Error getting shortlist order:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+
+router.post('/updateRequestOrder', async (req, res) => {
+    try {
+        const { orderInformation, userType, email } = req.body;
+
+        let UserProfileModel;
+
+        // Choose the appropriate model based on userType
+        if (userType === 'mentee') {
+            UserProfileModel = MenteeProfile;
+        } else if (userType === 'mentor') {
+            UserProfileModel = MentorProfile;
+        } else {
+            return res.status(400).json({ message: 'Invalid userType' });
+        }
+
+        // Find the user profile by email and userType
+        const userProfile = await UserProfileModel.findOne({
+            email,
+            userType, // Updated query
+        });
+        // Update the order information in the user's profile
+        if (userProfile) {
+            userProfile.profileInfo.shortlistOrder = orderInformation;
+            await userProfile.save();
+
+            res.status(200).json({ message: 'Order updated successfully' });
+        } else {
+            res.status(404).json({ message: 'User not found' });
+        }
     } catch (error) {
         console.error('Error updating order:', error);
-        res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ message: 'Internal server error' });
     }
 });
 

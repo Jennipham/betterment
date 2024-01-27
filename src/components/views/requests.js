@@ -97,7 +97,6 @@ const Requests = () => {
                 const email = sessionStorage.getItem('email');
                 const userType = sessionStorage.getItem('userType');
 
-
                 if (!email || !userType) {
                     console.error('User information is missing.');
                     return;
@@ -108,7 +107,6 @@ const Requests = () => {
                     email,
                     userType,
                 });
-                setReceivedRequests(receivedResponse.data.receivedRequests);
 
                 // Fetch sent requests
                 const sentResponse = await axios.post('http://localhost:3001/getSentRequests', {
@@ -116,15 +114,25 @@ const Requests = () => {
                     userType,
                 });
 
-                setSentRequests(sentResponse.data.sentRequests);
-
+                // Combine received and sent requests
                 const combinedRequests = [
                     ...receivedResponse.data.receivedRequests.map(request => ({ ...request, type: 'received' })),
                     ...sentResponse.data.sentRequests.map(request => ({ ...request, type: 'sent' })),
                 ];
 
-                const sortedRequests = combinedRequests.sort((a, b) => a.index - b.index);
+                // Fetch shortlistOrder
+                const shortlistOrderResponse = await axios.post('http://localhost:3001/getShortlistOrder', {
+                    email,
+                    userType,
+                });
 
+                // Sort the combined requests based on the order in shortlistOrder
+                const sortedRequests = shortlistOrderResponse.data.shortlistOrder.map(orderItem => {
+                    const matchingRequest = combinedRequests.find(request => request._id === orderItem.requestId);
+                    return matchingRequest ? { ...matchingRequest, index: orderItem.index } : null;
+                }).filter(Boolean);
+
+                // Update the state with sorted requests
                 setAllRequests(sortedRequests);
 
             } catch (error) {
@@ -137,6 +145,28 @@ const Requests = () => {
     }, []);
 
 
+    const onSaveShortlistClick = async () => {
+        const email = sessionStorage.getItem('email');
+        const userType = sessionStorage.getItem('userType');
+
+        try {
+            // Extract the order information from allRequests and send it to the server
+            const orderInformation = allRequests.map((request, index) => ({
+                requestId: request && request._id ? request._id : `undefined-${index}`,
+                type: request ? request.type : 'unknown',
+            }));
+
+            await axios.post('http://localhost:3001/updateRequestOrder', {
+                orderInformation,
+                userType,
+                email,
+            });
+
+            console.log('Successfully updated order on the server');
+        } catch (error) {
+            console.error('Error updating order on the server:', error);
+        }
+    };
 
     const onRemoveSentRequest = (emailToRemove) => {
         setSentRequests(sentRequests.filter(request => request.receiverEmail !== emailToRemove));
@@ -202,7 +232,7 @@ const Requests = () => {
                     </DragDropContext>
 
                 </div>
-                <button className='save-shortlist'>Save</button>
+                <button className='save-shortlist' onClick={onSaveShortlistClick}>Save</button>
             </div>
 
             <Footer />
