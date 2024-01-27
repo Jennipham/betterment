@@ -72,6 +72,7 @@ router.post('/signup', async (req, res) => {
                     mentoringMethods: [],
                     sentRequests: [],
                     receivedRequests: [],
+                    shortlistOrder:[],
                     available: true,
                 },
 
@@ -94,6 +95,7 @@ router.post('/signup', async (req, res) => {
                     mentoringMethods: [],
                     sentRequests: [],
                     receivedRequests: [],
+                    shortlistOrder: [],
                     available: true,
                 },
 
@@ -197,6 +199,7 @@ router.post('/login', async (req, res) => {
                             mentoringMethods: [],
                             sentRequests: [],
                             receivedRequests: [],
+                            shortlistOrder: [],
                             available: 'true',
                         },
                     };
@@ -222,6 +225,7 @@ router.post('/login', async (req, res) => {
                             mentoringMethods: [],
                             sentRequests: [],
                             receivedRequests: [],
+                            shortlistOrder: [],
                             available: 'true',
                         },
                     };
@@ -289,7 +293,7 @@ router.post('/getManagerProfile', async (req, res) => {
 
 
 router.post('/profile', async (req, res) => {
-    const { signUpDate, jobRole, department, officeLocation, capacity, languages, level, developmentAreas, mentoringMethods, email, userType, sentRequests, receivedRequests, available } = req.body;
+    const { signUpDate, jobRole, department, officeLocation, capacity, languages, level, developmentAreas, mentoringMethods, email, userType, sentRequests, receivedRequests, available, shortlistOrder } = req.body;
 
     try {
         let profile;
@@ -312,6 +316,7 @@ router.post('/profile', async (req, res) => {
                         mentoringMethods,
                         sentRequests,
                         receivedRequests,
+                        shortlistOrder,
                         available,
                     },
                 });
@@ -328,6 +333,7 @@ router.post('/profile', async (req, res) => {
                     mentoringMethods,
                     sentRequests,
                     receivedRequests,
+                    shortlistOrder,
                     available,
                 };
             }
@@ -350,6 +356,7 @@ router.post('/profile', async (req, res) => {
                         mentoringMethods,
                         sentRequests,
                         receivedRequests,
+                        shortlistOrder,
                         available,
                     },
                 });
@@ -367,6 +374,7 @@ router.post('/profile', async (req, res) => {
                     mentoringMethods,
                     sentRequests,
                     receivedRequests,
+                    shortlistOrder,
                     available,
                 };
             }
@@ -645,6 +653,51 @@ router.post('/getSentRequests', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
+router.post('/updateRequestOrder', async (req, res) => {
+    try {
+        const { updatedRequests, email, userType } = req.body;
+
+        // Update the order based on the user type
+        if (userType === 'mentee') {
+            const updatedSentRequests = updatedRequests.filter(request => request.type === 'sent');
+            const updatedReceivedRequests = updatedRequests.filter(request => request.type === 'received');
+
+            await MenteeProfile.findOneAndUpdate(
+                { email },
+                {
+                    $set: {
+                        'profileInfo.sentRequests': updatedSentRequests,
+                        'profileInfo.receivedRequests': updatedReceivedRequests,
+                    },
+                },
+                { new: true }
+            );
+        } else if (userType === 'mentor') {
+            const updatedSentRequests = updatedRequests.filter(request => request.type === 'sent');
+            const updatedReceivedRequests = updatedRequests.filter(request => request.type === 'received');
+
+            await MentorProfile.findOneAndUpdate(
+                { email },
+                {
+                    $set: {
+                        'profileInfo.sentRequests': updatedSentRequests,
+                        'profileInfo.receivedRequests': updatedReceivedRequests,
+                    },
+                },
+                { new: true }
+            );
+        } else {
+            return res.status(400).json({ error: 'Invalid user type' });
+        }
+
+        res.status(200).json({ message: 'Order updated successfully' });
+    } catch (error) {
+        console.error('Error updating order:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 
 
 router.delete('/cancelRequest/:receiverEmail', async (req, res) => {

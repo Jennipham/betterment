@@ -38,6 +38,15 @@ const mentorProfileSchema = new mongoose.Schema({
                 declined: { type: Boolean, default: false },
             }
         ],
+        shortlistOrder: [
+            {
+                requestId: {
+                    type: mongoose.Schema.Types.ObjectId,  // Assuming _id is of type ObjectId
+                    ref: 'MentorProfiles',  // Reference to the MenteeProfiles collection
+                    required: true,
+                }
+            }
+        ],
         available: { type: Boolean, default: true },
     },
 });

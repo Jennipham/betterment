@@ -10,7 +10,7 @@ import '../styles/SentRequests.css';
 
 const SentRequest = ({ request, onRemoveRequest }) => {
 
-    console.log('sent', request);
+    // console.log('sent', request);
 
     const email = sessionStorage.getItem('email');
     const userType = sessionStorage.getItem('userType');
