@@ -37,6 +37,23 @@ const menteeProfileSchema = new mongoose.Schema({
                 declined: { type: Boolean, default: false },
             }
         ],
+        declinedRequestsCount: { type: Number, default: 0 },
+        matches: [
+            {
+                mentorEmail: {
+                    type: String,
+                    required: true,
+                },
+                round: {
+                    type: Number,
+                    required: true,
+                },
+            },
+        ],
+        matchedInCurrentRound: {
+            type: Boolean,
+            default: false,
+        },
         shortlistOrder: [
             {
                 requestId: {

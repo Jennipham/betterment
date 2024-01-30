@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const nodemailer = require('nodemailer');
+const cron = require('node-cron');
 const User = require('./models/user');
 const MenteeProfile = require('./models/menteeProfiles');
 const MentorProfile = require('./models/mentorProfiles');
@@ -8,8 +9,7 @@ const ManagerProfile = require('./models/managerProfiles');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { validationResult } = require('express-validator'); // For input validation
-const matchingController = require('./controllers/matching');
-
+const galeShapley = require('./controllers/matching');
 
 require('dotenv').config();
 
@@ -74,6 +74,9 @@ router.post('/signup', async (req, res) => {
                     receivedRequests: [],
                     shortlistOrder:[],
                     available: true,
+                    matchedInCurrentRound: false,
+                    declinedRequestsCount: 0,
+                    matches:[],
                 },
 
             });
@@ -97,6 +100,9 @@ router.post('/signup', async (req, res) => {
                     receivedRequests: [],
                     shortlistOrder: [],
                     available: true,
+                    matchedInCurrentRound: false,
+                    declinedRequestsCount: 0,
+                    matches:[],
                 },
 
             });
@@ -201,6 +207,9 @@ router.post('/login', async (req, res) => {
                             receivedRequests: [],
                             shortlistOrder: [],
                             available: 'true',
+                            matchedInCurrentRound: false,
+                            declinedRequestsCount: 0,
+                            matches:[],
                         },
                     };
                 }
@@ -227,6 +236,9 @@ router.post('/login', async (req, res) => {
                             receivedRequests: [],
                             shortlistOrder: [],
                             available: 'true',
+                            matchedInCurrentRound: false,
+                            declinedRequestsCount: 0,
+                            matches:[],
                         },
                     };
                 }
@@ -293,7 +305,8 @@ router.post('/getManagerProfile', async (req, res) => {
 
 
 router.post('/profile', async (req, res) => {
-    const { signUpDate, jobRole, department, officeLocation, capacity, languages, level, developmentAreas, mentoringMethods, email, userType, sentRequests, receivedRequests, available, shortlistOrder } = req.body;
+    const { signUpDate, jobRole, department, officeLocation, capacity, languages, level, developmentAreas, mentoringMethods, email, userType, sentRequests, receivedRequests, available, shortlistOrder, matchedInCurrentRound,
+        declinedRequestsCount, matches } = req.body;
 
     try {
         let profile;
@@ -318,6 +331,9 @@ router.post('/profile', async (req, res) => {
                         receivedRequests,
                         shortlistOrder,
                         available,
+                        matchedInCurrentRound,
+                        declinedRequestsCount,
+                        matches,
                     },
                 });
             } else {
@@ -335,6 +351,9 @@ router.post('/profile', async (req, res) => {
                     receivedRequests,
                     shortlistOrder,
                     available,
+                    matchedInCurrentRound,
+                    declinedRequestsCount,
+                    matches,
                 };
             }
         } else if (userType === 'mentor') {
@@ -358,6 +377,9 @@ router.post('/profile', async (req, res) => {
                         receivedRequests,
                         shortlistOrder,
                         available,
+                        matchedInCurrentRound,
+                        declinedRequestsCount,
+                        matches,
                     },
                 });
             } else {
@@ -376,6 +398,9 @@ router.post('/profile', async (req, res) => {
                     receivedRequests,
                     shortlistOrder,
                     available,
+                    matchedInCurrentRound,
+                    declinedRequestsCount,
+                    matches,
                 };
             }
         }
@@ -843,33 +868,38 @@ router.post('/declineRequest', async (req, res) => {
     const { email, senderEmail, userType } = req.body;
 
     try {
+        let updateQuery;
+
         if (userType === 'mentee') {
+            updateQuery = {
+                $set: { 'profileInfo.receivedRequests.$.declined': true },
+                $inc: { 'profileInfo.declinedRequestsCount': 1 },
+            };
+        } else if (userType === 'mentor') {
+            updateQuery = {
+                $set: { 'profileInfo.receivedRequests.$.declined': true },
+                $inc: { 'profileInfo.declinedRequestsCount': 1 },
+            };
+        } else {
+            return res.status(400).json({ error: 'Invalid userType' });
+        }
 
-            const profile = await MenteeProfile.findOneAndUpdate(
+        const profile = userType === 'mentee'
+            ? await MenteeProfile.findOneAndUpdate(
                 { email, 'profileInfo.receivedRequests.senderEmail': senderEmail },
-                { $set: { 'profileInfo.receivedRequests.$.declined': true } },
+                updateQuery,
+                { new: true }
+            )
+            : await MentorProfile.findOneAndUpdate(
+                { email, 'profileInfo.receivedRequests.senderEmail': senderEmail },
+                updateQuery,
                 { new: true }
             );
 
-            if (!profile) {
-                return res.status(404).json({ error: 'Profile not found' });
-            }
-
+        if (!profile) {
+            return res.status(404).json({ error: 'Profile not found' });
         }
 
-        if (userType === 'mentor') {
-
-            const profile = await MentorProfile.findOneAndUpdate(
-                { email, 'profileInfo.receivedRequests.senderEmail': senderEmail },
-                { $set: { 'profileInfo.receivedRequests.$.declined': true } },
-                { new: true }
-            );
-
-            if (!profile) {
-                return res.status(404).json({ error: 'Profile not found' });
-            }
-
-        }
         res.json({ success: true });
     } catch (error) {
         console.error('Error declining request:', error);
@@ -1031,5 +1061,39 @@ router.post('/logout', async (req, res) => {
     }
 });
 
+router.post('/match', async (req, res) => {
+    try {
+        const { email, userType } = req.body;
+
+        if (!email || !userType) {
+            return res.status(400).json({ error: 'Invalid request parameters' });
+        }
+
+        const menteesShortlist = await MenteeProfile.find({}, 'email profileInfo.shortlistOrder');
+        const mentorsShortlist = await MentorProfile.find({}, 'email profileInfo.shortlistOrder');
+
+        const menteePreferences = menteesShortlist.map(mentee => ({
+            email: mentee.email,
+            preferences: mentee.profileInfo.shortlistOrder.map(item => item.requestId.toString()),
+            declinedRequestsCount: mentee.profileInfo.declinedRequestsCount,
+        }));
+
+        const mentorPreferences = mentorsShortlist.map(mentor => ({
+            email: mentor.email,
+            preferences: mentor.profileInfo.shortlistOrder.map(item => item.requestId.toString()),
+            declinedRequestsCount: mentor.profileInfo.declinedRequestsCount,
+        }));
+
+        const matches = galeShapley(menteePreferences, mentorPreferences, menteesShortlist, mentorsShortlist);
+
+        // Update the database with the matching results
+        // (This part will depend on your specific database schema)
+
+        return res.json({ success: true, matches });
+    } catch (error) {
+        console.error('Error matching profiles:', error);
+        return res.status(500).json({ success: false, error: 'Internal Server Error' });
+    }
+});
 
 module.exports = router;

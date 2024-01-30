@@ -9,7 +9,7 @@ import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 
 
 const Requests = () => {
-    const [daysLeft, setDaysLeft] = useState(14);
+    const [daysLeft, setDaysLeft] = useState(calculateDaysLeft());
 
     const [receivedRequests, setReceivedRequests] = useState([]);
     const [sentRequests, setSentRequests] = useState([]);
@@ -17,6 +17,23 @@ const Requests = () => {
     const [errorMessage, setErrorMessage] = useState('');
 
     const [allRequests, setAllRequests] = useState([]);
+
+    const calculateDaysLeft = () => {
+        // Set the time for the next matching round (adjust this based on your requirements)
+        const matchingRoundDate = new Date();
+        
+        // Set the time to be the next occurrence of the matching round (e.g., every 14 days)
+        matchingRoundDate.setDate(matchingRoundDate.getDate() + 14);
+    
+        // Calculate the time difference in milliseconds
+        const timeDiff = matchingRoundDate.getTime() - Date.now();
+    
+        // Calculate days left
+        const daysLeft = Math.ceil(timeDiff / (1000 * 3600 * 24));
+    
+        return daysLeft > 0 ? daysLeft : 0; // Ensure daysLeft is non-negative
+    };
+    
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -94,6 +111,36 @@ const Requests = () => {
         };
 
         fetchData();
+    }, []);
+
+
+    const matchRound = async () => {
+        try {
+            const email = sessionStorage.getItem('email');
+                const userType = sessionStorage.getItem('userType');
+
+                if (!email || !userType) {
+                    console.error('User information is missing.');
+                    return;
+                }
+
+            const response = await axios.post('http://localhost:3001/match', {
+                email,
+                userType,
+                        });
+
+            const result = response.data;
+            console.log(result);
+
+        } catch (error) {
+            console.error('Error triggering matching:', error);
+        }
+    };
+
+    useEffect(() => {
+        matchRound();
+        const intervalId = setInterval(matchRound, 14 * 24 * 60 * 60 * 1000); // 14 days
+        return () => clearInterval(intervalId);
     }, []);
 
 
