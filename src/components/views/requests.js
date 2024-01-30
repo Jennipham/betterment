@@ -9,14 +9,6 @@ import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 
 
 const Requests = () => {
-    const [daysLeft, setDaysLeft] = useState(calculateDaysLeft());
-
-    const [receivedRequests, setReceivedRequests] = useState([]);
-    const [sentRequests, setSentRequests] = useState([]);
-
-    const [errorMessage, setErrorMessage] = useState('');
-
-    const [allRequests, setAllRequests] = useState([]);
 
     const calculateDaysLeft = () => {
         // Set the time for the next matching round (adjust this based on your requirements)
@@ -33,8 +25,16 @@ const Requests = () => {
     
         return daysLeft > 0 ? daysLeft : 0; // Ensure daysLeft is non-negative
     };
-    
 
+    const [daysLeft, setDaysLeft] = useState(calculateDaysLeft());
+
+    const [receivedRequests, setReceivedRequests] = useState([]);
+    const [sentRequests, setSentRequests] = useState([]);
+
+    const [errorMessage, setErrorMessage] = useState('');
+
+    const [allRequests, setAllRequests] = useState([]);
+    
     useEffect(() => {
         const interval = setInterval(() => {
             setDaysLeft(prevDays => prevDays - 1);

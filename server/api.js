@@ -1061,14 +1061,8 @@ router.post('/logout', async (req, res) => {
     }
 });
 
-router.post('/match', async (req, res) => {
+const matchLogic = async () => {
     try {
-        const { email, userType } = req.body;
-
-        if (!email || !userType) {
-            return res.status(400).json({ error: 'Invalid request parameters' });
-        }
-
         const menteesShortlist = await MenteeProfile.find({}, 'email profileInfo.shortlistOrder');
         const mentorsShortlist = await MentorProfile.find({}, 'email profileInfo.shortlistOrder');
 
@@ -1089,11 +1083,37 @@ router.post('/match', async (req, res) => {
         // Update the database with the matching results
         // (This part will depend on your specific database schema)
 
-        return res.json({ success: true, matches });
+        console.log('Matching process completed successfully.');
     } catch (error) {
-        console.error('Error matching profiles:', error);
-        return res.status(500).json({ success: false, error: 'Internal Server Error' });
+        console.error('Error during matching process:', error);
+    }
+};
+
+// Schedule the task to run every 14 days
+cron.schedule('0 0 */14 * *', async () => {
+    try {
+        console.log('Running matching process...');
+        await matchLogic(); // Call the function containing the matching logic
+    } catch (error) {
+        console.error('Error during scheduled matching process:', error);
     }
 });
 
+// Define the /match endpoint
+router.post('/match', async (req, res) => {
+    try {
+        const { email, userType } = req.body;
+
+        if (!email || !userType) {
+            return res.status(400).json({ error: 'Invalid request parameters' });
+        }
+
+        // Your existing matching logic goes here (if you still need to handle explicit requests)
+        
+        return res.json({ success: true, message: 'Matching process initiated' });
+    } catch (error) {
+        console.error('Error initiating matching process:', error);
+        return res.status(500).json({ success: false, error: 'Internal Server Error' });
+    }
+});
 module.exports = router;
