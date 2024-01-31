@@ -192,15 +192,28 @@ const MenteeMatches = () => {
                 expiration: expirationDate.toISOString(),
                 userType: user.userType,
             });
-
+          
             setSuccessMessage('Match request sent successfully!');
             console.log('Match request sent successfully:', response.data);
             setLoading(false);
 
         } catch (error) {
             setLoading(false);
-            console.error('Error sending match request:', error);
-            setErrorMessage('Error sending Match Request');
+            if (error.response) {
+                if (error.response.status === 400) {
+                    setErrorMessage('Invalid user type - Please try again later.');
+                } else if (error.response.status === 404) {
+                    setErrorMessage('Profile not found - please try again later.');
+                }
+                else if (error.response.status === 401) {
+                    setErrorMessage('Match request already sent or received');
+                }
+                else {
+                    console.error('Error sending match request:', error);
+                    setErrorMessage('Error sending Match Request');
+                }
+            }
+           
         }
     };
     
@@ -378,7 +391,7 @@ const MenteeMatches = () => {
             <Header />
 
             <div className="mentee-profile-container">
-                
+
                 <div className='error-message-profile-container'>
                     {errorMessage && <p className="error-message-profile">{errorMessage}</p>}
                 </div>
