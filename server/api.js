@@ -549,7 +549,7 @@ router.get('/getMatches', async (req, res) => {
 });
 
 router.post('/requestMatch', async (req, res) => {
-    const { senderEmail, receiverEmail, expiration, userType } = req.body;
+    const { senderEmail, receiverEmail, userType } = req.body;
 
     try {
         let senderProfile, receiverProfile;
@@ -576,8 +576,8 @@ router.post('/requestMatch', async (req, res) => {
         }
 
         // Update sender's sentRequests and receiver's receivedRequests
-        senderProfile.profileInfo.sentRequests.push({ receiverEmail, expiration });
-        receiverProfile.profileInfo.receivedRequests.push({ senderEmail, expiration });
+        senderProfile.profileInfo.sentRequests.push({ receiverEmail });
+        receiverProfile.profileInfo.receivedRequests.push({ senderEmail });
 
         // Save the changes to the database
         await senderProfile.save();
