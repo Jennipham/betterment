@@ -4,6 +4,8 @@ import '../styles/Requests.css';
 import Footer from '../utils/footer';
 import SentRequest from './sentRequest';
 import ReceivedRequest from './receivedRequest';
+import Tooltip from '../utils/tooltip';
+import moreInfo from '../images/more-info-icon.png';
 import axios from 'axios';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 
@@ -189,7 +191,12 @@ const Requests = () => {
                     {errorMessage && <p className="error-message-profile">{errorMessage}</p>}
                 </div>
                 <div className="requests-box">
-                    <h2>Shortlist</h2>
+                    <h2>Shortlist   
+                    <Tooltip text="Create your shortlist in order of preference to be matched">
+                                <img src={moreInfo} alt="More Info" className="more-info-icon" />
+                            </Tooltip>
+                    </h2>
+                   
                     <span className='round-countdown'>Next Matching Round: {daysLeft} days </span>
 
                     <DragDropContext onDragEnd={onDragEnd}>
