@@ -6,10 +6,11 @@ import axios from 'axios';
 import profile from '../images/profile-black.png';
 import cross from '../images/cross-icon.png';
 import tick from '../images/tick-icon.png';
+import accepted from '../images/accepted-icon.png';
 import received from '../images/received-icon.png';
 import '../styles/ReceivedRequests.css';
 
-const ReceivedRequest = ({ request, onDecline, onAccept }) => {
+const ReceivedRequest = ({ request, onDecline }) => {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const userType = sessionStorage.getItem('userType');
@@ -54,11 +55,11 @@ const ReceivedRequest = ({ request, onDecline, onAccept }) => {
                 userType: userType,
             });
 
-            onAccept(request);
         } catch (error) {
             console.error('Error accepting request:', error);
         }
     };
+
     useEffect(() => {
         const fetchMatchProfile = async () => {
             try {
@@ -95,30 +96,36 @@ const ReceivedRequest = ({ request, onDecline, onAccept }) => {
 
     return (
         <div className='received-container'>
-        <div className="request-box-received">
-            <div className='icon-box'>
-                <button className="match-profile-button" onClick={() => openModal()}>
-                    <img className='request-profile-icon' src={profile} alt="Profile Icon" />
-                </button>
-                <button className="view-profile" onClick={() => openModal()}>View Full Profile</button>
-                {isModalOpen && (
-                    <Modal onClose={handleCloseModal}>
+            <div className="request-box-received">
+                <div className='icon-box'>
+                    <button className="match-profile-button" onClick={() => openModal()}>
+                        <img className='request-profile-icon' src={profile} alt="Profile Icon" />
+                    </button>
+                    <button className="view-profile" onClick={() => openModal()}>View Full Profile</button>
+                    {isModalOpen && (
+                        <Modal onClose={handleCloseModal}>
                             <iframe title="Full Profile" src={`/fullprofile/${request.senderEmail}`} width="100%" height="100%">
                             </iframe>
                         </Modal>
-                )}
-            </div>
-            <div className="received-profile-info">
-                <p className='received-name'>{`${matchFname} ${matchSname}`}</p>
-            </div>
-            <div className='action-buttons'>
-                <img src={cross} alt="Reject" className="action-icon" onClick={handleDecline} />
-                <img src={tick} alt="Accept" className="action-icon" onClick={handleAccept} />
-            </div>
+                    )}
+                </div>
+                <div className="received-profile-info">
+                    <p className='received-name'>{`${matchFname} ${matchSname}`}</p>
+                </div>
+                <div className='action-buttons'>
+                {!request.accepted ? (
+                        <>
+                    <img src={cross} alt="Reject" className="action-icon" onClick={handleDecline} title='Accept' />
+                    <img src={tick} alt="Accept" className="action-icon" onClick={handleAccept} title='Reject'/>
+                    </>
+                    ) : (
+                        <img src={accepted} alt="Accept" className="accepted-icon" title='Accepted' />
+                        )}
+                </div>
             </div>
             <img className='received-icon' src={received} alt="Received Request" title='Received Request' />
 
-            </div>
+        </div>
     );
 };
 

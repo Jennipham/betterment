@@ -617,33 +617,26 @@ router.post('/getReceivedRequests', async (req, res) => {
                 return res.status(404).json({ error: 'Profile not found' });
             }
 
-            const filteredReceivedRequests = userProfile.profileInfo.receivedRequests.filter(
-                (request) => request.accepted === false && request.declined === false
-            );
-            res.json({ receivedRequests: filteredReceivedRequests });
+            const receivedRequests = userProfile.profileInfo.receivedRequests;
+            res.json({ receivedRequests });
 
-        }
-
-        else if (userType === 'mentor') {
+        } else if (userType === 'mentor') {
             const userProfile = await MentorProfile.findOne({ email });
 
             if (!userProfile) {
                 return res.status(404).json({ error: 'Profile not found' });
             }
 
-            const filteredReceivedRequests = userProfile.profileInfo.receivedRequests.filter(
-                (request) => request.accepted === false && request.declined === false
-            );
-            res.json({ receivedRequests: filteredReceivedRequests });
-
+            const receivedRequests = userProfile.profileInfo.receivedRequests;
+            res.json({ receivedRequests });
         }
-
 
     } catch (error) {
         console.error('Error fetching received requests:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 
 
 router.post('/getSentRequests', async (req, res) => {
@@ -860,7 +853,7 @@ router.post('/acceptRequest', async (req, res) => {
             );
 
             // Update the sent request
-            await MenteeProfile.updateOne(
+            await MentorProfile.updateOne(
                 { 'profileInfo.sentRequests.receiverEmail': email },
                 { $set: { 'profileInfo.sentRequests.$.accepted': true } }
             );
@@ -885,7 +878,7 @@ router.post('/acceptRequest', async (req, res) => {
             );
 
             // Update the sent request
-            await MentorProfile.updateOne(
+            await MenteeProfile.updateOne(
                 { 'profileInfo.sentRequests.receiverEmail': email },
                 { $set: { 'profileInfo.sentRequests.$.accepted': true } }
             );
@@ -934,14 +927,17 @@ router.post('/declineRequest', async (req, res) => {
             return res.status(404).json({ error: 'Profile not found' });
         }
 
+        // Pull the request from the shortlist order array
+        profile.profileInfo.shortlistOrder = profile.profileInfo.shortlistOrder.filter(orderItem => orderItem.requestId.toString() !== profile.profileInfo.receivedRequests.find(request => request.senderEmail === senderEmail)._id.toString());
+
+        await profile.save();
+
         res.json({ success: true });
     } catch (error) {
         console.error('Error declining request:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
-
-
 
 
 router.post('/managerProfile', async (req, res) => {

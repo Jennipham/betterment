@@ -111,7 +111,7 @@ const SentRequest = ({ request, onRemoveRequest }) => {
                             <p className='sent-name'>{`${matchFname} ${matchSname}`}</p>
                         </div>
                         <div className='action-buttons'>
-                            <img src={cross} alt="Cancel" className="action-icon" onClick={handleCancelClick} />
+                            <img src={cross} alt="Cancel" className="action-icon" onClick={handleCancelClick} title='Cancel' />
                         </div>
                             </div>
                             <img className='sent-icon' src={sent} alt="Sent Request" title='Sent Request' />

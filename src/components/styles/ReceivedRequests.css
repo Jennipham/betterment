@@ -63,6 +63,10 @@ cursor: pointer;
     margin-left: 5px;
 }
 
+.accepted-icon {
+    margin-right: 10px;
+}
+
 .received-icon {
     height: 40px;
     padding: 10px;

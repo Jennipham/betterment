@@ -34,6 +34,7 @@ const Requests = () => {
     const [sentRequests, setSentRequests] = useState([]);
 
     const [errorMessage, setErrorMessage] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
 
     const [allRequests, setAllRequests] = useState([]);
     
@@ -99,17 +100,28 @@ const Requests = () => {
                     userType,
                 });
 
-                // Sort the combined requests based on the order in shortlistOrder
                 if (shortlistOrderResponse.data.shortlistOrder.length === 0) {
                     // No shortlist order, set sortedRequests to combinedRequests directly
                     setAllRequests(combinedRequests);
                 } else {
                     // Sort the combined requests based on the order in shortlistOrder
-                    const sortedRequests = shortlistOrderResponse.data.shortlistOrder.map(orderItem => {
-                        const matchingRequest = combinedRequests.find(request => request._id === orderItem.requestId);
+                    const shortlistOrderIds = shortlistOrderResponse.data.shortlistOrder.map(orderItem => orderItem.requestId);
+                
+                    // Filter out the shortlisted requests from combinedRequests
+                    const shortlistedRequests = combinedRequests.filter(request => shortlistOrderIds.includes(request._id));
+                
+                    // Filter out the unmatched requests from combinedRequests
+                    const unmatchedRequests = combinedRequests.filter(request => !shortlistOrderIds.includes(request._id));
+                
+                    // Sort the shortlisted requests based on the order in shortlistOrder
+                    const sortedShortlistRequests = shortlistOrderResponse.data.shortlistOrder.map(orderItem => {
+                        const matchingRequest = shortlistedRequests.find(request => request._id === orderItem.requestId);
                         return matchingRequest ? { ...matchingRequest, index: orderItem.index } : null;
                     }).filter(Boolean);
-        
+                
+                    // Combine the sorted shortlisted requests with unmatched requests
+                    const sortedRequests = [...sortedShortlistRequests, ...unmatchedRequests];
+                
                     // Update the state with sorted requests
                     setAllRequests(sortedRequests);
                 }
@@ -184,14 +196,8 @@ const Requests = () => {
     const onDecline = (declinedRequest) => {
         setReceivedRequests(receivedRequests.filter(request => request.senderEmail !== declinedRequest.senderEmail));
         setAllRequests(allRequests.filter(request => request.senderEmail !== declinedRequest.senderEmail));
-    };
-    
-    const onAccept = (acceptedRequest) => {
-        setReceivedRequests(receivedRequests.filter(request => request.senderEmail !== acceptedRequest.senderEmail));
-        setAllRequests(allRequests.filter(request => request.senderEmail !== acceptedRequest.senderEmail));
-    };
-    
 
+    };
    
     const hasShortlistOrder = allRequests.length > 0;
 
@@ -203,6 +209,9 @@ const Requests = () => {
             <div className="requests-page">
                 <div className='error-message-profile-container'>
                     {errorMessage && <p className="error-message-profile">{errorMessage}</p>}
+                </div>
+                <div className='success-message-profile-container'>
+                    {successMessage && <p className="success-message-profile">{successMessage}</p>}
                 </div>
                 <div className="requests-box">
                     <h2>
@@ -234,7 +243,6 @@ const Requests = () => {
                                                                 key={request.senderEmail}
                                                                 request={request}
                                                                 onDecline={onDecline}
-                                                                onAccept={onAccept}
                                                             />
                                                         ) : request && request.type === 'sent' ? (
                                                             <SentRequest
@@ -268,7 +276,6 @@ const Requests = () => {
                                         key={request.senderEmail}
                                         request={request}
                                         onDecline={onDecline}
-                                        onAccept={onAccept}
                                     />
                                 ) : null
                             ))}
