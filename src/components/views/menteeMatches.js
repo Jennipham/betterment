@@ -193,7 +193,7 @@ const MenteeMatches = () => {
                 userType: user.userType,
             });
 
-            // Handle the response, update state, or perform any additional actions if needed
+            setSuccessMessage('Match request sent successfully!');
             console.log('Match request sent successfully:', response.data);
             setLoading(false);
 
@@ -378,7 +378,10 @@ const MenteeMatches = () => {
             <Header />
 
             <div className="mentee-profile-container">
-
+                
+                <div className='error-message-profile-container'>
+                    {errorMessage && <p className="error-message-profile">{errorMessage}</p>}
+                </div>
                 <div className='success-message-profile-container'>
                     {successMessage && <p className="success-message-profile">{successMessage}</p>}
                 </div>

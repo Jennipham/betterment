@@ -90,6 +90,8 @@ const Requests = () => {
                     ...receivedResponse.data.receivedRequests.map(request => ({ ...request, type: 'received' })),
                     ...sentResponse.data.sentRequests.map(request => ({ ...request, type: 'sent' })),
                 ];
+        
+                console.log('Combined Requests:', combinedRequests);
 
                 // Fetch shortlistOrder
                 const shortlistOrderResponse = await axios.post('http://localhost:3001/getShortlistOrder', {
@@ -98,14 +100,19 @@ const Requests = () => {
                 });
 
                 // Sort the combined requests based on the order in shortlistOrder
-                const sortedRequests = shortlistOrderResponse.data.shortlistOrder.map(orderItem => {
-                    const matchingRequest = combinedRequests.find(request => request._id === orderItem.requestId);
-                    return matchingRequest ? { ...matchingRequest, index: orderItem.index } : null;
-                }).filter(Boolean);
-
-                // Update the state with sorted requests
-                setAllRequests(sortedRequests);
-
+                if (shortlistOrderResponse.data.shortlistOrder.length === 0) {
+                    // No shortlist order, set sortedRequests to combinedRequests directly
+                    setAllRequests(combinedRequests);
+                } else {
+                    // Sort the combined requests based on the order in shortlistOrder
+                    const sortedRequests = shortlistOrderResponse.data.shortlistOrder.map(orderItem => {
+                        const matchingRequest = combinedRequests.find(request => request._id === orderItem.requestId);
+                        return matchingRequest ? { ...matchingRequest, index: orderItem.index } : null;
+                    }).filter(Boolean);
+        
+                    // Update the state with sorted requests
+                    setAllRequests(sortedRequests);
+                }
             } catch (error) {
                 console.error('Error fetching requests:', error);
                 setErrorMessage('Error fetching requests:');
@@ -116,34 +123,34 @@ const Requests = () => {
     }, []);
 
 
-    const matchRound = async () => {
-        try {
-            const email = sessionStorage.getItem('email');
-                const userType = sessionStorage.getItem('userType');
+    // const matchRound = async () => {
+    //     try {
+    //         const email = sessionStorage.getItem('email');
+    //             const userType = sessionStorage.getItem('userType');
 
-                if (!email || !userType) {
-                    console.error('User information is missing.');
-                    return;
-                }
+    //             if (!email || !userType) {
+    //                 console.error('User information is missing.');
+    //                 return;
+    //             }
 
-            const response = await axios.post('http://localhost:3001/match', {
-                email,
-                userType,
-                        });
+    //         const response = await axios.post('http://localhost:3001/match', {
+    //             email,
+    //             userType,
+    //                     });
 
-            const result = response.data;
-            console.log(result);
+    //         const result = response.data;
+    //         console.log(result);
 
-        } catch (error) {
-            console.error('Error triggering matching:', error);
-        }
-    };
+    //     } catch (error) {
+    //         console.error('Error triggering matching:', error);
+    //     }
+    // };
 
-    useEffect(() => {
-        matchRound();
-        const intervalId = setInterval(matchRound, 14 * 24 * 60 * 60 * 1000); // 14 days
-        return () => clearInterval(intervalId);
-    }, []);
+    // useEffect(() => {
+    //     matchRound();
+    //     const intervalId = setInterval(matchRound, 14 * 24 * 60 * 60 * 1000); // 14 days
+    //     return () => clearInterval(intervalId);
+    // }, []);
 
 
     const onSaveShortlistClick = async () => {
@@ -181,6 +188,9 @@ const Requests = () => {
         setReceivedRequests(receivedRequests.filter(request => request.senderEmail !== acceptedRequest.senderEmail));
     };
 
+   
+    const hasShortlistOrder = allRequests.length > 0;
+
 
     return (
         <>
@@ -191,53 +201,75 @@ const Requests = () => {
                     {errorMessage && <p className="error-message-profile">{errorMessage}</p>}
                 </div>
                 <div className="requests-box">
-                    <h2>Shortlist   
-                    <Tooltip text="Create your shortlist in order of preference to be matched">
-                                <img src={moreInfo} alt="More Info" className="more-info-icon" />
-                            </Tooltip>
+                    <h2>
+                        Shortlist
+                        <Tooltip text="Create your shortlist in order of preference">
+                            <img src={moreInfo} alt="More Info" className="more-info-icon" />
+                        </Tooltip>
                     </h2>
-                   
-                    <span className='round-countdown'>Next Matching Round: {daysLeft} days </span>
 
-                    <DragDropContext onDragEnd={onDragEnd}>
-                        <Droppable droppableId="allRequests">
-                            {(provided) => (
-                                <div {...provided.droppableProps} ref={provided.innerRef}>
-                                    {allRequests.map((request, index) => (
-                                        <Draggable
-                                            key={request && request._id ? request._id : `undefined-${index}`}
-                                            draggableId={`${request ? request._id : 'undefined'}-${index}-${request ? request.type : 'unknown'}`}
-                                            index={index}
-                                        >
-                                            {(provided) => (
-                                                <div
-                                                    ref={provided.innerRef}
-                                                    {...provided.draggableProps}
-                                                    {...provided.dragHandleProps}
-                                                >
-                                                    {request && request.type === 'received' ? (
-                                                        <ReceivedRequest
-                                                            key={request.senderEmail}
-                                                            request={request}
-                                                            onDecline={onDecline}
-                                                            onAccept={onAccept}
-                                                        />
-                                                    ) : request && request.type === 'sent' ? (
-                                                        <SentRequest
-                                                            key={request.receiverEmail}
-                                                            request={request}
-                                                            onRemoveRequest={onRemoveSentRequest}
-                                                        />
-                                                    ) : null}
-                                                </div>
-                                            )}
-                                        </Draggable>
-                                    ))}
-                                    {provided.placeholder}
-                                </div>
-                            )}
-                        </Droppable>
-                    </DragDropContext>
+                    {hasShortlistOrder && (
+                        <DragDropContext onDragEnd={onDragEnd}>
+                            <Droppable droppableId="allRequests">
+                                {(provided) => (
+                                    <div {...provided.droppableProps} ref={provided.innerRef}>
+                                        {allRequests.map((request, index) => (
+                                            <Draggable
+                                                key={request && request._id ? request._id : `undefined-${index}`}
+                                                draggableId={`${request ? request._id : 'undefined'}-${index}-${request ? request.type : 'unknown'}`}
+                                                index={index}
+                                            >
+                                                {(provided) => (
+                                                    <div
+                                                        ref={provided.innerRef}
+                                                        {...provided.draggableProps}
+                                                        {...provided.dragHandleProps}
+                                                    >
+                                                        {request && request.type === 'received' ? (
+                                                            <ReceivedRequest
+                                                                key={request.senderEmail}
+                                                                request={request}
+                                                                onDecline={onDecline}
+                                                                onAccept={onAccept}
+                                                            />
+                                                        ) : request && request.type === 'sent' ? (
+                                                            <SentRequest
+                                                                key={request.receiverEmail}
+                                                                request={request}
+                                                                onRemoveRequest={onRemoveSentRequest}
+                                                            />
+                                                        ) : null}
+                                                    </div>
+                                                )}
+                                            </Draggable>
+                                        ))}
+                                        {provided.placeholder}
+                                    </div>
+                                )}
+                            </Droppable>
+                        </DragDropContext>
+                    )}
+
+                    {!hasShortlistOrder && (
+                        <div>
+                            {allRequests.map((request) => (
+                                request && request.type === 'sent' ? (
+                                    <SentRequest
+                                        key={request.receiverEmail}
+                                        request={request}
+                                        onRemoveRequest={onRemoveSentRequest}
+                                    />
+                                ) : request && request.type === 'received' ? (
+                                    <ReceivedRequest
+                                        key={request.senderEmail}
+                                        request={request}
+                                        onDecline={onDecline}
+                                        onAccept={onAccept}
+                                    />
+                                ) : null
+                            ))}
+                        </div>
+                    )}
 
                 </div>
                 <button className='save-shortlist' onClick={onSaveShortlistClick}>Save</button>
@@ -247,5 +279,6 @@ const Requests = () => {
         </>
     );
 };
+
 
 export default Requests;

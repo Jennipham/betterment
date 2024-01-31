@@ -189,7 +189,8 @@ const MentorMatches = () => {
                 userType: user.userType,
             });
 
-            // Handle the response, update state, or perform any additional actions if needed
+
+            setSuccessMessage('Match request sent successfully!')
             console.log('Match request sent successfully:', response.data);
             setLoading(false);
 
@@ -374,6 +375,9 @@ const MentorMatches = () => {
             <div className="mentor-profile-container">
                 <div className='success-message-profile-container'>
                     {successMessage && <p className="success-message-profile">{successMessage}</p>}
+                </div>
+                <div className='error-message-profile-container'>
+                    {errorMessage && <p className="error-message-profile">{errorMessage}</p>}
                 </div>
                 {matchingMethod === 'manual' ? (
                     <>
