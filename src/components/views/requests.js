@@ -178,15 +178,19 @@ const Requests = () => {
 
     const onRemoveSentRequest = (emailToRemove) => {
         setSentRequests(sentRequests.filter(request => request.receiverEmail !== emailToRemove));
+        setAllRequests(allRequests.filter(request => request.receiverEmail !== emailToRemove));
     };
-
+    
     const onDecline = (declinedRequest) => {
         setReceivedRequests(receivedRequests.filter(request => request.senderEmail !== declinedRequest.senderEmail));
+        setAllRequests(allRequests.filter(request => request.senderEmail !== declinedRequest.senderEmail));
     };
-
+    
     const onAccept = (acceptedRequest) => {
         setReceivedRequests(receivedRequests.filter(request => request.senderEmail !== acceptedRequest.senderEmail));
+        setAllRequests(allRequests.filter(request => request.senderEmail !== acceptedRequest.senderEmail));
     };
+    
 
    
     const hasShortlistOrder = allRequests.length > 0;

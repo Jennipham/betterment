@@ -752,13 +752,30 @@ router.delete('/cancelRequest/:receiverEmail', async (req, res) => {
     try {
 
         if (userType === 'mentee') {
-            const profile = await MenteeProfile.findOneAndUpdate(
+            const profile = await MenteeProfile.findOne({ email });
+
+            if (!profile) {
+                return res.status(404).json({ error: 'Profile not found' });
+            }
+
+            // Check if the request is in shortlistOrder
+            const isInShortlist = profile.profileInfo.shortlistOrder.some(item => item.requestId.equals(receiverEmail));
+
+            const updateOperations = {
+                $pull: { 'profileInfo.sentRequests': { receiverEmail: receiverEmail } },
+            };
+
+            if (isInShortlist) {
+                updateOperations.$pull['profileInfo.shortlistOrder'] = { requestId: mongoose.Types.ObjectId(receiverEmail) };
+            }
+
+            const updatedProfile = await MenteeProfile.findOneAndUpdate(
                 { email },
-                { $pull: { 'profileInfo.sentRequests': { receiverEmail: receiverEmail } } },
+                updateOperations,
                 { new: true }
             );
 
-            if (!profile) {
+            if (!updatedProfile) {
                 return res.status(404).json({ error: 'Profile not found' });
             }
 
@@ -774,13 +791,30 @@ router.delete('/cancelRequest/:receiverEmail', async (req, res) => {
         }
 
         if (userType === 'mentor') {
-            const profile = await MentorProfile.findOneAndUpdate(
+            const profile = await MentorProfile.findOne({ email });
+
+            if (!profile) {
+                return res.status(404).json({ error: 'Profile not found' });
+            }
+
+            // Check if the request is in shortlistOrder
+            const isInShortlist = profile.profileInfo.shortlistOrder.some(item => item.requestId.equals(receiverEmail));
+
+            const updateOperations = {
+                $pull: { 'profileInfo.sentRequests': { receiverEmail: receiverEmail } },
+            };
+
+            if (isInShortlist) {
+                updateOperations.$pull['profileInfo.shortlistOrder'] = { requestId: mongoose.Types.ObjectId(receiverEmail) };
+            }
+
+            const updatedProfile = await MentorProfile.findOneAndUpdate(
                 { email },
-                { $pull: { 'profileInfo.sentRequests': { receiverEmail: receiverEmail } } },
+                updateOperations,
                 { new: true }
             );
 
-            if (!profile) {
+            if (!updatedProfile) {
                 return res.status(404).json({ error: 'Profile not found' });
             }
 
@@ -795,13 +829,13 @@ router.delete('/cancelRequest/:receiverEmail', async (req, res) => {
             }
         }
 
-
         res.json({ success: true });
     } catch (error) {
         console.error('Error canceling request:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 
 router.post('/acceptRequest', async (req, res) => {
     const { email, senderEmail, userType } = req.body;
