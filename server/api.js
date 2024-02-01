@@ -52,9 +52,8 @@ router.post('/signup', async (req, res) => {
                 userType,
                 profileInfo: {
                     orgName: '',
-                    department: '',
-                    matchingMethod: '',
-                    blindMatching: '',
+                    matchingMethod: 'Algorithm',
+                    blindMatching: 'On',
                 },
             });
         } else if (userType === 'mentee') {
@@ -130,8 +129,6 @@ router.post('/signup', async (req, res) => {
     }
 });
 
-
-
 router.get('/check-email', async (req, res) => {
     const { email } = req.query;
 
@@ -180,7 +177,7 @@ router.post('/login', async (req, res) => {
         console.error('Error during login:', error);
         res.status(500).json({ error: 'Login failed' });
     }
-}); -
+});
 
     router.post('/getProfile', async (req, res) => {
         try {
@@ -1115,21 +1112,4 @@ cron.schedule('0 0 */14 * *', async () => {
     }
 });
 
-// Define the /match endpoint
-router.post('/match', async (req, res) => {
-    try {
-        const { email, userType } = req.body;
-
-        if (!email || !userType) {
-            return res.status(400).json({ error: 'Invalid request parameters' });
-        }
-
-        // Your existing matching logic goes here (if you still need to handle explicit requests)
-        
-        return res.json({ success: true, message: 'Matching process initiated' });
-    } catch (error) {
-        console.error('Error initiating matching process:', error);
-        return res.status(500).json({ success: false, error: 'Internal Server Error' });
-    }
-});
 module.exports = router;
