@@ -64,19 +64,30 @@ const MenteeMatches = () => {
     const [successMessage, setSuccessMessage] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const [matchingMethod, setMatchingMethod] = useState('manual');
+    const [matchingMethod, setMatchingMethod] = useState('random');
+
+    const [selectedMentorEmail, setSelectedMentorEmail] = useState('');
+
 
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const openModal = (mentorProfile) => {
+    const openModal = () => {
         setIsModalOpen(true);
     };
 
     const handleCloseModal = () => {
         setIsModalOpen(false);
+
     };
 
+    const handleViewFullProfile = (mentorEmail) => {
+        setSelectedMentorEmail(mentorEmail);
+        openModal();
+      };
+
+
+    
 
 
     useEffect(() => {
@@ -383,6 +394,11 @@ const MenteeMatches = () => {
         }, []);
     }
 
+    useEffect(() => {
+        console.log('Selected Mentor Email:', selectedMentorEmail);
+      }, [selectedMentorEmail]);
+      
+
     return (
         <>
             <Header />
@@ -469,8 +485,8 @@ const MenteeMatches = () => {
                                                                 <img src={black} alt="Black Profile Icon" />
                                                             </div>
                                                             <div className="user-info">
-                                                                <p>Name: {mentor.email}</p>
-                                                                <p>Job Role: {mentor.profileInfo.jobRole ? capitaliseFirstLetter(mentor.profileInfo.jobRole) : 'Not specified'}</p>
+                                                                <p>Name: {mentor && mentor.email ? mentor.email : ''}</p>
+                                                                <p>Job Role: {mentor.profileInfo && mentor.profileInfo.jobRole ? capitaliseFirstLetter(mentor.profileInfo.jobRole) : 'Not specified'}</p>
                                                             </div>
                                                         </div>
 
@@ -481,11 +497,13 @@ const MenteeMatches = () => {
                                                         </div>
 
                                                         <div className="bottom-buttons-container-manual">
-                                                            <button className="full-profile-button" onClick={() => openModal(mentorProfile)}>View Full Profile</button>
+                                                        <button className="full-profile-button" onClick={() => handleViewFullProfile(mentor.email)}>View Full Profile</button>
                                                             {isModalOpen && (
                                                                 <Modal onClose={handleCloseModal}>
-                                                                    <iframe title="Full Profile" src="/fullprofile" width="100%" height="100%" />
+                                                                <iframe title="Full Profile" src={`/fullprofile/${selectedMentorEmail}`} width="100%" height="100%">
+                                                                </iframe>
                                                                 </Modal>
+                                                               
                                                             )}
                                                             <button className='match-request-button' onClick={() => { handleRequestMatch(mentor.email) }}>Request Match</button>
 
@@ -519,8 +537,8 @@ const MenteeMatches = () => {
                                                 <img src={black} alt="Black Profile Icon" />
                                             </div>
                                             <div className="user-info">
-                                                <p>Name: {capitaliseFirstLetter(user.firstName)} {capitaliseFirstLetter(user.lastName)}</p>
-                                                <p>Job Role: {capitaliseFirstLetter(user.jobRole)}</p>
+                                            <p>Name: {user.firstName && user.lastName ? capitaliseFirstLetter(user.firstName) + ' ' + capitaliseFirstLetter(user.lastName) : ''}</p>
+                                                <p>Job Role: {user.jobRole ? capitaliseFirstLetter(user.jobRole): ''}</p>
                                             </div>
                                         </div>
 
@@ -554,21 +572,23 @@ const MenteeMatches = () => {
                                             </div>
                                             <div className="match-info">
                                                 <p>Name: {mentorFname && mentorSname ? `${mentorFname} ${mentorSname}` : ''}</p>
-                                                <p>Job Role: {mentorProfile && mentorProfile.profileInfo.jobRole ? capitaliseFirstLetter(mentorProfile.profileInfo.jobRole) : ''}</p>
+                                                <p>Job Role: {mentorProfile.profileInfo && mentorProfile.profileInfo.jobRole ? capitaliseFirstLetter(mentorProfile.profileInfo.jobRole) : ''}</p>
                                             </div>
                                         </div>
 
                                         <div className="matching-info-right">
-                                            <p>Location: {mentorProfile && mentorProfile.profileInfo.officeLocation ? capitaliseFirstLetter(mentorProfile.profileInfo.officeLocation) : ''}</p>
-                                            <p>Development Areas: {mentorProfile && mentorProfile.profileInfo.developmentAreas ? mentorProfile.profileInfo.developmentAreas.join(', ') : ''}</p>
-                                            <p>Methods of Matching: {mentorProfile && mentorProfile.profileInfo.mentoringMethods ? mapValuesToLabels(mentorProfile.profileInfo.mentoringMethods, methodOptions).join(', ') : ''}</p>
+                                            <p>Location: {mentorProfile.profileInfo && mentorProfile.profileInfo.officeLocation ? capitaliseFirstLetter(mentorProfile.profileInfo.officeLocation) : ''}</p>
+                                            <p>Development Areas: {mentorProfile.profileInfo && mentorProfile.profileInfo.developmentAreas ? mentorProfile.profileInfo.developmentAreas.join(', ') : ''}</p>
+                                            <p>Methods of Matching: {mentorProfile.profileInfo && mentorProfile.profileInfo.mentoringMethods ? mapValuesToLabels(mentorProfile.profileInfo.mentoringMethods, methodOptions).join(', ') : ''}</p>
                                         </div>
 
                                         <div className="bottom-buttons-container">
-                                            <button className="full-profile-button" onClick={() => openModal(mentorProfile)}>View Full Profile</button>
+                                            <button className="full-profile-button" onClick={() => openModal()}>View Full Profile</button>
                                             {isModalOpen && (
                                                 <Modal onClose={handleCloseModal}>
-                                                    <iframe title="Full Profile" src="/fullprofile" width="100%" height="100%" />
+                                                        <iframe title="Full Profile" src={`/fullprofile/${mentorProfile.email}`} width="100%" height="100%">
+                                                            </iframe>
+                                                
                                                 </Modal>
                                             )}
                                             <button className='match-request-button' onClick={() => { handleRequestMatch(mentorProfile.email) }}>Request Match</button>
@@ -580,10 +600,6 @@ const MenteeMatches = () => {
 
                             </div>
 
-
-                            <div className='other-matches'>
-                                <button>Re-Match Me</button>
-                            </div>
                         </div>
 
                 )}

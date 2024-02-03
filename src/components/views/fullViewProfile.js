@@ -10,15 +10,10 @@ const FullProfile = () => {
 
     const { email } = useParams();
 
-
-
     const [matchFname, setMatchFname] = useState('');
     const [matchSname, setMatchSname] = useState('');
     const [matchUserType, setMatchUserType] = useState('');
     const [matchProfile, setMatchProfile] = useState(null);
-
-
-
 
     const [errorMessage, setErrorMessage] = useState('');
 
