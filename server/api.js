@@ -431,6 +431,9 @@ router.get('/getUserDetails', async (req, res) => {
 
 router.get('/getRandomMentorProfile', async (req, res) => {
     try {
+        const menteeEmail = req.user.email; // Assuming the mentee's email is available in req.user.email
+        const menteeDomain = menteeEmail.split('@')[1];
+
         // Get all mentor profiles that haven't sent accepted match requests
         const mentorProfiles = await MentorProfile.find({
             'profileInfo.available': true,
@@ -440,13 +443,25 @@ router.get('/getRandomMentorProfile', async (req, res) => {
             return res.status(404).json({ error: 'No available mentor profiles' });
         }
 
-        const randomMentorProfile = mentorProfiles[Math.floor(Math.random() * mentorProfiles.length)];
+        // Filter mentors from the same organization
+        const matchingMentors = mentorProfiles.filter(mentor => {
+            const mentorDomain = mentor.email.split('@')[1];
+            return mentorDomain === menteeDomain;
+        });
+
+        if (matchingMentors.length === 0) {
+            return res.status(404).json({ error: 'No available mentor profiles in the same organization' });
+        }
+
+        // Select a random mentor profile from the filtered list
+        const randomMentorProfile = matchingMentors[Math.floor(Math.random() * matchingMentors.length)];
         res.json({ profile: randomMentorProfile });
     } catch (error) {
         console.error('Error fetching random mentor profile:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 
 router.get('/getFilteredMentorProfile', async (req, res) => {
     try {
@@ -474,12 +489,13 @@ router.get('/getFilteredMentorProfile', async (req, res) => {
             return res.status(404).json({ error: 'No mentor profiles found' });
         }
 
-        res.json({ profile: filteredMentorProfiles });
+        res.json({ profiles: filteredMentorProfiles });
     } catch (error) {
         console.error('Error fetching filtered mentor profiles:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 
 router.get('/getFilteredMenteeProfile', async (req, res) => {
     try {
@@ -501,13 +517,13 @@ router.get('/getFilteredMenteeProfile', async (req, res) => {
             filter['profileInfo.mentoringMethods'] = { $in: mentoringMethods.split(',') };
         }
 
-        const filteredMentorProfiles = await MenteeProfile.find(filter);
+        const filteredMenteeProfiles = await MenteeProfile.find(filter);
 
-        if (filteredMentorProfiles.length === 0) {
+        if (filteredMenteeProfiles.length === 0) {
             return res.status(404).json({ error: 'No mentee profiles found' });
         }
 
-        res.json({ profile: filteredMentorProfiles });
+        res.json({ profiles: filteredMenteeProfiles });
     } catch (error) {
         console.error('Error fetching filtered mentee profiles:', error);
         res.status(500).json({ error: 'Internal Server Error' });
@@ -515,9 +531,11 @@ router.get('/getFilteredMenteeProfile', async (req, res) => {
 });
 
 
-
 router.get('/getRandomMenteeProfile', async (req, res) => {
     try {
+        const mentorEmail = req.user.email;
+        const mentorDomain = mentorEmail.split('@')[1];
+
         const menteeProfiles = await MenteeProfile.find({
             'profileInfo.available': true,
         });
@@ -526,13 +544,25 @@ router.get('/getRandomMenteeProfile', async (req, res) => {
             return res.status(404).json({ error: 'No mentee profiles found' });
         }
 
-        const randomMenteeProfile = menteeProfiles[Math.floor(Math.random() * menteeProfiles.length)];
+        // Filter mentees from the same organization
+        const matchingMentees = menteeProfiles.filter(mentee => {
+            const menteeDomain = mentee.email.split('@')[1];
+            return menteeDomain === mentorDomain;
+        });
+
+        if (matchingMentees.length === 0) {
+            return res.status(404).json({ error: 'No available mentee profiles in the same organization' });
+        }
+
+        // Select a random mentee profile from the filtered list
+        const randomMenteeProfile = matchingMentees[Math.floor(Math.random() * matchingMentees.length)];
         res.json({ profile: randomMenteeProfile });
     } catch (error) {
         console.error('Error fetching random mentee profile:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 
 
 router.get('/getMatches', async (req, res) => {
