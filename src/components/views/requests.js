@@ -135,36 +135,6 @@ const Requests = () => {
     }, []);
 
 
-    // const matchRound = async () => {
-    //     try {
-    //         const email = sessionStorage.getItem('email');
-    //             const userType = sessionStorage.getItem('userType');
-
-    //             if (!email || !userType) {
-    //                 console.error('User information is missing.');
-    //                 return;
-    //             }
-
-    //         const response = await axios.post('http://localhost:3001/match', {
-    //             email,
-    //             userType,
-    //                     });
-
-    //         const result = response.data;
-    //         console.log(result);
-
-    //     } catch (error) {
-    //         console.error('Error triggering matching:', error);
-    //     }
-    // };
-
-    // useEffect(() => {
-    //     matchRound();
-    //     const intervalId = setInterval(matchRound, 14 * 24 * 60 * 60 * 1000); // 14 days
-    //     return () => clearInterval(intervalId);
-    // }, []);
-
-
     const onSaveShortlistClick = async () => {
         const email = sessionStorage.getItem('email');
         const userType = sessionStorage.getItem('userType');
@@ -237,7 +207,10 @@ const Requests = () => {
                                                         ref={provided.innerRef}
                                                         {...provided.draggableProps}
                                                         {...provided.dragHandleProps}
+                                                        className="shortlist-item"
                                                     >
+                                                    <div className="shortlist-number">{index + 1}.</div>
+
                                                         {request && request.type === 'received' ? (
                                                             <ReceivedRequest
                                                                 key={request.senderEmail}

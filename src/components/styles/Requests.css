@@ -53,4 +53,16 @@
     padding-bottom: 20px;
 }
 
-/* Add more styles as needed */
+.shortlist-item {
+    display: flex;
+    align-items: center;
+}
+
+
+.shortlist-number {
+    font-family: 'agrandir wide light', sans-serif;
+    font-weight: bold;
+    font-size: 1.5em;
+    margin-right: 10px;
+    color: white;
+}
