@@ -46,9 +46,9 @@ const Login = () => {
                     userType === 'admin' ?
                         navigate("/adminSettings", { state: { user: { fname: firstName, sname: lastName, userType: userType, email: email, } } }) :
                         userType === 'mentee' ?
-                        navigate("/menteeprofile") :
+                        navigate("/menteematches") :
                         userType === 'mentor' ?
-                        navigate("/mentorprofile") :
+                        navigate("/mentormatches") :
                         navigate("/error")
                 
             } else {

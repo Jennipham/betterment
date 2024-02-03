@@ -39,8 +39,8 @@ function App() {
 
           <Route path="/profileSettings" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="/adminSettings" element={<ProtectedRoute><AdminSettings /></ProtectedRoute>} />
-          <Route path="/mentorprofile" element={<ProtectedRoute><MentorMatches /></ProtectedRoute>} />
-          <Route path="/menteeprofile" element={<ProtectedRoute><MenteeMatches /></ProtectedRoute>} />
+          <Route path="/mentormatches" element={<ProtectedRoute><MentorMatches /></ProtectedRoute>} />
+          <Route path="/menteematches" element={<ProtectedRoute><MenteeMatches /></ProtectedRoute>} />
           <Route path="/managerprofile" element={<ProtectedRoute><ManagerProfile /></ProtectedRoute>} />
           <Route path="/requests" element={<ProtectedRoute><Requests /></ProtectedRoute>} />
 

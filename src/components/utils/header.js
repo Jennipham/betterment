@@ -203,9 +203,9 @@ const Header = () => {
                                 </RouterLink>
                             }
                             {user.userType === 'mentee' ? (
-                                <RouterLink to="/menteeProfile">Matching</RouterLink>
+                                <RouterLink to="/menteematches">Matching</RouterLink>
                             ) : user.userType === 'mentor' ? (
-                                <RouterLink to="/mentorProfile">Matching</RouterLink>
+                                <RouterLink to="/mentormatches">Matching</RouterLink>
                             ) : null}
                             <RouterLink to="/help">Help</RouterLink>
                             <RouterLink to="/" onClick={handleLogout}>
@@ -227,9 +227,9 @@ const Header = () => {
                                     </RouterLink>
                                 )}
                     {user.userType === 'mentee' ? (
-                        <RouterLink to="/menteeProfile">Matching</RouterLink>
+                        <RouterLink to="/menteematches">Matching</RouterLink>
                     ) : user.userType === 'mentor' ? (
-                        <RouterLink to="/mentorProfile">Matching</RouterLink>
+                        <RouterLink to="/mentormatches">Matching</RouterLink>
                     ) : null}
                     <RouterLink to="/help">Help</RouterLink>
                     <RouterLink to="/" onClick={handleLogout}>
@@ -259,9 +259,9 @@ const Header = () => {
                                     </RouterLink>
                                 )}
                                 {user.userType === 'mentee' ? (
-                                    <RouterLink to="/menteeProfile">Matching</RouterLink>
+                                    <RouterLink to="/menteematches">Matching</RouterLink>
                                 ) : user.userType === 'mentor' ? (
-                                    <RouterLink to="/mentorProfile">Matching</RouterLink>
+                                    <RouterLink to="/mentormatches">Matching</RouterLink>
                                 ) : null}
                                 <RouterLink to="/help">Help</RouterLink>
                                 <RouterLink to="/" onClick={handleLogout}>
@@ -286,9 +286,9 @@ const Header = () => {
                                 )}
 
                                 {user.userType === 'mentee' ? (
-                                    <RouterLink to="/menteeProfile">Matching</RouterLink>
+                                    <RouterLink to="/menteematches">Matching</RouterLink>
                                 ) : user.userType === 'mentor' ? (
-                                    <RouterLink to="/mentorProfile">Matching</RouterLink>
+                                    <RouterLink to="/mentormatches">Matching</RouterLink>
                                 ) : null}
                             <RouterLink to="/help">Help</RouterLink>
                             <RouterLink to="/" onClick={handleLogout}>
@@ -310,7 +310,7 @@ const Header = () => {
                     </>
 
 
-                            ) : loggedInStatus && (location.pathname === '/menteeProfile' || location.pathname === '/mentorProfile') ? ( //checks if logged in
+                            ) : loggedInStatus && (location.pathname === '/menteematches' || location.pathname === '/mentormatches') ? ( //checks if logged in
                                 <>
                                                 {notifications < 1 ?
                                             <RouterLink to="/requests">
