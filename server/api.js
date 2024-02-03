@@ -20,6 +20,20 @@ const contactPass = process.env.CONTACT_PASS;
 
 const blacklist = new Set();
 
+const updateAdminForProfilesWithDomain = async (domain, adminEmail) => {
+    // Update admin field for mentees
+    await MenteeProfile.updateMany(
+        { 'email': { $regex: new RegExp(`@${domain}$`, 'i') } },
+        { $set: { 'profileInfo.admin': adminEmail } }
+    );
+
+    // Update admin field for mentors
+    await MentorProfile.updateMany(
+        { 'email': { $regex: new RegExp(`@${domain}$`, 'i') } },
+        { $set: { 'profileInfo.admin': adminEmail } }
+    );
+};
+
 router.post('/signup', async (req, res) => {
     try {
         const { fname, sname, email, password, userType } = req.body;
@@ -45,6 +59,9 @@ router.post('/signup', async (req, res) => {
 
         let newProfile;
 
+        const emailParts = email.split('@');
+        const domain = emailParts.length === 2 ? emailParts[1] : null;
+
         // Check user type and create the corresponding profile
         if (userType === 'admin') {
             newProfile = new ManagerProfile({
@@ -56,59 +73,30 @@ router.post('/signup', async (req, res) => {
                     blindMatching: 'On',
                 },
             });
-        } else if (userType === 'mentee') {
-            newProfile = new MenteeProfile({
-                email,
-                userType,
-                profileInfo: {
-                    signUpDate: new Date(),
-                    jobRole: '',
-                    department: '',
-                    officeLocation: '',
-                    capacity: '',
-                    languages: [],
-                    developmentAreas: [],
-                    mentoringMethods: [],
-                    sentRequests: [],
-                    receivedRequests: [],
-                    shortlistOrder:[],
-                    available: true,
-                    matchedInCurrentRound: false,
-                    declinedRequestsCount: 0,
-                    matches:[],
-                },
 
-            });
-        }
+            if (domain) {
+                await updateAdminForProfilesWithDomain(domain, email);
+            }
+        } else if (userType === 'mentee' || userType === 'mentor') {
+            // Mentee/Mentor signup logic
+            newProfile = userType === 'mentee'
+                ? new MenteeProfile({ email, userType })
+                : new MentorProfile({ email, userType });
 
-        else if (userType === 'mentor') {
-            newProfile = new MentorProfile({
-                email,
-                userType,
-                profileInfo: {
-                    signUpDate: new Date(),
-                    jobRole: '',
-                    department: '',
-                    officeLocation: '',
-                    capacity: '',
-                    level: '',
-                    languages: [],
-                    developmentAreas: [],
-                    mentoringMethods: [],
-                    sentRequests: [],
-                    receivedRequests: [],
-                    shortlistOrder: [],
-                    available: true,
-                    matchedInCurrentRound: false,
-                    declinedRequestsCount: 0,
-                    matches:[],
-                },
+            // If domain is available, try to find corresponding admin
+            if (domain) {
+                const adminProfile = await ManagerProfile.findOne({
+                    email: { $regex: new RegExp(`@${domain}$`, 'i') },
+                });
 
-            });
+                if (adminProfile) {
+                    newProfile.profileInfo.admin = adminProfile.email;
+                }
+            }
         }
 
         await newProfile.save();
-
+        
         const token = jwt.sign(
             { userId: newUser._id, userType: newUser.userType, email: newUser.email },
             secretKey,
@@ -207,6 +195,8 @@ router.post('/login', async (req, res) => {
                             matchedInCurrentRound: false,
                             declinedRequestsCount: 0,
                             matches:[],
+                            admin:'',
+
                         },
                     };
                 }
@@ -236,6 +226,8 @@ router.post('/login', async (req, res) => {
                             matchedInCurrentRound: false,
                             declinedRequestsCount: 0,
                             matches:[],
+                            admin:'',
+
                         },
                     };
                 }
@@ -303,7 +295,7 @@ router.post('/getManagerProfile', async (req, res) => {
 
 router.post('/profile', async (req, res) => {
     const { signUpDate, jobRole, department, officeLocation, capacity, languages, level, developmentAreas, mentoringMethods, email, userType, sentRequests, receivedRequests, available, shortlistOrder, matchedInCurrentRound,
-        declinedRequestsCount, matches } = req.body;
+        declinedRequestsCount, matches, admin, } = req.body;
 
     try {
         let profile;
@@ -331,6 +323,7 @@ router.post('/profile', async (req, res) => {
                         matchedInCurrentRound,
                         declinedRequestsCount,
                         matches,
+                        admin,
                     },
                 });
             } else {
@@ -351,6 +344,8 @@ router.post('/profile', async (req, res) => {
                     matchedInCurrentRound,
                     declinedRequestsCount,
                     matches,
+                    admin,
+
                 };
             }
         } else if (userType === 'mentor') {
@@ -377,6 +372,8 @@ router.post('/profile', async (req, res) => {
                         matchedInCurrentRound,
                         declinedRequestsCount,
                         matches,
+                        admin,
+
                     },
                 });
             } else {
@@ -398,6 +395,8 @@ router.post('/profile', async (req, res) => {
                     matchedInCurrentRound,
                     declinedRequestsCount,
                     matches,
+                    admin,
+
                 };
             }
         }

@@ -62,6 +62,7 @@ const menteeProfileSchema = new mongoose.Schema({
             }
         ],
         available: { type: Boolean, default: true },
+        admin:String,
     },
 });
 

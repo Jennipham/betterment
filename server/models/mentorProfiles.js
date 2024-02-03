@@ -63,6 +63,7 @@ const mentorProfileSchema = new mongoose.Schema({
             }
         ],
         available: { type: Boolean, default: true },
+        admin:String,
     },
 });
 
