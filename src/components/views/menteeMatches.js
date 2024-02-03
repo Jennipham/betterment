@@ -115,7 +115,8 @@ const MenteeMatches = () => {
                 let response;
 
                 if (matchingMethod === 'random') {
-                    response = await axios.get('http://localhost:3001/getRandomMentorProfile');
+                    response = await axios.get(`http://localhost:3001/getRandomMentorProfile?email=${user.email}`);
+            
                     const userResponse = await axios.get(`http://localhost:3001/getUserDetails?email=${response.data.profile.email}`);
                     setMentorProfile(response.data.profile);
                     setMentorFname(userResponse.data.user.fname);
@@ -125,7 +126,7 @@ const MenteeMatches = () => {
                 }
 
                 else if (matchingMethod === 'manual') {
-                    response = await axios.get(`http://localhost:3001/getFilteredMentorProfile`, {
+                    response = await axios.get(`http://localhost:3001/getFilteredMentorProfile?email=${user.email}`, {
                         params: {
                             language: selectedLanguages.join(','),
                             developmentAreas: selectedDevelopmentAreas.join(','),
@@ -405,9 +406,6 @@ const MenteeMatches = () => {
 
             <div className="mentee-profile-container">
 
-                <div className='error-message-profile-container'>
-                    {errorMessage && <p className="error-message-profile">{errorMessage}</p>}
-                </div>
                 <div className='success-message-profile-container'>
                     {successMessage && <p className="success-message-profile">{successMessage}</p>}
                 </div>

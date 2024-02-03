@@ -431,30 +431,29 @@ router.get('/getUserDetails', async (req, res) => {
 
 router.get('/getRandomMentorProfile', async (req, res) => {
     try {
-        const menteeEmail = req.user.email; // Assuming the mentee's email is available in req.user.email
-        const menteeDomain = menteeEmail.split('@')[1];
 
-        // Get all mentor profiles that haven't sent accepted match requests
+        const { email } = req.query;
+
+        // Extract domain from the email
+        const emailParts = email.split('@');
+        const domain = emailParts.length === 2 ? emailParts[1] : null;
+
+        if (!domain) {
+            return res.status(400).json({ error: 'Invalid email format' });
+        }
+
+        // Get all mentor profiles with the same domain
         const mentorProfiles = await MentorProfile.find({
+            'email': { $regex: new RegExp(`@${domain}$`, 'i') },
             'profileInfo.available': true,
         });
 
         if (mentorProfiles.length === 0) {
-            return res.status(404).json({ error: 'No available mentor profiles' });
+            return res.status(404).json({ error: 'No available mentor profiles with the specified domain' });
         }
 
-        // Filter mentors from the same organization
-        const matchingMentors = mentorProfiles.filter(mentor => {
-            const mentorDomain = mentor.email.split('@')[1];
-            return mentorDomain === menteeDomain;
-        });
-
-        if (matchingMentors.length === 0) {
-            return res.status(404).json({ error: 'No available mentor profiles in the same organization' });
-        }
-
-        // Select a random mentor profile from the filtered list
-        const randomMentorProfile = matchingMentors[Math.floor(Math.random() * matchingMentors.length)];
+        // Choose a random mentor profile
+        const randomMentorProfile = mentorProfiles[Math.floor(Math.random() * mentorProfiles.length)];
         res.json({ profile: randomMentorProfile });
     } catch (error) {
         console.error('Error fetching random mentor profile:', error);
@@ -465,11 +464,24 @@ router.get('/getRandomMentorProfile', async (req, res) => {
 
 router.get('/getFilteredMentorProfile', async (req, res) => {
     try {
-        const { language, developmentAreas, mentoringMethods } = req.query;
+        const { email, language, developmentAreas, mentoringMethods } = req.query;
+
+        // Extract domain from the email
+        const emailParts = email ? email.split('@') : [];
+        const domain = emailParts.length === 2 ? emailParts[1] : null;
+
+        if (email && !domain) {
+            return res.status(400).json({ error: 'Invalid email format' });
+        }
 
         const filter = {
-            userType: 'mentor'
+            userType: 'mentor',
+            'profileInfo.available': true,
         };
+
+        if (email) {
+            filter['email'] = { $regex: new RegExp(`@${domain}$`, 'i') };
+        }
 
         if (language && language.length > 0) {
             filter['profileInfo.languages'] = { $in: language.split(',') };
@@ -499,11 +511,24 @@ router.get('/getFilteredMentorProfile', async (req, res) => {
 
 router.get('/getFilteredMenteeProfile', async (req, res) => {
     try {
-        const { language, developmentAreas, mentoringMethods } = req.query;
+        const { email, language, developmentAreas, mentoringMethods } = req.query;
+
+        // Extract domain from the email
+        const emailParts = email ? email.split('@') : [];
+        const domain = emailParts.length === 2 ? emailParts[1] : null;
+
+        if (email && !domain) {
+            return res.status(400).json({ error: 'Invalid email format' });
+        }
 
         const filter = {
-            userType: 'mentee'
+            userType: 'mentee',
+            'profileInfo.available': true,
         };
+
+        if (email) {
+            filter['email'] = { $regex: new RegExp(`@${domain}$`, 'i') };
+        }
 
         if (language && language.length > 0) {
             filter['profileInfo.languages'] = { $in: language.split(',') };
@@ -531,31 +556,31 @@ router.get('/getFilteredMenteeProfile', async (req, res) => {
 });
 
 
+
 router.get('/getRandomMenteeProfile', async (req, res) => {
     try {
-        const mentorEmail = req.user.email;
-        const mentorDomain = mentorEmail.split('@')[1];
+        const { email } = req.query;
 
+        // Extract domain from the email
+        const emailParts = email.split('@');
+        const domain = emailParts.length === 2 ? emailParts[1] : null;
+
+        if (!domain) {
+            return res.status(400).json({ error: 'Invalid email format' });
+        }
+
+        // Get all mentee profiles with the same domain
         const menteeProfiles = await MenteeProfile.find({
+            'email': { $regex: new RegExp(`@${domain}$`, 'i') },
             'profileInfo.available': true,
         });
 
         if (menteeProfiles.length === 0) {
-            return res.status(404).json({ error: 'No mentee profiles found' });
+            return res.status(404).json({ error: 'No available mentee profiles with the specified domain' });
         }
 
-        // Filter mentees from the same organization
-        const matchingMentees = menteeProfiles.filter(mentee => {
-            const menteeDomain = mentee.email.split('@')[1];
-            return menteeDomain === mentorDomain;
-        });
-
-        if (matchingMentees.length === 0) {
-            return res.status(404).json({ error: 'No available mentee profiles in the same organization' });
-        }
-
-        // Select a random mentee profile from the filtered list
-        const randomMenteeProfile = matchingMentees[Math.floor(Math.random() * matchingMentees.length)];
+        // Choose a random mentee profile
+        const randomMenteeProfile = menteeProfiles[Math.floor(Math.random() * menteeProfiles.length)];
         res.json({ profile: randomMenteeProfile });
     } catch (error) {
         console.error('Error fetching random mentee profile:', error);
