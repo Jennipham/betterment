@@ -91,9 +91,38 @@ const MentorMatches = () => {
         const languages = sessionStorage.getItem('languages') || '';
         const admin = sessionStorage.getItem('admin') || '';
 
-        setUser({ firstName, lastName, userType, email, jobRole, officeLocation, developmentAreas, mentoringMethods, languages, admin });
+        setUser({ firstName, lastName, userType, email, jobRole, officeLocation, developmentAreas, mentoringMethods, languages, admin, });
         // console.log('User Information:', { firstName, lastName, userType, email, jobRole, officeLocation, developmentAreas, mentoringMethods, languages });
     }, []);
+
+
+    const fetchAdminMatchSettings = async () => {
+        try {
+            const response = await axios.get('http://localhost:3001/getAdminMatchingSettings', {
+                params: {
+                    email: user.admin,
+                },
+            });
+            const { blindMatching, matchingMethod } = response.data;
+
+            setBlindMatching(blindMatching);
+            setMatchingMethod(matchingMethod);
+        } catch (error) {
+            console.error('Error fetching admin match settings:', error);
+            // Handle error if necessary
+        }
+    };
+
+    useEffect(() => {
+
+        if (user.admin) {
+            fetchAdminMatchSettings();
+        }
+        else {
+            setBlindMatching('On');
+            setMatchingMethod('Algorithm');
+        }
+    }, [user.admin]);
 
 
     useEffect(() => {
@@ -120,6 +149,8 @@ const MentorMatches = () => {
                         },
                     });
                     setMenteeProfile(response.data.profiles);
+                    sessionStorage.setItem('matchProfile', JSON.stringify(response.data.profiles));
+
                 }
 
                 else if (matchingMethod && matchingMethod === 'Algorithm') {
@@ -158,6 +189,7 @@ const MentorMatches = () => {
                     developmentAreas: response.data.profile.profileInfo.developmentAreas || '',
                     mentoringMethods: response.data.profile.profileInfo.mentoringMethods || '',
                     languages: response.data.profile.profileInfo.languages || '',
+                    admin: response.data.profile.profileInfo.admin || '',
 
 
                 }));
@@ -375,7 +407,7 @@ const MentorMatches = () => {
                 <div className='success-message-profile-container'>
                     {successMessage && <p className="success-message-profile">{successMessage}</p>}
                 </div>
-                {matchingMethod === 'manual' ? (
+                {matchingMethod === 'Manual' ? (
                     <>
                         <div className="filter-section">
                             <Select
