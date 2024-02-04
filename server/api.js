@@ -96,7 +96,7 @@ router.post('/signup', async (req, res) => {
         }
 
         await newProfile.save();
-        
+
         const token = jwt.sign(
             { userId: newUser._id, userType: newUser.userType, email: newUser.email },
             secretKey,
@@ -427,6 +427,35 @@ router.get('/getUserDetails', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
+router.get('/getAdminMatchingSettings', async (req, res) => {
+    try {
+        const { email } = req.query;
+
+        // Check if the email is provided
+        if (!email) {
+            return res.status(400).json({ error: 'Email is required' });
+        }
+
+        // Find the admin profile by email
+        const adminProfile = await ManagerProfile.findOne({ email });
+
+        // Check if the admin profile exists
+        if (!adminProfile) {
+            return res.status(404).json({ error: 'Admin profile not found' });
+        }
+
+        // Extract blindMatching and matchingMethod from the admin profile
+        const { blindMatching, matchingMethod } = adminProfile.profileInfo;
+
+        // Send the extracted values as the response
+        res.json({ blindMatching, matchingMethod });
+    } catch (error) {
+        console.error('Error fetching admin matching settings:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 
 router.get('/getRandomMentorProfile', async (req, res) => {
     try {
