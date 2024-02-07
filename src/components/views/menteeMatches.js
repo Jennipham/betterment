@@ -469,6 +469,18 @@ const MenteeMatches = () => {
     console.log('mentor profiles', mentorProfile);
 
 
+    const handleContactMatch = (matchEmail, mentorFname) => {
+        // Replace these variables with actual values
+        const userEmail = user.email; // User's email
+        const subject = 'We have been matched on BetterMent!'; // Subject of the email
+
+        const body = `Dear ${mentorFname}, \n \n I hope this message finds you well. I'm excited about our mentoring partnership on BetterMent and would like to schedule our first meeting. \n \n Best regards,\n ${user.firstName}.`;
+        const mailtoLink = `mailto:${matchEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+        // Open the default email client with the pre-filled email template
+        window.location.href = mailtoLink;
+    };
+
     return (
         <>
             <Header />
@@ -674,7 +686,7 @@ const MenteeMatches = () => {
 
                                         {matchingMethod === 'Manual' ? (
                                             <button className='match-request-button' onClick={() => { handleRequestMatch(mentorProfile.email) }}>Request Match</button>) :
-                                            <></>}
+                                            <button onClick={() => handleContactMatch(mentorProfile.email, mentorFname)}>Contact Match</button>}
 
                                     </div>
                                 </div>

@@ -44,7 +44,6 @@ const menteeProfileSchema = new mongoose.Schema({
                 },
                 round: {
                     type: Number,
-                    required: true,
                 },
             },
         ],

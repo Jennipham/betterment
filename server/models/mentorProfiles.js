@@ -39,13 +39,12 @@ const mentorProfileSchema = new mongoose.Schema({
         declinedRequestsCount: { type: Number, default: 0 },
         matches: [
             {
-                mentorEmail: {
+                menteeEmail: {
                     type: String,
                     required: true,
                 },
                 round: {
                     type: Number,
-                    required: true,
                 },
             },
         ],

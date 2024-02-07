@@ -459,7 +459,6 @@ router.get('/getAdminMatchingSettings', async (req, res) => {
 
 router.get('/getRandomMentorProfile', async (req, res) => {
     try {
-
         const { email } = req.query;
 
         // Extract domain from the email
@@ -470,7 +469,18 @@ router.get('/getRandomMentorProfile', async (req, res) => {
             return res.status(400).json({ error: 'Invalid email format' });
         }
 
-        // Get all mentor profiles with the same domain
+        // Check if the user already has a match in their profile
+        const existingMatch = await MentorProfile.findOne({
+            'email': email,
+            'profileInfo.matches': { $exists: true, $ne: [] },
+        });
+
+        if (existingMatch) {
+            // Return the existing matched profile
+            return res.json({ profile: existingMatch });
+        }
+
+        // Get all mentor profiles with the same domain and available
         const mentorProfiles = await MentorProfile.find({
             'email': { $regex: new RegExp(`@${domain}$`, 'i') },
             'profileInfo.available': true,
@@ -482,12 +492,41 @@ router.get('/getRandomMentorProfile', async (req, res) => {
 
         // Choose a random mentor profile
         const randomMentorProfile = mentorProfiles[Math.floor(Math.random() * mentorProfiles.length)];
+
+        // Update the mentee's profile with the match information
+        const menteeEmail = email;
+        const menteeProfile = await MenteeProfile.findOne({ email: menteeEmail });
+
+        if (!menteeProfile) {
+            return res.status(404).json({ error: 'Mentee profile not found' });
+        }
+
+        // Check the user capacity and set available accordingly
+        menteeProfile.profileInfo.available = false;
+
+        // Add the mentor email to the matches profile
+        menteeProfile.profileInfo.matches.push({
+            mentorEmail: randomMentorProfile.email,
+        });
+
+        // Save the updated mentee profile
+        await menteeProfile.save();
+
+        // Update the mentor profile with the match information
+        randomMentorProfile.profileInfo.matches.push({
+            menteeEmail: menteeEmail,
+        });
+
+        // Save the updated mentor profile
+        await randomMentorProfile.save();
+
         res.json({ profile: randomMentorProfile });
     } catch (error) {
         console.error('Error fetching random mentor profile:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 
 
 router.get('/getFilteredMentorProfile', async (req, res) => {
@@ -597,7 +636,18 @@ router.get('/getRandomMenteeProfile', async (req, res) => {
             return res.status(400).json({ error: 'Invalid email format' });
         }
 
-        // Get all mentee profiles with the same domain
+        // Check if the user already has a match in their profile
+        const existingMatch = await MenteeProfile.findOne({
+            'email': email,
+            'profileInfo.matches': { $exists: true, $ne: [] },
+        });
+
+        if (existingMatch) {
+            // Return the existing matched profile
+            return res.json({ profile: existingMatch });
+        }
+
+        // Get all mentee profiles with the same domain and available
         const menteeProfiles = await MenteeProfile.find({
             'email': { $regex: new RegExp(`@${domain}$`, 'i') },
             'profileInfo.available': true,
@@ -609,6 +659,34 @@ router.get('/getRandomMenteeProfile', async (req, res) => {
 
         // Choose a random mentee profile
         const randomMenteeProfile = menteeProfiles[Math.floor(Math.random() * menteeProfiles.length)];
+
+        // Update the mentor's profile with the match information
+        const mentorEmail = email;
+        const mentorProfile = await MentorProfile.findOne({ email: mentorEmail });
+
+        if (!mentorProfile) {
+            return res.status(404).json({ error: 'Mentor profile not found' });
+        }
+
+        // Check the user capacity and set available accordingly
+        mentorProfile.profileInfo.available = false;
+
+        // Add the mentee email to the matches profile
+        mentorProfile.profileInfo.matches.push({
+            menteeEmail: randomMenteeProfile.email,
+        });
+
+        // Save the updated mentor profile
+        await mentorProfile.save();
+
+        // Update the mentee profile with the match information
+        randomMenteeProfile.profileInfo.matches.push({
+            mentorEmail: mentorEmail,
+        });
+
+        // Save the updated mentee profile
+        await randomMenteeProfile.save();
+
         res.json({ profile: randomMenteeProfile });
     } catch (error) {
         console.error('Error fetching random mentee profile:', error);
