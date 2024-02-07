@@ -603,7 +603,7 @@ const MenteeMatches = () => {
                 ) : (
 
                     <div className="match-section">
-                        <h2 className='top-match'>Your Top Match:</h2>
+                        <h2 className='top-match'>Your Random Match:</h2>
                         <div className='error-message-profile-container'>
                             {errorMessage && <p className="error-message-profile">{errorMessage}</p>}
                         </div>

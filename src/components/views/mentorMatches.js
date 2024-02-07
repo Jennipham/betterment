@@ -59,6 +59,9 @@ const MentorMatches = () => {
     const [menteeFname, setMenteeFname] = useState('');
     const [menteeSname, setMenteeSname] = useState('');
 
+    const [selectedMenteeEmail, setSelectedMenteeEmail] = useState('');
+
+
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
     const [loading, setLoading] = useState(false);
@@ -79,6 +82,10 @@ const MentorMatches = () => {
         setIsModalOpen(false);
     };
 
+    const handleViewFullProfile = (menteeEmail) => {
+        setSelectedMenteeEmail(menteeEmail);
+        openModal();
+    };
 
 
     useEffect(() => {
@@ -537,10 +544,10 @@ const MentorMatches = () => {
                                                             </div>
 
                                                             <div className="bottom-buttons-container-manual">
-                                                                <button className="full-profile-button" onClick={() => openModal(menteeProfile)}>View Full Profile</button>
+                                                                <button className="full-profile-button" onClick={() => handleViewFullProfile(mentee.email)}>View Full Profile</button>
                                                                 {isModalOpen && (
                                                                     <Modal onClose={handleCloseModal}>
-                                                                        <iframe title="Full Profile" src="/fullprofile" width="100%" height="100%" />
+                                                                        <iframe title="Full Profile" src={`/fullprofile/${selectedMenteeEmail}`} width="100%" height="100%" />
                                                                     </Modal>
                                                                 )}
                                                                 <button className='match-request-button' onClick={() => { handleRequestMatch(mentee.email) }}>Request Match</button>
@@ -562,7 +569,7 @@ const MentorMatches = () => {
                     </>
                 ) : (
                     <div className="match-section">
-                        <h2 className='top-match'>Your Top Match:</h2>
+                        <h2 className='top-match'>Your Random Match:</h2>
                         <div className='error-message-profile-container'>
                             {errorMessage && <p className="error-message-profile">{errorMessage}</p>}
                         </div>
@@ -623,10 +630,10 @@ const MentorMatches = () => {
                                     </div>
 
                                     <div className="bottom-buttons-container">
-                                        <button className="full-profile-button" onClick={() => openModal(menteeProfile)}>View Full Profile</button>
+                                        <button className="full-profile-button" onClick={() => handleViewFullProfile(menteeProfile.email)}>View Full Profile</button>
                                         {isModalOpen && (
                                             <Modal onClose={handleCloseModal}>
-                                                <iframe title="Full Profile" src="/fullprofile" width="100%" height="100%" />
+                                                <iframe title="Full Profile" src={`/fullprofile/${selectedMenteeEmail}`} width="100%" height="100%" />
                                             </Modal>
                                         )}
                                         {matchingMethod === 'Manual' ? (
