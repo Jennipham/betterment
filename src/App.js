@@ -17,6 +17,7 @@ import NoPermissions from './components/views/noPermissions';
 import Requests from './components/views/requests';
 import ProtectedRoute from './components/utils/protectedRoute';
 import ExpiredSession from './components/views/expiredSession';
+import AlgorithmMatch from './components/utils/algorithm';
 
 
 function App() {
@@ -43,6 +44,9 @@ function App() {
           <Route path="/menteematches" element={<ProtectedRoute><MenteeMatches /></ProtectedRoute>} />
           <Route path="/managerprofile" element={<ProtectedRoute><ManagerProfile /></ProtectedRoute>} />
           <Route path="/requests" element={<ProtectedRoute><Requests /></ProtectedRoute>} />
+
+          <Route path="/algorithm" element={<ProtectedRoute><AlgorithmMatch /></ProtectedRoute>} />
+
 
         {/* test comment */}
 

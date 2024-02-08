@@ -253,6 +253,36 @@ router.post('/login', async (req, res) => {
         }
     });
 
+    router.get('/getPotentialMatches', async (req, res) => {
+        try {
+            const { userType, languages } = req.query;
+            let profiles;
+    
+            if (userType === 'mentee') {
+                // Retrieve all mentor profiles with available set to true
+                profiles = await MentorProfile.find({ 'profileInfo.available': true });
+            } else if (userType === 'mentor') {
+                // Retrieve all mentee profiles with available set to true
+                profiles = await MenteeProfile.find({ 'profileInfo.available': true });
+            } else {
+                return res.status(400).json({ message: 'Invalid user type' });
+            }
+    
+            // Filter profiles based on common languages
+            profiles = profiles.filter(profile => {
+                const commonLanguages = profile.profileInfo.languages.filter(language =>
+                    languages.includes(language)
+                );
+                return commonLanguages.length > 0; // Filter profiles with at least one common language
+            });
+    
+            res.json({ profiles });
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({ message: 'Internal Server Error' });
+        }
+    });    
+
 router.post('/getManagerProfile', async (req, res) => {
     try {
         const { email, userType } = req.body;
@@ -456,7 +486,6 @@ router.get('/getAdminMatchingSettings', async (req, res) => {
     }
 });
 
-
 router.get('/getRandomMentorProfile', async (req, res) => {
     try {
         const { email } = req.query;
@@ -490,8 +519,17 @@ router.get('/getRandomMentorProfile', async (req, res) => {
             return res.status(404).json({ error: 'No available mentor profiles with the specified domain' });
         }
 
+        // Filter out profiles that are already a match for the mentee
+        const availableMentorProfiles = mentorProfiles.filter(profile =>
+            !profile.profileInfo.matches.some(match => match.menteeEmail === email)
+        );
+
+        if (availableMentorProfiles.length === 0) {
+            return res.status(404).json({ error: 'No available mentor profiles without a match' });
+        }
+
         // Choose a random mentor profile
-        const randomMentorProfile = mentorProfiles[Math.floor(Math.random() * mentorProfiles.length)];
+        const randomMentorProfile = availableMentorProfiles[Math.floor(Math.random() * availableMentorProfiles.length)];
 
         // Update the mentee's profile with the match information
         const menteeEmail = email;
@@ -526,6 +564,7 @@ router.get('/getRandomMentorProfile', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 
 
 
@@ -657,8 +696,17 @@ router.get('/getRandomMenteeProfile', async (req, res) => {
             return res.status(404).json({ error: 'No available mentee profiles with the specified domain' });
         }
 
+        // Filter out profiles that are already a match for the mentor
+        const availableMenteeProfiles = menteeProfiles.filter(profile =>
+            !profile.profileInfo.matches.some(match => match.mentorEmail === email)
+        );
+
+        if (availableMenteeProfiles.length === 0) {
+            return res.status(404).json({ error: 'No available mentee profiles without a match' });
+        }
+
         // Choose a random mentee profile
-        const randomMenteeProfile = menteeProfiles[Math.floor(Math.random() * menteeProfiles.length)];
+        const randomMenteeProfile = availableMenteeProfiles[Math.floor(Math.random() * availableMenteeProfiles.length)];
 
         // Update the mentor's profile with the match information
         const mentorEmail = email;
@@ -693,6 +741,7 @@ router.get('/getRandomMenteeProfile', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 
 
 
