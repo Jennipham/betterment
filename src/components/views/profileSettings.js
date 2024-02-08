@@ -50,6 +50,28 @@ const locationOptions = [
     { value: 'location', label: 'Location' },
 ]
 
+const departmentOptions = [
+    { value: 'HR', label: 'Human Resources (HR)' },
+    { value: 'IT', label: 'Information Technology' },
+    { value: 'Finance', label: 'Finance' },
+    { value: 'Marketing', label: 'Marketing' },
+    { value: 'Sales', label: 'Sales' },
+    { value: 'CS', label: 'Customer Service' },
+    { value: 'R&D', label: 'Research and Development' },
+    { value: 'Legal', label: 'Legal ' },
+    { value: 'Operations', label: 'Operations' },
+    { value: 'Admin', label: 'Administration' },
+    { value: 'Supply', label: 'Supply Chain' },
+    { value: 'QA', label: 'Quality Assurance' },
+    { value: 'Engineering', label: 'Engineering' },
+    { value: 'PM', label: 'Product Management' },
+    { value: 'PR', label: 'Public Relations' },
+    { value: 'BD', label: 'Business Development' },
+    { value: 'H&S', label: 'Health & Safety' },
+    { value: 'TD', label: 'Training & Development' },
+    { value: 'Design', label: 'Design' },
+]
+
 
 const customStyles = {
     control: (provided) => ({
@@ -341,28 +363,21 @@ const Profile = () => {
   
                         </div>
                         <div className='editable-container'>
-                        <p className="editable-attribute">
-                            <span className="attribute-label">Department:</span>
-                            {isEditingDepartment ? (
-                                <>
-                                    <input
-                                        className='job-role-field'
-                                        type="text"
-                                        value={isEditingDepartment ? departmentInput : formData.department}
-                                        onChange={(e) => setDepartmentInput(e.target.value)}
-                                    />
-                                    <button className='save-button' onClick={handleSaveClick}>Save</button>
-                                    <button className='cancel-button' onClick={() => setIsEditingDepartment(false)}>Cancel</button>
-                                </>
-                            ) : (
-                                <>
-                                    <span className='job-role'>{formData.department}</span>
-                                    <span className='edit-icon-container' onClick={() => handleEditClick('Department')}>
-                                        <img src={editIcon} alt="Edit" className="edit-icon" />
-                                    </span>
-                                </>
-                            )}
+                        <p className="dropdown-title">
+                        Department:
+                            <Select
+                                isMulti={false}
+                                options={departmentOptions}
+                                placeholder="Select Department"
+                                styles={customStyles}
+                                value={formData.department ? { value: formData.department, label: capitaliseFirstLetter(formData.department) } : null}
+                                onChange={(selectedOption) =>
+                                    handleInputChange('department', selectedOption.value)
+                                }
+
+                            />
                             </p>
+                            
                             <Tooltip text="The Department you work in.">
                                 <img src={moreInfo} alt="More Info" className="more-info-icon" />
                             </Tooltip>
