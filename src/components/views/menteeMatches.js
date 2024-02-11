@@ -7,6 +7,7 @@ import '../styles/MenteeMatches.css';
 import white from '../images/profile-white.png';
 import black from '../images/profile-black.png';
 import connect from '../images/connect-icon.png';
+import star from '../images/star-icon.png';
 import save from '../images/save-icon.png';
 import reset from '../images/reset-icon.png';
 import Loader from '../utils/loader';
@@ -43,6 +44,11 @@ const customStyles = {
     }),
 };
 
+const findHighestScore = (profiles) => {
+    return profiles ? Math.max(...profiles.map(mentor => mentor.score), 0) : 0;
+};
+
+
 const MenteeMatches = () => {
 
 
@@ -64,9 +70,12 @@ const MenteeMatches = () => {
     const [successMessage, setSuccessMessage] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const [matchingMethod, setMatchingMethod] = useState('');
+    const [matchingMethod, setMatchingMethod] = useState();
     const [blindMatching, setBlindMatching] = useState('');
     const [names, setNames] = useState({});
+
+    const highestScore = findHighestScore(mentorProfile);
+
 
 
     const [isLoadingProfiles, setIsLoadingProfiles] = useState(true);
@@ -100,12 +109,13 @@ const MenteeMatches = () => {
         const email = sessionStorage.getItem('email');
         const jobRole = sessionStorage.getItem('jobRole') || '';
         const officeLocation = sessionStorage.getItem('officeLocation') || '';
-        const developmentAreas = sessionStorage.getItem('developmentAreas') || '';
-        const mentoringMethods = sessionStorage.getItem('mentoringMethods') || '';
-        const languages = sessionStorage.getItem('languages') || '';
+        const developmentAreas = sessionStorage.getItem('developmentAreas') || [];
+        const mentoringMethods = sessionStorage.getItem('mentoringMethods') || [];
+        const department = sessionStorage.getItem('department') || '';
+        const languages = sessionStorage.getItem('languages') || [];
         const admin = sessionStorage.getItem('admin') || '';
 
-        setUser({ firstName, lastName, userType, email, jobRole, officeLocation, developmentAreas, mentoringMethods, languages, admin });
+        setUser({ firstName, lastName, userType, email, jobRole, officeLocation, developmentAreas, department, mentoringMethods, languages, admin, });
         // console.log('User Information:', { firstName, lastName, userType, email, jobRole, officeLocation, developmentAreas, mentoringMethods, languages });
     }, []);
 
@@ -182,7 +192,36 @@ const MenteeMatches = () => {
                 }
 
                 else if (matchingMethod && matchingMethod === 'Algorithm') {
-                    return;
+                    response = await axios.get('http://localhost:3001/getPotentialMatches', {
+                        params: {
+                            userType: user.userType,
+                            languages: user.languages.join(','),
+                            department: user.department,
+                            officeLocation: user.officeLocation,
+                            developmentAreas: user.developmentAreas.join(','),
+                            mentoringMethods: user.mentoringMethods.join(','),
+
+                        },
+                    });
+
+                    const menteeProfilesWithNames = await Promise.all(
+                        response.data.profiles.map(async (mentor) => {
+                            const userDetailsResponse = await fetchNames(mentor._doc.email);
+                            return {
+                                ...mentor,
+                                fname: userDetailsResponse ? userDetailsResponse.user.fname : '',
+                                sname: userDetailsResponse ? userDetailsResponse.user.sname : '',
+                            };
+                        })
+                    );
+
+                    // Update your state or UI with the matched profiles
+                    setMentorProfile(menteeProfilesWithNames);
+                    setIsLoadingProfiles(false);
+
+                    // Update sessionStorage if necessary
+                    sessionStorage.setItem('matchProfile', JSON.stringify(response.data.profiles));
+
                 }
 
             } catch (error) {
@@ -196,8 +235,10 @@ const MenteeMatches = () => {
             }
         };
 
+
+        setIsLoadingProfiles(true);
         fetchMentorProfile();
-    }, [matchingMethod, user.email]);
+    }, [matchingMethod, user]);
 
     const fetchNames = async (email) => {
         try {
@@ -232,10 +273,11 @@ const MenteeMatches = () => {
                     ...prevUser,
                     jobRole: response.data.profile.profileInfo.jobRole || '',
                     location: response.data.profile.profileInfo.officeLocation || '',
-                    developmentAreas: response.data.profile.profileInfo.developmentAreas || '',
-                    mentoringMethods: response.data.profile.profileInfo.mentoringMethods || '',
-                    languages: response.data.profile.profileInfo.languages || '',
+                    developmentAreas: response.data.profile.profileInfo.developmentAreas || [],
+                    mentoringMethods: response.data.profile.profileInfo.mentoringMethods || [],
+                    languages: response.data.profile.profileInfo.languages || [],
                     admin: response.data.profile.profileInfo.admin || '',
+                    department: response.data.profile.profileInfo.department || '',
 
 
                 }));
@@ -254,7 +296,7 @@ const MenteeMatches = () => {
         };
 
         fetchProfileData();
-    }, [user.email, user.userType]);
+    }, []);
 
     const handleRequestMatch = async (mentorEmail) => {
         try {
@@ -494,7 +536,7 @@ const MenteeMatches = () => {
                     {errorMessage && <p className="error-message-profile">{errorMessage}</p>}
                 </div>
 
-                {matchingMethod === 'Manual' ? (
+                {matchingMethod === 'Manual' && (
                     <>
                         <div className="filter-section">
                             <Select
@@ -612,8 +654,80 @@ const MenteeMatches = () => {
                             </div>
                         )}
                     </>
-                ) : (
+                )}
 
+{matchingMethod === "Algorithm" && (
+                    <>
+                        <h2 className='top-match'>Your Matches:</h2>
+                        {isLoadingProfiles ? (
+                            <div className="loader-container">
+                                <Loader />
+                            </div>
+                        ) : (
+                            <div className="mentor-profiles">
+                                {mentorProfile ? (
+
+
+                                    chunkArray(mentorProfile, 2).map((row, rowIndex) => (
+                                        <div key={rowIndex} className="mentor-profile-row">
+                                            {row.map((mentor, index) => (
+                                                <div key={index} className="profile-container">
+                                                    <p className="rank-number">
+                                                    <span>{mentor.score !== highestScore && `${index + 1}.`}</span>
+                                                    {mentor.score === highestScore && <span className='top-match-label'>
+                                                    <img className= "star-icon" src={star} />
+
+                                                        Top Match</span>}
+                                                    </p>
+
+                                                    <div className="mentor-profiles-box">
+                                                        <div className="profile-mentor">
+
+                                                            <div className="profile-left-info">
+
+                                                                <div className='profile-top'>
+                                                                    <div className="profile-icon">
+                                                                        <img src={black} alt="Black Profile Icon" />
+                                                                    </div>
+                                                                    <div className="user-info">
+                                                                        {blindMatching === "Off" ? (
+                                                                            <p>Name: {mentor && mentor.fname && mentor.sname ? capitaliseFirstLetter(mentor.fname) + ' ' + capitaliseFirstLetter(mentor.sname) : 'Not specified'}</p>
+                                                                        ) : (<p>Names are hidden for Blind Matching</p>)}
+                                                                        <p>Job Role: {mentor._doc && mentor._doc.profileInfo && mentor._doc.profileInfo.jobRole ? capitaliseFirstLetter(mentor._doc.profileInfo.jobRole) : 'Not specified'}</p>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div className="matching-info-left">
+                                                                    <p>Location: {mentor._doc && mentor._doc.profileInfo && mentor._doc.profileInfo.officeLocation ? capitaliseFirstLetter(mentor._doc.profileInfo.officeLocation) : 'Not specified'}</p>
+                                                                    <p>Development Areas: {mentor._doc && mentor._doc.profileInfo && mentor._doc.profileInfo.developmentAreas ? mentor._doc.profileInfo.developmentAreas.join(', ') : 'Not specified'}</p>
+                                                                    <p>Methods of Matching: {mentor._doc && mentor._doc.profileInfo && mentor._doc.profileInfo.mentoringMethods ? mentor._doc.profileInfo.mentoringMethods.join(', ') : 'Not specified'}</p>
+                                                                </div>
+
+                                                                <div className="bottom-buttons-container-manual">
+                                                                    <button className="full-profile-button" onClick={() => handleViewFullProfile(mentor._doc.email)}>View Full Profile</button>
+                                                                    {isModalOpen && (
+                                                                        <Modal onClose={handleCloseModal}>
+                                                                            <iframe title="Full Profile" src={`/fullprofile/${selectedMentorEmail}`} width="100%" height="100%" />
+                                                                        </Modal>
+                                                                    )}
+                                                                    <button className='match-request-button' onClick={() => { handleRequestMatch(mentor._doc.email) }}>Request Match</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ))
+                                ) : (
+                                    errorMessage && <p className="error-message-profile">{errorMessage}</p>
+                                )}
+                            </div>
+                        )}
+                    </>
+                )}
+
+{matchingMethod === "Random" && (
                     <div className="match-section">
                         <h2 className='top-match'>Your Random Match:</h2>
                         <div className='error-message-profile-container'>
@@ -696,6 +810,7 @@ const MenteeMatches = () => {
                         </div>
 
                     </div>
+                    
 
                 )}
 

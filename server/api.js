@@ -253,9 +253,76 @@ router.post('/login', async (req, res) => {
         }
     });
 
+    function calculateSimilarityScore(attribute1, attribute2) {
+        return attribute1 === attribute2 ? 1 : 0;
+    }
+    
+    // Function to calculate similarity score for two arrays
+    const calculateArraySimilarityScore = (array1, array2) => {
+        if (!Array.isArray(array1) || !Array.isArray(array2)) {
+            // Handle the case where either array1 or array2 is not an array
+            return 0; // or handle it based on your logic
+        }
+    
+        const commonElements = array1.filter(element => array2.includes(element));
+        return commonElements.length;
+    };
+    
+
+    // router.get('/getPotentialMatches', async (req, res) => {
+    //     try {
+    //         const { userType, languages, department, officeLocation, developmentAreas, mentoringMethods } = req.query;
+    //         let profiles;
+    
+    //         if (userType === 'mentee') {
+    //             // Retrieve all mentor profiles with available set to true
+    //             profiles = await MentorProfile.find({ 'profileInfo.available': true });
+    //         } else if (userType === 'mentor') {
+    //             // Retrieve all mentee profiles with available set to true
+    //             profiles = await MenteeProfile.find({ 'profileInfo.available': true });
+    //         } else {
+    //             return res.status(400).json({ message: 'Invalid user type' });
+    //         }
+    
+    //         // Calculate similarity score and order profiles
+    //         const profilesWithScores = profiles.map(profile => {
+    //             const profileAttributes = profile.profileInfo;
+    
+    //             let totalScore =
+    //                 calculateSimilarityScore(department, profileAttributes.department) +
+    //                 calculateSimilarityScore(officeLocation, profileAttributes.officeLocation) +
+    //                 calculateArraySimilarityScore(developmentAreas, profileAttributes.developmentAreas) +
+    //                 calculateArraySimilarityScore(mentoringMethods, profileAttributes.mentoringMethods);
+    
+    //             if (userType === 'mentee') {
+    //                 totalScore += profileAttributes.level ? parseInt(profileAttributes.profileInfo.level) : 0;
+    //             }
+    
+    //             return { ...profile, score: totalScore };
+    //         });
+    
+    //         const sortedProfiles = profilesWithScores.sort((a, b) => b.score - a.score);
+
+    //         console.log("sorted",sortedProfiles);
+    
+    //         // Filter profiles based on common languages
+    //         const filteredProfiles = sortedProfiles.filter(profile => {
+    //             const commonLanguages = profile.profileInfo.languages.filter(language =>
+    //                 languages.includes(language)
+    //             );
+    //             return commonLanguages.length > 0; // Filter profiles with at least one common language
+    //         });
+    
+    //         return res.json({ profiles: filteredProfiles });
+    //     } catch (err) {
+    //         console.error(err);
+    //         res.status(500).json({ message: 'Internal Server Error' });
+    //     }
+    // });
+
     router.get('/getPotentialMatches', async (req, res) => {
         try {
-            const { userType, languages } = req.query;
+            const { userType, languages, department, officeLocation, developmentAreas, mentoringMethods } = req.query;
             let profiles;
     
             if (userType === 'mentee') {
@@ -268,20 +335,48 @@ router.post('/login', async (req, res) => {
                 return res.status(400).json({ message: 'Invalid user type' });
             }
     
-            // Filter profiles based on common languages
-            profiles = profiles.filter(profile => {
-                const commonLanguages = profile.profileInfo.languages.filter(language =>
-                    languages.includes(language)
-                );
-                return commonLanguages.length > 0; // Filter profiles with at least one common language
+            // Calculate similarity score and order profiles
+            const profilesWithScores = profiles.map(profile => {
+                const { _doc: { profileInfo } } = profile;
+    
+                let totalScore =
+                    calculateSimilarityScore(department, profileInfo.department) +
+                    calculateSimilarityScore(officeLocation, profileInfo.officeLocation) +
+                    calculateArraySimilarityScore(developmentAreas, profileInfo.developmentAreas) +
+                    calculateArraySimilarityScore(mentoringMethods, profileInfo.mentoringMethods);
+    
+                if (userType === 'mentee') {
+                    totalScore += profileInfo.level ? parseInt(profileInfo.level) : 0;
+                }
+    
+                return { ...profile, score: totalScore };
             });
     
-            res.json({ profiles });
+            const sortedProfiles = profilesWithScores.sort((a, b) => b.score - a.score);
+    
+            console.log("sorted", sortedProfiles);
+    
+            // Filter profiles based on common languages
+            const filteredProfiles = sortedProfiles.filter(profile => {
+                const profileLanguages = profile._doc.profileInfo.languages;
+            
+                // Check if both profileLanguages and languages are defined before using the includes method
+                const commonLanguages = profileLanguages && languages && profileLanguages.filter(language =>
+                    languages.includes(language)
+                );
+            
+                return commonLanguages && commonLanguages.length > 0;
+            });
+            
+            return res.json({ profiles: filteredProfiles });
         } catch (err) {
             console.error(err);
             res.status(500).json({ message: 'Internal Server Error' });
         }
-    });    
+    });
+    
+    
+    
 
 router.post('/getManagerProfile', async (req, res) => {
     try {

@@ -196,3 +196,34 @@
     align-items: center;
     margin: 20px 10px;
 }
+
+.rank-number {
+    font-size: 20px;
+    margin: 0px;
+    padding: 5px;
+
+
+
+}
+
+.profile-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.top-match-label {
+    background-color: #007785;
+    width: fit-content;
+    border-radius: 8px;
+    padding: 5px;
+    color: white;
+    display: flex;
+    align-items: center;
+    font-size: 18px;
+    margin-left: 10px;
+}
+
+.star-icon {
+    height: 25px;
+    margin-right: 5px;
+}
