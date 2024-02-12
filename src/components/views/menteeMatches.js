@@ -671,13 +671,16 @@ const MenteeMatches = () => {
                                     chunkArray(mentorProfile, 2).map((row, rowIndex) => (
                                         <div key={rowIndex} className="mentor-profile-row">
                                             {row.map((mentor, index) => (
-                                                <div key={index} className="profile-container">
-                                                    <p className="rank-number">
-                                                    <span>{mentor.score !== highestScore && `${index + 1}.`}</span>
-                                                    {mentor.score === highestScore && <span className='top-match-label'>
-                                                    <img className= "star-icon" src={star} />
-
-                                                        Top Match</span>}
+                                                <div key={index} className="profile-containers">
+                                                   <p className="rank-number">
+                                                        {mentor.score !== highestScore ? (
+                                                            <p className='top-match-label'>{`Ranking: ${index + 1}`}</p>
+                                                        ) : (
+                                                            <p className='top-match-label'>
+                                                                <img className="star-icon" src={star} />
+                                                                Top Match
+                                                            </p>
+                                                        )}
                                                     </p>
 
                                                     <div className="mentor-profiles-box">

@@ -229,3 +229,36 @@ justify-content: center;
     min-height: 22em;
     min-width: 25em;
 }
+
+.ranking {
+    font-size: 18px;
+ 
+}
+
+
+.profile-containers {
+display: flex;
+flex-direction: column;
+align-items: center;
+}
+
+.top-match-label {
+background-color: #007785;
+width: fit-content;
+border-radius: 8px;
+padding: 5px;
+color: white;
+display: flex;
+font-size: 18px;
+font-family: 'agrandir wide light', sans-serif;
+font-weight: bold;
+}
+
+.star-icon {
+height: 25px;
+margin-right: 5px;
+}
+
+.rank-number {
+margin: 0px;
+}
