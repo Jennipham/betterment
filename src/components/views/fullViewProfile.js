@@ -14,6 +14,7 @@ const FullProfile = () => {
     const [matchSname, setMatchSname] = useState('');
     const [matchUserType, setMatchUserType] = useState('');
     const [matchProfile, setMatchProfile] = useState(null);
+    const [blindMatching, setBlindMatching] = useState('');
 
     const [errorMessage, setErrorMessage] = useState('');
 
@@ -56,20 +57,45 @@ const FullProfile = () => {
         const fetchRequestProfile = async () => {
             try {
                 if (matchUserType !== '') {
-        const userResponse = await axios.post('http://localhost:3001/getProfile', {
-            email: email,
-            userType: matchUserType,
-        });
+                    const userResponse = await axios.post('http://localhost:3001/getProfile', {
+                        email: email,
+                        userType: matchUserType,
+                    });
 
-        setMatchProfile(userResponse.data.profile);
-    }
-} catch (error) {
-    console.error('Error fetching mentor data:', error);
-    setErrorMessage('Error Fetching Mentor Information');
-}
+                    setMatchProfile(userResponse.data.profile);
+                }
+            } catch (error) {
+                console.error('Error fetching mentor data:', error);
+                setErrorMessage('Error Fetching Mentor Information');
+            }
         };
-fetchRequestProfile();
+        fetchRequestProfile();
     }, [email, matchUserType]);
+
+    const fetchAdminMatchSettings = async () => {
+        try {
+            if (matchProfile && matchProfile.profileInfo) {
+                const response = await axios.get('http://localhost:3001/getAdminMatchingSettings', {
+                    params: {
+                        email: matchProfile.profileInfo.admin,
+                    },
+                });
+                const { blindMatching } = response.data;
+    
+                setBlindMatching(blindMatching);
+            }
+        } catch (error) {
+            console.error('Error fetching admin match settings:', error);
+            // Handle error if necessary
+        }
+    };
+    
+    useEffect(() => {
+        if (matchProfile && matchProfile.profileInfo) {
+            fetchAdminMatchSettings();
+        }
+    },[matchProfile, matchProfile?.profileInfo?.admin]);
+    
 
 
     return (
@@ -83,7 +109,11 @@ fetchRequestProfile();
                         {errorMessage && <p className="error-message-profile">{errorMessage}</p>}
                     </div>
                     <div className="profile-header">
-                        <h1>{matchFname && matchSname ? `${matchFname} ${matchSname}` : ''}</h1>
+                        {blindMatching === "Off" ? (
+                            <h1>{matchFname && matchSname ? `${matchFname} ${matchSname}` : "Names are hidden for Blind Matching"}</h1>
+                        ) : null}
+
+
                         <p className="job-role">Job Role: {matchProfile && matchProfile.profileInfo.jobRole ? capitaliseFirstLetter(matchProfile.profileInfo.jobRole) : ''}</p>
 
                     </div>
