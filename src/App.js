@@ -17,6 +17,7 @@ import NoPermissions from './components/views/noPermissions';
 import Requests from './components/views/requests';
 import ProtectedRoute from './components/utils/protectedRoute';
 import ExpiredSession from './components/views/expiredSession';
+import Dashboard from './components/views/dashboard';
 
 
 function App() {
@@ -39,6 +40,7 @@ function App() {
 
           <Route path="/profileSettings" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="/adminSettings" element={<ProtectedRoute><AdminSettings /></ProtectedRoute>} />
+          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/mentormatches" element={<ProtectedRoute><MentorMatches /></ProtectedRoute>} />
           <Route path="/menteematches" element={<ProtectedRoute><MenteeMatches /></ProtectedRoute>} />
           <Route path="/managerprofile" element={<ProtectedRoute><ManagerProfile /></ProtectedRoute>} />
