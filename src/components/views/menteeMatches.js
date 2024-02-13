@@ -83,6 +83,29 @@ const MenteeMatches = () => {
 
     const [selectedMentorEmail, setSelectedMentorEmail] = useState('');
 
+    const [selectedLanguages, setSelectedLanguages] = useState([]);
+
+    const handleLanguagesChange = (selectedOptions) => {
+        const selectedValues = selectedOptions ? selectedOptions.map(option => option.value) : [];
+        setSelectedLanguages(selectedValues);
+    };
+
+    const [selectedDevelopmentAreas, setSelectedDevelopmentAreas] = useState([]);
+
+    const handleDevelopmentAreasChange = (selectedOptions) => {
+        const selectedValues = selectedOptions ? selectedOptions.map(option => option.value) : [];
+        setSelectedDevelopmentAreas(selectedValues);
+    };
+
+    const [selectedMethods, setSelectedMethods] = useState([]);
+
+    const handleMethodsChange = (selectedOptions) => {
+        const selectedValues = selectedOptions ? selectedOptions.map(option => option.value) : [];
+        setSelectedMethods(selectedValues);
+    };
+
+    const [selectedLocation, setSelectedLocation] = useState('');
+
 
 
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -143,7 +166,6 @@ const MenteeMatches = () => {
         }
         else {
             setBlindMatching('On');
-            setMatchingMethod('Algorithm');
         }
     }, [user.admin]);
 
@@ -163,33 +185,33 @@ const MenteeMatches = () => {
 
                 }
 
-                else if (matchingMethod && matchingMethod === 'Manual') {
-                    response = await axios.get(`http://localhost:3001/getFilteredMentorProfile?email=${user.email}`, {
-                        params: {
-                            language: selectedLanguages.join(','),
-                            developmentAreas: selectedDevelopmentAreas.join(','),
-                            mentoringMethods: selectedMethods.join(','),
-                        },
-                    });
+                // else if (matchingMethod && matchingMethod === 'Manual') {
+                //     response = await axios.get(`http://localhost:3001/getFilteredMentorProfile?email=${user.email}`, {
+                //         params: {
+                //             language: selectedLanguages.join(','),
+                //             developmentAreas: selectedDevelopmentAreas.join(','),
+                //             mentoringMethods: selectedMethods.join(','),
+                //         },
+                //     });
 
-                    // Fetch names for each mentor profile
-                    const mentorProfilesWithNames = await Promise.all(
-                        response.data.profiles.map(async (mentor) => {
-                            const userDetailsResponse = await fetchNames(mentor.email);
-                            return {
-                                ...mentor,
-                                fname: userDetailsResponse ? userDetailsResponse.user.fname : '',
-                                sname: userDetailsResponse ? userDetailsResponse.user.sname : '',
-                            };
-                        })
-                    );
+                //     // Fetch names for each mentor profile
+                //     const mentorProfilesWithNames = await Promise.all(
+                //         response.data.profiles.map(async (mentor) => {
+                //             const userDetailsResponse = await fetchNames(mentor.email);
+                //             return {
+                //                 ...mentor,
+                //                 fname: userDetailsResponse ? userDetailsResponse.user.fname : '',
+                //                 sname: userDetailsResponse ? userDetailsResponse.user.sname : '',
+                //             };
+                //         })
+                //     );
 
 
-                    setMentorProfile(mentorProfilesWithNames);
-                    setIsLoadingProfiles(false);
-                    sessionStorage.setItem('matchProfile', JSON.stringify(response.data.profiles));
+                //     setMentorProfile(mentorProfilesWithNames);
+                //     setIsLoadingProfiles(false);
+                //     sessionStorage.setItem('matchProfile', JSON.stringify(response.data.profiles));
 
-                }
+                // }
 
                 else if (matchingMethod && matchingMethod === 'Algorithm') {
                     response = await axios.get('http://localhost:3001/getPotentialMatches', {
@@ -228,9 +250,9 @@ const MenteeMatches = () => {
                 setIsLoadingProfiles(false);
                 console.error('Error fetching data:', error);
                 if (error.response && error.response.status === 404) {
-                    setErrorMessage('No Mentors Currently Available - Please try again later.');
+                    handleErrorMessage('No Mentors Currently Available - Please try again later.');
                 } else {
-                    setErrorMessage('Error Finding Match.');
+                    handleErrorMessage('Error Finding Match.');
                 }
             }
         };
@@ -255,6 +277,52 @@ const MenteeMatches = () => {
             return null;
         }
     };
+
+    useEffect(() => {
+        const fetchManualMatches = async () => {
+            try {
+                const response = await axios.get(`http://localhost:3001/getFilteredMentorProfile?email=${user.email}`, {
+                    params: {
+                        language: selectedLanguages.join(','),
+                        developmentAreas: selectedDevelopmentAreas.join(','),
+                        mentoringMethods: selectedMethods.join(','),
+                    },
+                });
+
+                // Fetch names for each mentor profile
+                const mentorProfilesWithNames = await Promise.all(
+                    response.data.profiles.map(async (mentor) => {
+                        const userDetailsResponse = await fetchNames(mentor.email);
+                        return {
+                            ...mentor,
+                            fname: userDetailsResponse ? userDetailsResponse.user.fname : '',
+                            sname: userDetailsResponse ? userDetailsResponse.user.sname : '',
+                        };
+                    })
+                );
+
+                setMentorProfile(mentorProfilesWithNames);
+                setIsLoadingProfiles(false);
+                sessionStorage.setItem('matchProfile', JSON.stringify(response.data.profiles));
+
+            } catch (error) {
+                setIsLoadingProfiles(false);
+                setMentorProfile([]);
+                console.error('Error fetching data:', error);
+                if (error.response && error.response.status === 404) {
+                    handleErrorMessage('No Mentors Currently Available - Please try again later.');
+                } else {
+                    handleErrorMessage('Error Finding Match.');
+                }
+            }
+        };
+
+        // Only fetch when the matching method is manual
+        if (matchingMethod === 'Manual') {
+            setIsLoadingProfiles(true);
+            fetchManualMatches();
+        }
+    }, [matchingMethod, selectedLanguages, selectedDevelopmentAreas, selectedMethods, user]);
 
 
     useEffect(() => {
@@ -290,7 +358,7 @@ const MenteeMatches = () => {
 
             } catch (error) {
                 console.error('Error fetching profile data:', error);
-                setErrorMessage('Error Fetching Profile Data');
+                handleErrorMessage('Error Fetching Profile Data');
 
             }
         };
@@ -317,16 +385,16 @@ const MenteeMatches = () => {
             setLoading(false);
             if (error.response) {
                 if (error.response.status === 400) {
-                    setErrorMessage('Invalid user type - Please try again later.');
+                    handleErrorMessage('Invalid user type - Please try again later.');
                 } else if (error.response.status === 404) {
-                    setErrorMessage('Profile not found - please try again later.');
+                    handleErrorMessage('Profile not found - please try again later.');
                 }
                 else if (error.response.status === 401) {
-                    setErrorMessage('Match request already sent or received');
+                    handleErrorMessage('Match request already sent or received');
                 }
                 else {
                     console.error('Error sending match request:', error);
-                    setErrorMessage('Error sending Match Request');
+                    handleErrorMessage('Error sending Match Request');
                 }
             }
 
@@ -397,28 +465,28 @@ const MenteeMatches = () => {
 
         }),
     };
-    const [selectedLanguages, setSelectedLanguages] = useState([]);
+    // const [selectedLanguages, setSelectedLanguages] = useState([]);
 
-    const handleLanguagesChange = (selectedOptions) => {
-        const selectedValues = selectedOptions ? selectedOptions.map(option => option.value) : [];
-        setSelectedLanguages(selectedValues);
-    };
+    // const handleLanguagesChange = (selectedOptions) => {
+    //     const selectedValues = selectedOptions ? selectedOptions.map(option => option.value) : [];
+    //     setSelectedLanguages(selectedValues);
+    // };
 
-    const [selectedDevelopmentAreas, setSelectedDevelopmentAreas] = useState([]);
+    // const [selectedDevelopmentAreas, setSelectedDevelopmentAreas] = useState([]);
 
-    const handleDevelopmentAreasChange = (selectedOptions) => {
-        const selectedValues = selectedOptions ? selectedOptions.map(option => option.value) : [];
-        setSelectedDevelopmentAreas(selectedValues);
-    };
+    // const handleDevelopmentAreasChange = (selectedOptions) => {
+    //     const selectedValues = selectedOptions ? selectedOptions.map(option => option.value) : [];
+    //     setSelectedDevelopmentAreas(selectedValues);
+    // };
 
-    const [selectedMethods, setSelectedMethods] = useState([]);
+    // const [selectedMethods, setSelectedMethods] = useState([]);
 
-    const handleMethodsChange = (selectedOptions) => {
-        const selectedValues = selectedOptions ? selectedOptions.map(option => option.value) : [];
-        setSelectedMethods(selectedValues);
-    };
+    // const handleMethodsChange = (selectedOptions) => {
+    //     const selectedValues = selectedOptions ? selectedOptions.map(option => option.value) : [];
+    //     setSelectedMethods(selectedValues);
+    // };
 
-    const [selectedLocation, setSelectedLocation] = useState('');
+    // const [selectedLocation, setSelectedLocation] = useState('');
 
     const handleLocationChange = (selectedOption) => {
         const selectedValue = selectedOption ? selectedOption.value : '';
@@ -455,6 +523,16 @@ const MenteeMatches = () => {
         }, 5000); // 5000 milliseconds (5 seconds)
     };
 
+    const handleErrorMessage = (message) => {
+        setErrorMessage(message);
+        setTimeout(() => {
+            setErrorMessage('');
+        }, 5000); // 5000 milliseconds (5 seconds)
+    };
+
+
+
+
     const handleSave = async () => {
         try {
             setLoading(true);
@@ -482,7 +560,7 @@ const MenteeMatches = () => {
         } catch (error) {
             setLoading(false);
             console.error('Error updating profile:', error);
-            setErrorMessage('Error Updating Profile');
+            handleErrorMessage('Error Updating Profile');
         }
     };
 
@@ -623,9 +701,9 @@ const MenteeMatches = () => {
                                                             </div>
 
                                                             <div className="matching-info-left">
-                                                                <p>Location: {mentor.profileInfo.officeLocation ? capitaliseFirstLetter(mentor.profileInfo.officeLocation) : 'Not specified'}</p>
-                                                                <p>Development Areas: {mentor.profileInfo.developmentAreas ? mentor.profileInfo.developmentAreas.join(', ') : 'Not specified'}</p>
-                                                                <p>Methods of Matching: {mentor.profileInfo.mentoringMethods ? mentor.profileInfo.mentoringMethods.join(', ') : 'Not specified'}</p>
+                                                                <p>Location: {mentor.profileInfo && mentor.profileInfo.officeLocation ? capitaliseFirstLetter(mentor.profileInfo.officeLocation) : 'Not specified'}</p>
+                                                                <p>Development Areas: {mentor.profileInfo && mentor.profileInfo.developmentAreas ? mentor.profileInfo.developmentAreas.join(', ') : 'Not specified'}</p>
+                                                                <p>Methods of Matching: {mentor.profileInfo && mentor.profileInfo.mentoringMethods ? mentor.profileInfo.mentoringMethods.join(', ') : 'Not specified'}</p>
                                                             </div>
 
                                                             <div className="bottom-buttons-container-manual">
