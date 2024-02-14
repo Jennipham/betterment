@@ -7,7 +7,9 @@ import Footer from '../utils/footer';
 
 
 const Dashboard = () => {
-    const [userStats, setUserStats] = useState(null);
+    const [userCountStats, setUserCountStats] = useState(null);
+    const [matchedStats, setMatchedStats] = useState(null);
+
 
     const [user, setUser] = useState({
         firstName: sessionStorage.getItem('firstName') || 'User',
@@ -30,25 +32,25 @@ const Dashboard = () => {
 
     useEffect(() => {
         // Function to fetch user stats
-        const fetchUserStats = async () => {
+        const fetchUserCountStats = async () => {
             try {
                 const adminEmail = user.email; // Replace with your admin email
                 const response = await fetch(`http://localhost:3001/matched-stats/${adminEmail}`);
                 const data = await response.json();
 
-                setUserStats(data);
+                setUserCountStats(data);
             } catch (error) {
                 console.error('Error fetching user stats:', error);
             }
         };
 
         // Call the function
-        fetchUserStats();
+        fetchUserCountStats();
     }, []); // Empty dependency array to run only once when the component mounts
 
     // Function to render the pie chart
-    const renderPieChart = () => {
-        if (!userStats) {
+    const renderUserCountPieChart = () => {
+        if (!userCountStats) {
             return null;
         }
     
@@ -56,7 +58,7 @@ const Dashboard = () => {
             labels: ['Mentors', 'Mentees'],
             datasets: [
                 {
-                    data: [userStats.mentorCount, userStats.menteeCount],
+                    data: [userCountStats.mentorCount, userCountStats.menteeCount],
                     backgroundColor: ['#3BBED1', '#007785'], // You can customize the colors
                     hoverBackgroundColor: ['#3BBED1', '#007785'],
                 },
@@ -66,18 +68,88 @@ const Dashboard = () => {
     
         return <Pie data={data} />;
     };
-    // Your JSX code
+
+    // Inside your Dashboard component
+const fetchMatchedStats = async () => {
+    try {
+        const adminEmail = user.email;
+        const response = await fetch(`http://localhost:3001/matched-stats/${adminEmail}`);
+        const data = await response.json();
+
+        // Do something with the data (set it to a state, etc.)
+        setMatchedStats(data);
+    } catch (error) {
+        console.error('Error fetching matched stats:', error);
+    }
+};
+
+// Call the function
+useEffect(() => {
+    fetchMatchedStats();
+}, []);
+
+const renderStackedBarChart = () => {
+    if (!matchedStats) {
+        return null;
+    }
+
+    const data = {
+        labels: ['Matched', 'Not Matched'],
+        datasets: [
+            {
+                label: 'Mentors',
+                data: [
+                    matchedStats.mentorMatchesCount,
+                    matchedStats.mentorCount - matchedStats.mentorMatchesCount,
+                ],
+                backgroundColor: ['#007785', '#007785'],
+            },
+            {
+                label: 'Mentees',
+                data: [
+                    matchedStats.menteeMatchesCount,
+                    matchedStats.menteeCount - matchedStats.menteeMatchesCount,
+                ],
+                backgroundColor: ['#3BBED1', '#3BBED1'],
+            },
+        ],
+    };
+
+    const options = {
+        title: {
+            display: true,
+            text: 'Mentor and Mentee Stats',
+            fontSize: 16,
+        },
+        scales: {
+            x: {
+                stacked: true,
+            },
+            y: {
+                stacked: true,
+            },
+        },
+    };
+
+    return <Bar data={data} options={options} />;
+};
+
+
     return (
                 <>
                     <Header />
-        
                     <div className="dashboard-container">
+                    <h1 className='insights-header'>Programme Dashboard</h1>
+
                         <div className="chart-container">
                             <div className="chart-item">
-                                {/* <Doughnut data={pieChartData} /> */}
+                                <h2 className='chart-title'>Users Count</h2>
+                            {renderUserCountPieChart()}
                             </div>
                             <div className="chart-item">
-                                {renderPieChart()}
+                            <h2 className='chart-title'>Matched Users</h2>
+                            {renderStackedBarChart()}
+
                             </div>
                         </div>
                     </div>

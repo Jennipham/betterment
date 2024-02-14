@@ -1463,5 +1463,54 @@ router.get('/matched-stats/:adminEmail', async (req, res) => {
     }
 });
 
+router.get('/matched-stats/:adminEmail', async (req, res) => {
+    try {
+        const adminEmail = req.params.adminEmail;
+
+        // Extract domain from admin email
+        const domain = adminEmail.split('@')[1];
+
+        // Get all mentor profiles with the same domain and available
+        const mentorProfiles = await MentorProfile.find({
+            'email': { $regex: new RegExp(`@${domain}$`, 'i') },
+            'profileInfo.available': true,
+        });
+
+        // Get all mentee profiles with the same domain and available
+        const menteeProfiles = await MenteeProfile.find({
+            'email': { $regex: new RegExp(`@${domain}$`, 'i') },
+            'profileInfo.available': true,
+        });
+
+        // Calculate total number of users
+        const totalUsers = mentorProfiles.length + menteeProfiles.length;
+
+        // Get the number of mentors and mentees
+        const mentorCount = mentorProfiles.length;
+        const menteeCount = menteeProfiles.length;
+
+        // Get the number of mentors with at least one match
+        const mentorMatchesCount = mentorProfiles.filter(profile => profile.profileInfo.matches.length > 0).length;
+
+        // Get the number of mentees with at least one match
+        const menteeMatchesCount = menteeProfiles.filter(profile => profile.profileInfo.matches.length > 0).length;
+
+        res.json({
+            totalUsers,
+            mentorCount,
+            menteeCount,
+            mentorMatchesCount,
+            mentorNoMatchesCount,
+            menteeMatchesCount,
+            menteeNoMatchesCount,
+        });
+    } catch (error) {
+        console.error('Error fetching mentor-mentee stats:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
+
 
 module.exports = router;

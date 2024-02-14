@@ -1,9 +1,10 @@
 .dashboard-container {
     display: flex;
-    height: 100vh;
+    height: 100%;
     padding: 20px;
     margin-top: -30px;
     background-color: #3BBED1;
+    flex-direction: column;
 }
 
 .chart-container {
@@ -11,16 +12,28 @@
     width: 100%;
     align-items: center;
     justify-content: center;
+
 }
 
 .chart-item {
-    flex: 1;
     display: flex;
     margin: 10px;
     padding: 10px;
     background-color: white;
     border-radius: 10px;
-    height: 300px;
+    width: 100%;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
+}
+
+.insights-header {
+    white-space: nowrap;
+    text-align: center;
+    color: white;
+}
+
+.chart-title {
+    color: black;
+    font-size: 20px;
 }
