@@ -9,18 +9,20 @@
 
 .chart-container {
     display: flex;
-    width: 100%;
     align-items: center;
     justify-content: center;
+    height: 100%;
+
 
 }
 
 .chart-item {
     display: flex;
     margin: 10px;
-    padding: 10px;
+    padding: 30px;
     background-color: white;
     border-radius: 10px;
+    height: 300px;
     width: 100%;
     align-items: center;
     justify-content: center;
@@ -36,4 +38,5 @@
 .chart-title {
     color: black;
     font-size: 20px;
+    margin: 10px;
 }

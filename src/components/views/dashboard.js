@@ -66,7 +66,7 @@ const Dashboard = () => {
         };
 
     
-        return <Pie data={data} />;
+        return <Pie className="pie-chart" data={data} />;
     };
 
     // Inside your Dashboard component
@@ -131,7 +131,7 @@ const renderStackedBarChart = () => {
         },
     };
 
-    return <Bar data={data} options={options} />;
+    return <Bar className="bar-chart" data={data} options={options} />;
 };
 
 
