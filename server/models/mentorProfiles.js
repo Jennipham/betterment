@@ -43,9 +43,7 @@ const mentorProfileSchema = new mongoose.Schema({
                     type: String,
                     required: true,
                 },
-                round: {
-                    type: Number,
-                },
+                date: { type: Date, default: Date.now },
             },
         ],
         matchedInCurrentRound: {

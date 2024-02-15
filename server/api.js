@@ -1463,7 +1463,7 @@ router.get('/matched-stats/:adminEmail', async (req, res) => {
     }
 });
 
-router.get('/matched-stats/:adminEmail', async (req, res) => {
+router.get('/average-signup-duration/:adminEmail', async (req, res) => {
     try {
         const adminEmail = req.params.adminEmail;
 
@@ -1482,34 +1482,87 @@ router.get('/matched-stats/:adminEmail', async (req, res) => {
             'profileInfo.available': true,
         });
 
-        // Calculate total number of users
-        const totalUsers = mentorProfiles.length + menteeProfiles.length;
+        // Combine mentor and mentee profiles
+        const allProfiles = [...mentorProfiles, ...menteeProfiles];
 
-        // Get the number of mentors and mentees
-        const mentorCount = mentorProfiles.length;
-        const menteeCount = menteeProfiles.length;
+        // Calculate the total number of users
+        const totalUsers = allProfiles.length;
 
-        // Get the number of mentors with at least one match
-        const mentorMatchesCount = mentorProfiles.filter(profile => profile.profileInfo.matches.length > 0).length;
+        // Calculate the total sign-up duration in milliseconds
+        const totalSignupDuration = allProfiles.reduce((acc, profile) => {
+            const signupDate = new Date(profile.profileInfo.signUpDate);
+            const currentDate = new Date();
+            const duration = currentDate - signupDate;
+            return acc + duration;
+        }, 0);
 
-        // Get the number of mentees with at least one match
-        const menteeMatchesCount = menteeProfiles.filter(profile => profile.profileInfo.matches.length > 0).length;
+        // Calculate the average sign-up duration in days
+        const averageSignupDuration = totalSignupDuration / (totalUsers * 24 * 60 * 60 * 1000);
 
+        // Return the information in an appropriate format
         res.json({
             totalUsers,
-            mentorCount,
-            menteeCount,
-            mentorMatchesCount,
-            mentorNoMatchesCount,
-            menteeMatchesCount,
-            menteeNoMatchesCount,
+            averageSignupDurationDays: averageSignupDuration,
         });
     } catch (error) {
-        console.error('Error fetching mentor-mentee stats:', error);
+        console.error('Error fetching average sign-up duration:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
+// Example endpoint for department stats
+router.get('/department-stats/:adminEmail', async (req, res) => {
+    try {
+        const adminEmail = req.params.adminEmail;
+
+        // Extract domain from admin email
+        const domain = adminEmail.split('@')[1];
+
+        // Get all mentor departments with the same domain and available
+        const mentorDepartments = await MentorProfile.distinct('profileInfo.department', {
+            'email': { $regex: new RegExp(`@${domain}$`, 'i') },
+            'profileInfo.available': true,
+        });
+
+        // Get all mentee departments with the same domain and available
+        const menteeDepartments = await MenteeProfile.distinct('profileInfo.department', {
+            'email': { $regex: new RegExp(`@${domain}$`, 'i') },
+            'profileInfo.available': true,
+        });
+
+        // Combine and remove duplicates
+        const allDepartments = [...new Set([...mentorDepartments, ...menteeDepartments])];
+
+        // Get user count for each department
+        const departmentStats = allDepartments.map(async (department) => {
+            const mentorCount = await MentorProfile.countDocuments({
+                'profileInfo.department': department,
+                'profileInfo.available': true,
+            });
+
+            const menteeCount = await MenteeProfile.countDocuments({
+                'profileInfo.department': department,
+                'profileInfo.available': true,
+            });
+
+            return {
+                department,
+                userCount: mentorCount + menteeCount,
+            };
+        });
+
+        // Wait for all promises to resolve
+        const resolvedDepartmentStats = await Promise.all(departmentStats);
+
+        // Return the information in an appropriate format
+        res.json({
+            departmentStats: resolvedDepartmentStats,
+        });
+    } catch (error) {
+        console.error('Error fetching department stats:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
 
 
 

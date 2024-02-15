@@ -10,11 +10,14 @@ import Loader from '../utils/loader';
 const Dashboard = () => {
     const [userCountStats, setUserCountStats] = useState(null);
     const [matchedStats, setMatchedStats] = useState(null);
+    const [signupDurationStats, setSignupDurationStats] = useState(null);
+    const [departmentStats, setDepartmentStats] = useState(null);
+
 
     const [countLoading, setCountLoading] = useState(true);
     const [matchedLoading, setMatchedLoading] = useState(true);
-
-
+    const [signupDurationLoading, setSignupDurationLoading] = useState(true);
+    const [departmentLoading, setDepartmentLoading] = useState(true);
 
     const [user, setUser] = useState({
         firstName: sessionStorage.getItem('firstName') || 'User',
@@ -147,6 +150,93 @@ const renderStackedBarChart = () => {
     return <Bar className="bar-chart" data={data} options={options} />;
 };
 
+const fetchSignupDurationStats = async () => {
+    try {
+        const adminEmail = user.email;
+        const response = await fetch(`http://localhost:3001/average-signup-duration/${adminEmail}`);
+        const data = await response.json();
+
+        // Do something with the data (set it to a state, etc.)
+        setSignupDurationStats(data);
+    } catch (error) {
+        console.error('Error fetching signup duration stats:', error);
+    } finally {
+        // Set loading to false once data is fetched (whether successful or not)
+        setSignupDurationLoading(false);
+    }
+};
+
+// Call the function
+useEffect(() => {
+    fetchSignupDurationStats();
+}, []);
+
+const renderSignupDurationNumber = () => {
+    if (!signupDurationStats) {
+        return null;
+    }
+
+    const averageSignupDuration = signupDurationStats.averageSignupDurationDays;
+    const formattedAverageSignupDuration = averageSignupDuration.toFixed(2);
+
+    return (
+        <div className='average-duration'>
+            <p>{formattedAverageSignupDuration}</p>
+            </div>
+    );
+};
+
+useEffect(() => {
+    const fetchDepartmentStats = async () => {
+        try {
+            const adminEmail = user.email;
+            const response = await fetch(`http://localhost:3001/department-stats/${adminEmail}`);
+            const data = await response.json();
+
+            setDepartmentStats(data.departmentStats);
+        } catch (error) {
+            console.error('Error fetching department stats:', error);
+        } finally {
+            setDepartmentLoading(false);
+        }
+    };
+
+    fetchDepartmentStats();
+}, []);
+
+const renderDoughnutChart = () => {
+    if (!departmentStats) {
+        return null;
+    }
+
+    const labels = departmentStats.map((department) => department.department);
+    const data = departmentStats.map((department) => department.userCount);
+
+    const doughnutData = {
+        labels,
+        datasets: [
+            {
+                data,
+                backgroundColor: [
+                    '#3BBED1', '#007785', '#FF6384', '#36A2EB', '#FFCE56',
+                    '#4CAF50', '#9966FF', '#FF5733', '#8B4513', '#2E8B57',
+                    '#800080', '#FFD700', '#00BFFF', '#FF4500', '#8A2BE2',
+                    '#008000', '#FF1493', '#008080', '#FFA500', '#BDB76B'
+                ],
+                hoverBackgroundColor: [
+                    '#3BBED1', '#007785', '#FF6384', '#36A2EB', '#FFCE56',
+                    '#4CAF50', '#9966FF', '#FF5733', '#8B4513', '#2E8B57',
+                    '#800080', '#FFD700', '#00BFFF', '#FF4500', '#8A2BE2',
+                    '#008000', '#FF1493', '#008080', '#FFA500', '#BDB76B'
+                ],
+            },
+        ],
+    };
+
+    return <Doughnut data={doughnutData} />;
+};
+
+
 
     return (
                 <>
@@ -164,6 +254,18 @@ const renderStackedBarChart = () => {
                             {matchedLoading ? <Loader /> : renderStackedBarChart()}
 
                             </div>
+                        </div>
+                        <div className="chart-container">
+                            <div className="chart-item">
+                                <h2 className='chart-title'>Average User Duration in System (Days)</h2>
+                                {signupDurationLoading ? <Loader /> : renderSignupDurationNumber()}
+                            </div>
+                            <div className="chart-item">
+                            <h2 className='chart-title'>Users by Department</h2>
+                            {departmentLoading ? <Loader /> : renderDoughnutChart()}
+
+                            </div>
+                           
                         </div>
                     </div>
         

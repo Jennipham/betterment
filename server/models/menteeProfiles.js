@@ -42,9 +42,7 @@ const menteeProfileSchema = new mongoose.Schema({
                     type: String,
                     required: true,
                 },
-                round: {
-                    type: Number,
-                },
+                date: { type: Date, default: Date.now },
             },
         ],
         matchedInCurrentRound: {
