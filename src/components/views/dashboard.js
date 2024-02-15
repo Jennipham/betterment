@@ -4,11 +4,16 @@ import { Doughnut, Bar, Pie } from 'react-chartjs-2';
 import 'chart.js/auto';
 import Header from '../utils/header';
 import Footer from '../utils/footer';
+import Loader from '../utils/loader';
 
 
 const Dashboard = () => {
     const [userCountStats, setUserCountStats] = useState(null);
     const [matchedStats, setMatchedStats] = useState(null);
+
+    const [countLoading, setCountLoading] = useState(true);
+    const [matchedLoading, setMatchedLoading] = useState(true);
+
 
 
     const [user, setUser] = useState({
@@ -41,6 +46,10 @@ const Dashboard = () => {
                 setUserCountStats(data);
             } catch (error) {
                 console.error('Error fetching user stats:', error);
+            }
+            finally {
+                // Set loading to false once data is fetched (whether successful or not)
+                setCountLoading(false);
             }
         };
 
@@ -80,6 +89,10 @@ const fetchMatchedStats = async () => {
         setMatchedStats(data);
     } catch (error) {
         console.error('Error fetching matched stats:', error);
+    }
+    finally {
+        // Set loading to false once data is fetched (whether successful or not)
+        setMatchedLoading(false);
     }
 };
 
@@ -144,11 +157,11 @@ const renderStackedBarChart = () => {
                         <div className="chart-container">
                             <div className="chart-item">
                                 <h2 className='chart-title'>Users Count</h2>
-                            {renderUserCountPieChart()}
+                                {countLoading ? <Loader /> : renderUserCountPieChart()}
                             </div>
                             <div className="chart-item">
                             <h2 className='chart-title'>Matched Users</h2>
-                            {renderStackedBarChart()}
+                            {matchedLoading ? <Loader /> : renderStackedBarChart()}
 
                             </div>
                         </div>
