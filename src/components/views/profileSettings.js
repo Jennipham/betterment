@@ -46,8 +46,22 @@ const methodOptions = [
     { value: 'Virtual', label: 'Virtual Sessions' },
 ]
 
-const locationOptions = [
-    { value: 'location', label: 'Location' },
+const officeLocationOptions = [
+    { value: 'London', label: 'London' },
+    { value: 'Birmingham', label: 'Birmingham' },
+    { value: 'Glasgow', label: 'Glasgow' },
+    { value: 'Liverpool', label: 'Liverpool' },
+    { value: 'Bristol', label: 'Bristol' },
+    { value: 'Manchester', label: 'Manchester' },
+    { value: 'Sheffield', label: 'Sheffield' },
+    { value: 'Leeds', label: 'Leeds' },
+    { value: 'Edinburgh', label: 'Edinburgh' },
+    { value: 'Leicester', label: 'Leicester' },
+    { value: 'Coventry', label: 'Coventry' },
+    { value: 'Bradford', label: 'Bradford' },
+    { value: 'Cardiff', label: 'Cardiff' },
+    { value: 'Belfast', label: 'Belfast' },
+    { value: 'Nottingham', label: 'Nottingham' },
 ]
 
 const departmentOptions = [
@@ -58,7 +72,7 @@ const departmentOptions = [
     { value: 'Sales', label: 'Sales' },
     { value: 'CS', label: 'Customer Service' },
     { value: 'R&D', label: 'Research and Development' },
-    { value: 'Legal', label: 'Legal ' },
+    { value: 'Legal', label: 'Legal' },
     { value: 'Operations', label: 'Operations' },
     { value: 'Admin', label: 'Administration' },
     { value: 'Supply', label: 'Supply Chain' },
@@ -390,7 +404,7 @@ const Profile = () => {
                             Office Location:
                             <Select
                                 isMulti={false}
-                                options={locationOptions}
+                                options={officeLocationOptions}
                                 placeholder="Select Office"
                                 styles={customStyles}
                                 value={formData.officeLocation ? { value: formData.officeLocation, label: capitaliseFirstLetter(formData.officeLocation) } : null}

@@ -58,7 +58,7 @@ const AdminSettings = () => {
         const userType = sessionStorage.getItem('userType');
         const email = sessionStorage.getItem('email');
 
-        setUser({ firstName, lastName, userType, email});
+        setUser({ firstName, lastName, userType, email });
     }, []);
 
 
@@ -93,7 +93,7 @@ const AdminSettings = () => {
                 setFormData((prevData) => ({
                     ...prevData,
                     ...response.data.profile.profileInfo,
-                
+
                 }));
                 sessionStorage.setItem('profile', JSON.stringify(response.data.profile.profileInfo));
 
@@ -207,7 +207,7 @@ const AdminSettings = () => {
                         </div>
                     </div>
 
-                    
+
                 </div>
 
                 <div className="profile-container">
@@ -244,16 +244,11 @@ const AdminSettings = () => {
                             </Tooltip>
 
                         </div>
-
-                    </div>
-
-                    {/* Right Box */}
-                    <div className="profile-settings-box">
                         <div className='editable-container'>
 
                             <p className='dropdown-title'>
                                 Matching Method:
-                                
+
                                 <Select
                                     isMulti={false}
                                     options={matchingMethodOptions}
@@ -278,7 +273,7 @@ const AdminSettings = () => {
                                     placeholder="Select Preference"
                                     options={blindMatchingOptions}
                                     styles={customStyles}
-                                    value={blindMatchingOptions.find(option => option.value === formData.blindMatching ) || null}
+                                    value={blindMatchingOptions.find(option => option.value === formData.blindMatching) || null}
                                     onChange={(selectedOption) =>
                                         handleInputChange('blindMatching', selectedOption.value)
                                     }
@@ -288,7 +283,7 @@ const AdminSettings = () => {
                                 <img src={moreInfo} alt="More Info" className="more-info-icon" />
                             </Tooltip>
                         </div>
-                        
+
                     </div>
                 </div>
                 {loading ? (
