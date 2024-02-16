@@ -302,15 +302,30 @@ const Header = () => {
                 
                         : loggedInStatus && location.pathname === '/adminSettings' ? ( //checks if logged in
                     <>
-                        <RouterLink to="/help">Help</RouterLink>
                         <RouterLink to="/dashboard">Insights</RouterLink>
+                        <RouterLink to="/help">Help</RouterLink>
+
                                     <RouterLink to="/" onClick={handleLogout}>
                                         Log Out
                                     </RouterLink>
                     </>
 
 
-                            ) : loggedInStatus && (location.pathname === '/menteematches' || location.pathname === '/mentormatches') ? ( //checks if logged in
+                            )
+                            : loggedInStatus && location.pathname === '/dashboard' ? ( //checks if logged in
+                    <>
+                        <RouterLink to="/adminSettings">Profile</RouterLink>
+                        <RouterLink to="/help">Help</RouterLink>
+                                    <RouterLink to="/" onClick={handleLogout}>
+                                        Log Out
+                                    </RouterLink>
+                    </>
+
+
+                            )  
+                            
+                            
+                            : loggedInStatus && (location.pathname === '/menteematches' || location.pathname === '/mentormatches') ? ( //checks if logged in
                                 <>
                                                 {notifications < 1 ?
                                             <RouterLink to="/requests">

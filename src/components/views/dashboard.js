@@ -65,7 +65,7 @@ const Dashboard = () => {
         if (!userCountStats) {
             return null;
         }
-    
+
         const data = {
             labels: ['Mentors', 'Mentees'],
             datasets: [
@@ -77,201 +77,212 @@ const Dashboard = () => {
             ],
         };
 
-    
+
         return <Pie className="pie-chart" data={data} />;
     };
 
     // Inside your Dashboard component
-const fetchMatchedStats = async () => {
-    try {
-        const adminEmail = user.email;
-        const response = await fetch(`http://localhost:3001/matched-stats/${adminEmail}`);
-        const data = await response.json();
-
-        // Do something with the data (set it to a state, etc.)
-        setMatchedStats(data);
-    } catch (error) {
-        console.error('Error fetching matched stats:', error);
-    }
-    finally {
-        // Set loading to false once data is fetched (whether successful or not)
-        setMatchedLoading(false);
-    }
-};
-
-// Call the function
-useEffect(() => {
-    fetchMatchedStats();
-}, []);
-
-const renderStackedBarChart = () => {
-    if (!matchedStats) {
-        return null;
-    }
-
-    const data = {
-        labels: ['Matched', 'Not Matched'],
-        datasets: [
-            {
-                label: 'Mentors',
-                data: [
-                    matchedStats.mentorMatchesCount,
-                    matchedStats.mentorCount - matchedStats.mentorMatchesCount,
-                ],
-                backgroundColor: ['#007785', '#007785'],
-            },
-            {
-                label: 'Mentees',
-                data: [
-                    matchedStats.menteeMatchesCount,
-                    matchedStats.menteeCount - matchedStats.menteeMatchesCount,
-                ],
-                backgroundColor: ['#3BBED1', '#3BBED1'],
-            },
-        ],
-    };
-
-    const options = {
-        title: {
-            display: true,
-            text: 'Mentor and Mentee Stats',
-            fontSize: 16,
-        },
-        scales: {
-            x: {
-                stacked: true,
-            },
-            y: {
-                stacked: true,
-            },
-        },
-    };
-
-    return <Bar className="bar-chart" data={data} options={options} />;
-};
-
-const fetchSignupDurationStats = async () => {
-    try {
-        const adminEmail = user.email;
-        const response = await fetch(`http://localhost:3001/average-signup-duration/${adminEmail}`);
-        const data = await response.json();
-
-        // Do something with the data (set it to a state, etc.)
-        setSignupDurationStats(data);
-    } catch (error) {
-        console.error('Error fetching signup duration stats:', error);
-    } finally {
-        // Set loading to false once data is fetched (whether successful or not)
-        setSignupDurationLoading(false);
-    }
-};
-
-// Call the function
-useEffect(() => {
-    fetchSignupDurationStats();
-}, []);
-
-const renderSignupDurationNumber = () => {
-    if (!signupDurationStats) {
-        return null;
-    }
-
-    const averageSignupDuration = signupDurationStats.averageSignupDurationDays;
-    const formattedAverageSignupDuration = averageSignupDuration.toFixed(2);
-
-    return (
-        <div className='average-duration'>
-            <p>{formattedAverageSignupDuration}</p>
-            </div>
-    );
-};
-
-useEffect(() => {
-    const fetchDepartmentStats = async () => {
+    const fetchMatchedStats = async () => {
         try {
             const adminEmail = user.email;
-            const response = await fetch(`http://localhost:3001/department-stats/${adminEmail}`);
+            const response = await fetch(`http://localhost:3001/matched-stats/${adminEmail}`);
             const data = await response.json();
 
-            setDepartmentStats(data.departmentStats);
+            // Do something with the data (set it to a state, etc.)
+            setMatchedStats(data);
         } catch (error) {
-            console.error('Error fetching department stats:', error);
-        } finally {
-            setDepartmentLoading(false);
+            console.error('Error fetching matched stats:', error);
+        }
+        finally {
+            // Set loading to false once data is fetched (whether successful or not)
+            setMatchedLoading(false);
         }
     };
 
-    fetchDepartmentStats();
-}, []);
+    // Call the function
+    useEffect(() => {
+        fetchMatchedStats();
+    }, []);
 
-const renderDoughnutChart = () => {
-    if (!departmentStats) {
-        return null;
-    }
+    const renderStackedBarChart = () => {
+        if (!matchedStats) {
+            return null;
+        }
 
-    const labels = departmentStats.map((department) => department.department);
-    const data = departmentStats.map((department) => department.userCount);
+        const data = {
+            labels: ['Matched', 'Not Matched'],
+            datasets: [
+                {
+                    label: 'Mentors',
+                    data: [
+                        matchedStats.mentorMatchesCount,
+                        matchedStats.mentorCount - matchedStats.mentorMatchesCount,
+                    ],
+                    backgroundColor: ['#007785', '#007785'],
+                },
+                {
+                    label: 'Mentees',
+                    data: [
+                        matchedStats.menteeMatchesCount,
+                        matchedStats.menteeCount - matchedStats.menteeMatchesCount,
+                    ],
+                    backgroundColor: ['#3BBED1', '#3BBED1'],
+                },
+            ],
+        };
 
-    const doughnutData = {
-        labels,
-        datasets: [
-            {
-                data,
-                backgroundColor: [
-                    '#3BBED1', '#007785', '#FF6384', '#36A2EB', '#FFCE56',
-                    '#4CAF50', '#9966FF', '#FF5733', '#8B4513', '#2E8B57',
-                    '#800080', '#FFD700', '#00BFFF', '#FF4500', '#8A2BE2',
-                    '#008000', '#FF1493', '#008080', '#FFA500', '#BDB76B'
-                ],
-                hoverBackgroundColor: [
-                    '#3BBED1', '#007785', '#FF6384', '#36A2EB', '#FFCE56',
-                    '#4CAF50', '#9966FF', '#FF5733', '#8B4513', '#2E8B57',
-                    '#800080', '#FFD700', '#00BFFF', '#FF4500', '#8A2BE2',
-                    '#008000', '#FF1493', '#008080', '#FFA500', '#BDB76B'
-                ],
+        const options = {
+            title: {
+                display: true,
+                text: 'Mentor and Mentee Stats',
+                fontSize: 16,
             },
-        ],
+            scales: {
+                x: {
+                    stacked: true,
+                },
+                y: {
+                    stacked: true,
+                },
+            },
+        };
+
+        return <Bar className="bar-chart" data={data} options={options} />;
     };
 
-    return <Doughnut data={doughnutData} />;
-};
+    const fetchSignupDurationStats = async () => {
+        try {
+            const adminEmail = user.email;
+            const response = await fetch(`http://localhost:3001/average-signup-duration/${adminEmail}`);
+            const data = await response.json();
+
+            // Do something with the data (set it to a state, etc.)
+            setSignupDurationStats(data);
+        } catch (error) {
+            console.error('Error fetching signup duration stats:', error);
+        } finally {
+            // Set loading to false once data is fetched (whether successful or not)
+            setSignupDurationLoading(false);
+        }
+    };
+
+    // Call the function
+    useEffect(() => {
+        fetchSignupDurationStats();
+    }, []);
+
+    const renderSignupDurationNumber = () => {
+        if (!signupDurationStats) {
+            return null;
+        }
+
+        const averageSignupDuration = signupDurationStats.averageSignupDurationDays;
+        const formattedAverageSignupDuration = averageSignupDuration.toFixed(2);
+
+        return (
+            <div className='average-duration'>
+                <p>{formattedAverageSignupDuration}</p>
+            </div>
+        );
+    };
+
+    useEffect(() => {
+        const fetchDepartmentStats = async () => {
+            try {
+                const adminEmail = user.email;
+                const response = await fetch(`http://localhost:3001/department-stats/${adminEmail}`);
+                const data = await response.json();
+
+                setDepartmentStats(data.departmentStats);
+            } catch (error) {
+                console.error('Error fetching department stats:', error);
+            } finally {
+                setDepartmentLoading(false);
+            }
+        };
+
+        fetchDepartmentStats();
+    }, []);
+
+    const renderDoughnutChart = () => {
+        if (!departmentStats) {
+            return null;
+        }
+
+        const labels = departmentStats.map((department) => department.department);
+        const data = departmentStats.map((department) => department.userCount);
+
+        const doughnutData = {
+            labels,
+            datasets: [
+                {
+                    data,
+                    backgroundColor: [
+                        '#3BBED1', '#007785', '#FF6384', '#36A2EB', '#FFCE56',
+                        '#4CAF50', '#9966FF', '#FF5733', '#8B4513', '#2E8B57',
+                        '#800080', '#FFD700', '#00BFFF', '#FF4500', '#8A2BE2',
+                        '#008000', '#FF1493', '#008080', '#FFA500', '#BDB76B'
+                    ],
+                    hoverBackgroundColor: [
+                        '#3BBED1', '#007785', '#FF6384', '#36A2EB', '#FFCE56',
+                        '#4CAF50', '#9966FF', '#FF5733', '#8B4513', '#2E8B57',
+                        '#800080', '#FFD700', '#00BFFF', '#FF4500', '#8A2BE2',
+                        '#008000', '#FF1493', '#008080', '#FFA500', '#BDB76B'
+                    ],
+                },
+            ],
+        };
+
+        return <Doughnut data={doughnutData} />;
+    };
 
 
 
     return (
-                <>
-                    <Header />
-                    <div className="dashboard-container">
-                    <h1 className='insights-header'>Programme Dashboard</h1>
+        <>
+            <Header />
+            <div className="dashboard-container">
+                <h1 className='insights-header'>Programme Dashboard</h1>
 
-                        <div className="chart-container">
-                            <div className="chart-item">
-                                <h2 className='chart-title'>Users Count</h2>
-                                {countLoading ? <Loader /> : renderUserCountPieChart()}
-                            </div>
-                            <div className="chart-item">
-                            <h2 className='chart-title'>Matched Users</h2>
-                            {matchedLoading ? <Loader /> : renderStackedBarChart()}
-
-                            </div>
-                        </div>
-                        <div className="chart-container">
-                            <div className="chart-item">
-                                <h2 className='chart-title'>Average User Duration in System (Days)</h2>
-                                {signupDurationLoading ? <Loader /> : renderSignupDurationNumber()}
-                            </div>
-                            <div className="chart-item">
-                            <h2 className='chart-title'>Users by Department</h2>
-                            {departmentLoading ? <Loader /> : renderDoughnutChart()}
-
-                            </div>
-                           
-                        </div>
+                <div className="chart-container">
+                    <div className="chart-item">
+                        <h2 className='chart-title'>Users Count</h2>
+                        {countLoading ? <Loader /> : renderUserCountPieChart()}
                     </div>
-        
-                    <Footer />
-                </>
-            );
+                    <div className="chart-item">
+                        <h2 className='chart-title'>Matched Users</h2>
+                        {matchedLoading ? <Loader /> : renderStackedBarChart()}
+
+                    </div>
+                </div>
+                <div className="chart-container">
+                    <div className="chart-item">
+                        <h2 className='chart-title'>Average User Duration in System (Days)</h2>
+                        {signupDurationLoading ? <Loader /> : renderSignupDurationNumber()}
+                    </div>
+                    <div className="chart-item">
+                        <h2 className='chart-title'>Users by Department</h2>
+                        {departmentLoading ? <Loader /> : renderDoughnutChart()}
+
+                    </div>
+
+                </div>
+
+                <div className="chart-container">
+                    <div className="chart-item">
+                        <h2 className='chart-title'>Development Areas</h2>
+                    </div>
+                    <div className="chart-item">
+                        <h2 className='chart-title'>Insert Chart Here</h2>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <Footer />
+        </>
+    );
 };
 
 export default Dashboard;
