@@ -406,10 +406,23 @@ const MentorMatches = () => {
         { value: 'Turkish', label: 'Turkish' },
     ];
 
-    const locationOptions = [
-        { value: 'location', label: 'Location' },
-
-    ];
+    const officeLocationOptions = [
+        { value: 'London', label: 'London' },
+        { value: 'Birmingham', label: 'Birmingham' },
+        { value: 'Glasgow', label: 'Glasgow' },
+        { value: 'Liverpool', label: 'Liverpool' },
+        { value: 'Bristol', label: 'Bristol' },
+        { value: 'Manchester', label: 'Manchester' },
+        { value: 'Sheffield', label: 'Sheffield' },
+        { value: 'Leeds', label: 'Leeds' },
+        { value: 'Edinburgh', label: 'Edinburgh' },
+        { value: 'Leicester', label: 'Leicester' },
+        { value: 'Coventry', label: 'Coventry' },
+        { value: 'Bradford', label: 'Bradford' },
+        { value: 'Cardiff', label: 'Cardiff' },
+        { value: 'Belfast', label: 'Belfast' },
+        { value: 'Nottingham', label: 'Nottingham' },
+    ]
 
     const developmentAreaOptions = [
         { value: 'Career', label: 'Career Decision' },
@@ -630,10 +643,10 @@ const MentorMatches = () => {
 
                             <Select
                                 isMulti={false}
-                                options={locationOptions}
+                                options={officeLocationOptions}
                                 placeholder="Office Location"
                                 styles={customStyles}
-                                value={locationOptions.find(option => option.value === selectedLocation)}
+                                value={officeLocationOptions.find(option => option.value === selectedLocation)}
                                 onChange={(selectedOption) => handleLocationChange(selectedOption)}
                             />
 
