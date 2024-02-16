@@ -12,12 +12,13 @@ const Dashboard = () => {
     const [matchedStats, setMatchedStats] = useState(null);
     const [signupDurationStats, setSignupDurationStats] = useState(null);
     const [departmentStats, setDepartmentStats] = useState(null);
-
+    const [developmentAreaStats, setDevelopmentAreaStats] = useState(null);
 
     const [countLoading, setCountLoading] = useState(true);
     const [matchedLoading, setMatchedLoading] = useState(true);
     const [signupDurationLoading, setSignupDurationLoading] = useState(true);
     const [departmentLoading, setDepartmentLoading] = useState(true);
+    const [developmentAreaLoading, setDevelopmentAreaLoading] = useState(true);
 
     const [user, setUser] = useState({
         firstName: sessionStorage.getItem('firstName') || 'User',
@@ -236,6 +237,53 @@ const Dashboard = () => {
         return <Doughnut data={doughnutData} />;
     };
 
+    useEffect(() => {
+        const fetchDevelopmentAreaStats = async () => {
+        try {
+            const adminEmail = user.email;
+            const response = await fetch(`http://localhost:3001/development-area-stats/${adminEmail}`);
+            const data = await response.json();
+
+            setDevelopmentAreaStats(data.developmentAreaStats);
+        } catch (error) {
+            console.error('Error fetching development area stats:', error);
+        } finally {
+            setDevelopmentAreaLoading(false);
+        }
+    };
+
+        fetchDevelopmentAreaStats();
+    }, []);
+
+    const renderDevelopmentAreaPieChart = () => {
+        if (!developmentAreaStats) {
+            return null;
+        }
+    
+        const data = {
+            labels: developmentAreaStats.map((entry) => entry.developmentArea),
+            datasets: [
+                {
+                    data: developmentAreaStats.map((entry) => entry.userCount),
+                    backgroundColor: [
+                        '#3BBED1', '#007785', '#FF6384', '#36A2EB', '#FFCE56',
+                        '#4CAF50', '#9966FF', '#FF5733', '#8B4513', '#2E8B57',
+                        '#800080', '#FFD700', '#00BFFF', '#FF4500', '#8A2BE2',
+                        '#008000', '#FF1493', '#008080', '#FFA500', '#BDB76B'
+                    ],
+                    hoverBackgroundColor: [
+                        '#3BBED1', '#007785', '#FF6384', '#36A2EB', '#FFCE56',
+                        '#4CAF50', '#9966FF', '#FF5733', '#8B4513', '#2E8B57',
+                        '#800080', '#FFD700', '#00BFFF', '#FF4500', '#8A2BE2',
+                        '#008000', '#FF1493', '#008080', '#FFA500', '#BDB76B'
+                    ],
+                },
+            ],
+        };
+    
+        return <Pie className="pie-chart" data={data} />;
+    };
+
 
 
     return (
@@ -271,9 +319,11 @@ const Dashboard = () => {
                 <div className="chart-container">
                     <div className="chart-item">
                         <h2 className='chart-title'>Development Areas</h2>
+                        {developmentAreaLoading ? <Loader /> : renderDevelopmentAreaPieChart()}
+
                     </div>
                     <div className="chart-item">
-                        <h2 className='chart-title'>Insert Chart Here</h2>
+                        <h2 className='chart-title'>Users by Location</h2>
 
                     </div>
 

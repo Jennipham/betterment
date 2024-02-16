@@ -1564,6 +1564,59 @@ router.get('/department-stats/:adminEmail', async (req, res) => {
     }
 });
 
+router.get('/development-area-stats/:adminEmail', async (req, res) => {
+    try {
+        const adminEmail = req.params.adminEmail;
+
+        // Extract domain from admin email
+        const domain = adminEmail.split('@')[1];
+
+        // Get all mentor development areas with the same domain and available
+        const mentorDevelopmentAreas = await MentorProfile.distinct('profileInfo.developmentAreas', {
+            'email': { $regex: new RegExp(`@${domain}$`, 'i') },
+            'profileInfo.available': true,
+        });
+
+        // Get all mentee development areas with the same domain and available
+        const menteeDevelopmentAreas = await MenteeProfile.distinct('profileInfo.developmentAreas', {
+            'email': { $regex: new RegExp(`@${domain}$`, 'i') },
+            'profileInfo.available': true,
+        });
+
+        // Combine and remove duplicates
+        const allDevelopmentAreas = [...new Set([...mentorDevelopmentAreas, ...menteeDevelopmentAreas])];
+
+        // Get user count for each development area
+        const developmentAreaStats = allDevelopmentAreas.map(async (developmentArea) => {
+            const mentorCount = await MentorProfile.countDocuments({
+                'profileInfo.developmentAreas': developmentArea,
+                'profileInfo.available': true,
+            });
+
+            const menteeCount = await MenteeProfile.countDocuments({
+                'profileInfo.developmentAreas': developmentArea,
+                'profileInfo.available': true,
+            });
+
+            return {
+                developmentArea,
+                userCount: mentorCount + menteeCount,
+            };
+        });
+
+        // Wait for all promises to resolve
+        const resolvedDevelopmentAreaStats = await Promise.all(developmentAreaStats);
+
+        // Return the information in an appropriate format
+        res.json({
+            developmentAreaStats: resolvedDevelopmentAreaStats,
+        });
+    } catch (error) {
+        console.error('Error fetching development area stats:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 
 
 module.exports = router;
