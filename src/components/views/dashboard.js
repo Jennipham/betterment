@@ -13,12 +13,16 @@ const Dashboard = () => {
     const [signupDurationStats, setSignupDurationStats] = useState(null);
     const [departmentStats, setDepartmentStats] = useState(null);
     const [developmentAreaStats, setDevelopmentAreaStats] = useState(null);
+    const [locationStats, setLocationStats] = useState(null);
+
 
     const [countLoading, setCountLoading] = useState(true);
     const [matchedLoading, setMatchedLoading] = useState(true);
     const [signupDurationLoading, setSignupDurationLoading] = useState(true);
     const [departmentLoading, setDepartmentLoading] = useState(true);
     const [developmentAreaLoading, setDevelopmentAreaLoading] = useState(true);
+    const [locationLoading, setLocationLoading] = useState(true);
+
 
     const [user, setUser] = useState({
         firstName: sessionStorage.getItem('firstName') || 'User',
@@ -285,6 +289,57 @@ const Dashboard = () => {
     };
 
 
+    useEffect(() => {
+        const fetchLocationStats = async () => {
+            try {
+                const adminEmail = user.email;
+                const response = await fetch(`http://localhost:3001/location-stats/${adminEmail}`);
+                const data = await response.json();
+
+                setLocationStats(data.locationStats);
+            } catch (error) {
+                console.error('Error fetching Location stats:', error);
+            } finally {
+                setLocationLoading(false);
+            }
+        };
+
+        fetchLocationStats();
+    }, []);
+
+    const renderLocationPieChart = () => {
+        if (!locationStats) {
+            return null;
+        }
+    
+        const labels = locationStats.map((entry) => entry.location === '' ? 'Not Disclosed' : entry.location);
+        const data = locationStats.map((entry) => entry.userCount);
+    
+        const pieChartData = {
+            labels,
+            datasets: [
+                {
+                    data,
+                    backgroundColor: [
+                        '#3BBED1', '#007785', '#FF6384', '#36A2EB', '#FFCE56',
+                        '#4CAF50', '#9966FF', '#FF5733', '#8B4513', '#2E8B57',
+                        '#800080', '#FFD700', '#00BFFF', '#FF4500', '#8A2BE2',
+                        '#008000', '#FF1493', '#008080', '#FFA500', '#BDB76B'
+                    ],
+                    hoverBackgroundColor: [
+                        '#3BBED1', '#007785', '#FF6384', '#36A2EB', '#FFCE56',
+                        '#4CAF50', '#9966FF', '#FF5733', '#8B4513', '#2E8B57',
+                        '#800080', '#FFD700', '#00BFFF', '#FF4500', '#8A2BE2',
+                        '#008000', '#FF1493', '#008080', '#FFA500', '#BDB76B'
+                    ],
+                },
+            ],
+        };
+    
+        return <Pie data={pieChartData} />;
+    };
+    
+
 
     return (
         <>
@@ -324,7 +379,7 @@ const Dashboard = () => {
                     </div>
                     <div className="chart-item">
                         <h2 className='chart-title'>Users by Location</h2>
-
+                        {locationLoading ? <Loader /> : renderLocationPieChart()}
                     </div>
 
                 </div>

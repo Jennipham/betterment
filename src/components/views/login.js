@@ -44,7 +44,7 @@ const Login = () => {
                 axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
                 
                     userType === 'admin' ?
-                        navigate("/adminSettings", { state: { user: { fname: firstName, sname: lastName, userType: userType, email: email, } } }) :
+                        navigate("/dashboard") :
                         userType === 'mentee' ?
                         navigate("/menteematches") :
                         userType === 'mentor' ?

@@ -1617,6 +1617,60 @@ router.get('/development-area-stats/:adminEmail', async (req, res) => {
     }
 });
 
+// Example endpoint for department stats
+router.get('/location-stats/:adminEmail', async (req, res) => {
+    try {
+        const adminEmail = req.params.adminEmail;
+
+        // Extract domain from admin email
+        const domain = adminEmail.split('@')[1];
+
+        // Get all mentor departments with the same domain and available
+        const mentorLocations = await MentorProfile.distinct('profileInfo.officeLocation', {
+            'email': { $regex: new RegExp(`@${domain}$`, 'i') },
+            'profileInfo.available': true,
+        });
+
+        // Get all mentee departments with the same domain and available
+        const menteeLocations = await MenteeProfile.distinct('profileInfo.officeLocation', {
+            'email': { $regex: new RegExp(`@${domain}$`, 'i') },
+            'profileInfo.available': true,
+        });
+
+        // Combine and remove duplicates
+        const allLocations = [...new Set([...mentorLocations, ...menteeLocations])];
+
+        // Get user count for each department
+        const locationStats = allLocations.map(async (location) => {
+            const mentorCount = await MentorProfile.countDocuments({
+                'profileInfo.officeLocation': location,
+                'profileInfo.available': true,
+            });
+
+            const menteeCount = await MenteeProfile.countDocuments({
+                'profileInfo.officeLocation': location,
+                'profileInfo.available': true,
+            });
+
+            return {
+                location,
+                userCount: mentorCount + menteeCount,
+            };
+        });
+
+        // Wait for all promises to resolve
+        const resolvedLocationStats = await Promise.all(locationStats);
+
+        // Return the information in an appropriate format
+        res.json({
+            locationStats: resolvedLocationStats,
+        });
+    } catch (error) {
+        console.error('Error fetching department stats:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 
 
 module.exports = router;
