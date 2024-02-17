@@ -44,8 +44,12 @@ const customStyles = {
     }),
 };
 
-const findHighestScore = (profiles) => {
-    return profiles ? Math.max(...profiles.map(mentor => mentor.score), 0) : 0;
+const findHighestScore = (profiles, matchingMethod) => {
+    if (profiles && (matchingMethod === 'Manual' || matchingMethod === 'Algorithm')) {
+        return Math.max(...profiles.map(mentor => mentor.score), 0);
+    } else {
+        return 0;
+    }
 };
 
 
@@ -74,7 +78,7 @@ const MenteeMatches = () => {
     const [blindMatching, setBlindMatching] = useState('');
     const [names, setNames] = useState({});
 
-    const highestScore = findHighestScore(mentorProfile);
+    const highestScore = findHighestScore(mentorProfile, matchingMethod);
 
 
 
@@ -123,6 +127,7 @@ const MenteeMatches = () => {
         setSelectedMentorEmail(mentorEmail);
         openModal();
     };
+
 
     useEffect(() => {
         // Retrieve user information from sessionStorage
@@ -184,34 +189,6 @@ const MenteeMatches = () => {
                     sessionStorage.setItem('matchProfile', JSON.stringify(response.data.profile));
 
                 }
-
-                // else if (matchingMethod && matchingMethod === 'Manual') {
-                //     response = await axios.get(`http://localhost:3001/getFilteredMentorProfile?email=${user.email}`, {
-                //         params: {
-                //             language: selectedLanguages.join(','),
-                //             developmentAreas: selectedDevelopmentAreas.join(','),
-                //             mentoringMethods: selectedMethods.join(','),
-                //         },
-                //     });
-
-                //     // Fetch names for each mentor profile
-                //     const mentorProfilesWithNames = await Promise.all(
-                //         response.data.profiles.map(async (mentor) => {
-                //             const userDetailsResponse = await fetchNames(mentor.email);
-                //             return {
-                //                 ...mentor,
-                //                 fname: userDetailsResponse ? userDetailsResponse.user.fname : '',
-                //                 sname: userDetailsResponse ? userDetailsResponse.user.sname : '',
-                //             };
-                //         })
-                //     );
-
-
-                //     setMentorProfile(mentorProfilesWithNames);
-                //     setIsLoadingProfiles(false);
-                //     sessionStorage.setItem('matchProfile', JSON.stringify(response.data.profiles));
-
-                // }
 
                 else if (matchingMethod && matchingMethod === 'Algorithm') {
                     response = await axios.get('http://localhost:3001/getPotentialMatches', {
@@ -281,6 +258,8 @@ const MenteeMatches = () => {
     useEffect(() => {
         const fetchManualMatches = async () => {
             try {
+                if (matchingMethod && matchingMethod === 'Manual') {
+
                 const response = await axios.get(`http://localhost:3001/getFilteredMentorProfile?email=${user.email}`, {
                     params: {
                         language: selectedLanguages.join(','),
@@ -304,6 +283,8 @@ const MenteeMatches = () => {
                 setMentorProfile(mentorProfilesWithNames);
                 setIsLoadingProfiles(false);
                 sessionStorage.setItem('matchProfile', JSON.stringify(response.data.profiles));
+
+                }
 
             } catch (error) {
                 setIsLoadingProfiles(false);
@@ -824,9 +805,6 @@ const MenteeMatches = () => {
 {matchingMethod === "Random" && (
                     <div className="match-section">
                         <h2 className='top-match'>Your Random Match:</h2>
-                        <div className='error-message-profile-container'>
-                            {errorMessage && <p className="error-message-profile">{errorMessage}</p>}
-                        </div>
                         <div className="user-profile-box">
                             <div className="profile-left">
                                 <div className="profile-left-info">
