@@ -8,6 +8,7 @@ import moreInfo from '../images/more-info1.png';
 import Tooltip from '../utils/tooltip';
 import Select from 'react-select';
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/ProfileSettings.css';
 
@@ -129,6 +130,7 @@ const Profile = () => {
 
     const [errorMessage, setErrorMessage] = useState('');
 
+    const navigate = useNavigate();
 
     useEffect(() => {
         // Retrieve user information from sessionStorage
@@ -269,7 +271,9 @@ const Profile = () => {
 
 
             console.log('Profile saved successfully:', response.data);
-            // You can add a success message or redirect the user after a successful save
+
+            {user.userType === "mentee" ? navigate("/menteematches") : navigate("/mentormatches")}
+
         } catch (error) {
             console.error('Error saving profile:', error);
             setSaveMessage('Error saving profile');
@@ -279,7 +283,6 @@ const Profile = () => {
                 setSaveMessage(null);
             }, 5000);
 
-            // Handle error, show a message, etc.
         }
     };
 

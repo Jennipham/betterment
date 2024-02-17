@@ -362,6 +362,8 @@ const MenteeMatches = () => {
             console.log('Match request sent successfully:', response.data);
             setLoading(false);
 
+         navigate("/requests");
+
         } catch (error) {
             setLoading(false);
             if (error.response) {

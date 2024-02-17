@@ -364,6 +364,9 @@ const MentorMatches = () => {
             console.log('Match request sent successfully:', response.data);
             setLoading(false);
 
+            navigate("/requests");
+
+
         } catch (error) {
             setLoading(false);
             console.error('Error sending match request:', error);

@@ -127,7 +127,10 @@ const Requests = () => {
                 }
             } catch (error) {
                 console.error('Error fetching requests:', error);
-                setErrorMessage('Error fetching requests:');
+
+                setTimeout(() => {
+                    setErrorMessage('Error fetching requests:');
+                }, 5000);
             }
         };
 
@@ -152,6 +155,9 @@ const Requests = () => {
                 email,
             });
 
+            setTimeout(() => {
+                setSuccessMessage("Shortlist Sucessfully Saved")
+            }, 5000);
             console.log('Successfully updated order on the server');
         } catch (error) {
             console.error('Error updating order on the server:', error);
