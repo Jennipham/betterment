@@ -593,15 +593,21 @@ router.get('/getRandomMentorProfile', async (req, res) => {
             return res.status(400).json({ error: 'Invalid email format' });
         }
 
-        // Check if the user already has a match in their profile
-        const existingMatch = await MentorProfile.findOne({
+        const existingMatch = await MenteeProfile.findOne({
             'email': email,
             'profileInfo.matches': { $exists: true, $ne: [] },
         });
-
+        
         if (existingMatch) {
-            // Return the existing matched profile
-            return res.json({ profile: existingMatch });
+            const mentorEmail = existingMatch.profileInfo.matches[0].mentorEmail;
+        
+            // Find the corresponding mentee profile
+            const matchedMentorProfile = await MentorProfile.findOne({ 'email': mentorEmail });
+        
+            if (matchedMentorProfile) {
+                // Return the matched mentee profile
+                return res.json({ profile: matchedMentorProfile });
+            }
         }
 
         // Get all mentor profiles with the same domain and available
@@ -770,17 +776,23 @@ router.get('/getRandomMenteeProfile', async (req, res) => {
             return res.status(400).json({ error: 'Invalid email format' });
         }
 
-        // Check if the user already has a match in their profile
-        const existingMatch = await MenteeProfile.findOne({
+        const existingMatch = await MentorProfile.findOne({
             'email': email,
             'profileInfo.matches': { $exists: true, $ne: [] },
         });
-
+        
         if (existingMatch) {
-            // Return the existing matched profile
-            return res.json({ profile: existingMatch });
+            // Get the first mentee email from matches (assuming a mentor can have multiple matches)
+            const menteeEmail = existingMatch.profileInfo.matches[0].menteeEmail;
+        
+            // Find the corresponding mentee profile
+            const matchedMenteeProfile = await MenteeProfile.findOne({ 'email': menteeEmail });
+        
+            if (matchedMenteeProfile) {
+                // Return the matched mentee profile
+                return res.json({ profile: matchedMenteeProfile });
+            }
         }
-
         // Get all mentee profiles with the same domain and available
         const menteeProfiles = await MenteeProfile.find({
             'email': { $regex: new RegExp(`@${domain}$`, 'i') },
@@ -830,13 +842,13 @@ router.get('/getRandomMenteeProfile', async (req, res) => {
         // Save the updated mentee profile
         await randomMenteeProfile.save();
 
+        // Return the matched mentee profile
         res.json({ profile: randomMenteeProfile });
     } catch (error) {
         console.error('Error fetching random mentee profile:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
-
 
 
 
