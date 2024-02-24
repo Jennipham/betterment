@@ -170,7 +170,6 @@ const AdminSettings = () => {
 
 
             console.log('Profile saved successfully:', response.data);
-            // You can add a success message or redirect the user after a successful save
         } catch (error) {
             console.error('Error saving profile:', error);
             setSaveMessage('Error saving profile');

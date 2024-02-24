@@ -26,7 +26,6 @@ const isAuthenticated = () => {
 function ProtectedRoute({ children }) {
     const navigate = useNavigate();
 
-    // Use a conditional statement to check authentication
     if (!isAuthenticated()) {
         navigate('/error', {replace : true});
         return <NoPermissions />; 

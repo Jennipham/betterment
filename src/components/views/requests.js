@@ -14,7 +14,6 @@ import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 const Requests = () => {
 
     const calculateDaysLeft = () => {
-        // Set the time for the next matching round (adjust this based on your requirements)
         const matchingRoundDate = new Date();
 
         // Set the time to be the next occurrence of the matching round (e.g., every 14 days)

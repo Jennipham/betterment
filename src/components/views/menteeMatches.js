@@ -223,7 +223,6 @@ const MenteeMatches = () => {
                         })
                     );
 
-                    // Update your state or UI with the matched profiles
                     setMentorProfile(menteeProfilesWithNames);
                     }
 
@@ -483,7 +482,6 @@ const MenteeMatches = () => {
 
 
     const customStylesWithCheckbox = {
-        // ... your existing styles ...
         option: (provided, state) => ({
             ...provided,
             backgroundColor: state.isSelected ? '#3BBED1' : 'white',
@@ -493,28 +491,6 @@ const MenteeMatches = () => {
 
         }),
     };
-    // const [selectedLanguages, setSelectedLanguages] = useState([]);
-
-    // const handleLanguagesChange = (selectedOptions) => {
-    //     const selectedValues = selectedOptions ? selectedOptions.map(option => option.value) : [];
-    //     setSelectedLanguages(selectedValues);
-    // };
-
-    // const [selectedDevelopmentAreas, setSelectedDevelopmentAreas] = useState([]);
-
-    // const handleDevelopmentAreasChange = (selectedOptions) => {
-    //     const selectedValues = selectedOptions ? selectedOptions.map(option => option.value) : [];
-    //     setSelectedDevelopmentAreas(selectedValues);
-    // };
-
-    // const [selectedMethods, setSelectedMethods] = useState([]);
-
-    // const handleMethodsChange = (selectedOptions) => {
-    //     const selectedValues = selectedOptions ? selectedOptions.map(option => option.value) : [];
-    //     setSelectedMethods(selectedValues);
-    // };
-
-    // const [selectedLocation, setSelectedLocation] = useState('');
 
     const handleLocationChange = (selectedOption) => {
         const selectedValue = selectedOption ? selectedOption.value : '';

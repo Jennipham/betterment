@@ -27,7 +27,6 @@ function Home() {
                 const scrollTop = window.scrollY || document.documentElement.scrollTop;
                 const faqSectionTop = faqSection.getBoundingClientRect().top + scrollTop;
 
-                // Determine the scroll threshold when you want to hide the ScrollToSection
                 const scrollThreshold = faqSectionTop - window.innerHeight / 2;
 
                 setHasScrolledToFaqs(scrollTop >= scrollThreshold);

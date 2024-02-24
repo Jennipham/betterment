@@ -246,7 +246,6 @@ const MentorMatches = () => {
     
                         }
 
-                    // Update your state or UI with the matched profiles
                     setIsLoadingProfiles(false);
 
                     // Update sessionStorage if necessary
@@ -472,7 +471,6 @@ const MentorMatches = () => {
 
 
     const customStylesWithCheckbox = {
-        // ... your existing styles ...
         option: (provided, state) => ({
             ...provided,
             backgroundColor: state.isSelected ? '#3BBED1' : 'white',

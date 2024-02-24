@@ -24,7 +24,6 @@ const Welcome = () => {
         } else if (userType === 'admin') {
             navigate("/adminSettings", { state: { user: { userType: userType, email: email } } });
         } else {
-            // Default redirection, you can update this as needed
             navigate("/profileSettings", { state: { user: { userType: userType, email: email } } });
         }
     };

@@ -8,12 +8,10 @@ const ScrollToSection = ({ text, targetPage, updateTargetPage, hideScroll }) => 
     const [isHovered, setIsHovered] = useState(false);
 
     const scrollToPage = () => {
-        // Use the updateTargetPage function to set the correct target page
         updateTargetPage(targetPage);
 
         const element = document.getElementById(targetPage);
         if (element) {
-            // Calculate the offset based on your needs
             const targetTop = element.getBoundingClientRect().top + window.scrollY;
 
             // Scroll to the targetTop

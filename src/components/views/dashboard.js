@@ -86,14 +86,12 @@ const Dashboard = () => {
         return <Pie className="pie-chart" data={data} />;
     };
 
-    // Inside your Dashboard component
     const fetchMatchedStats = async () => {
         try {
             const adminEmail = user.email;
             const response = await fetch(`http://localhost:3001/matched-stats/${adminEmail}`);
             const data = await response.json();
 
-            // Do something with the data (set it to a state, etc.)
             setMatchedStats(data);
         } catch (error) {
             console.error('Error fetching matched stats:', error);
@@ -161,7 +159,6 @@ const Dashboard = () => {
             const response = await fetch(`http://localhost:3001/average-signup-duration/${adminEmail}`);
             const data = await response.json();
 
-            // Do something with the data (set it to a state, etc.)
             setSignupDurationStats(data);
         } catch (error) {
             console.error('Error fetching signup duration stats:', error);

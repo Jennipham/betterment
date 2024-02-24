@@ -261,64 +261,12 @@ router.post('/login', async (req, res) => {
     const calculateArraySimilarityScore = (array1, array2) => {
         if (!Array.isArray(array1) || !Array.isArray(array2)) {
             // Handle the case where either array1 or array2 is not an array
-            return 0; // or handle it based on your logic
+            return 0; 
         }
     
         const commonElements = array1.filter(element => array2.includes(element));
         return commonElements.length;
     };
-    
-
-    // router.get('/getPotentialMatches', async (req, res) => {
-    //     try {
-    //         const { userType, languages, department, officeLocation, developmentAreas, mentoringMethods } = req.query;
-    //         let profiles;
-    
-    //         if (userType === 'mentee') {
-    //             // Retrieve all mentor profiles with available set to true
-    //             profiles = await MentorProfile.find({ 'profileInfo.available': true });
-    //         } else if (userType === 'mentor') {
-    //             // Retrieve all mentee profiles with available set to true
-    //             profiles = await MenteeProfile.find({ 'profileInfo.available': true });
-    //         } else {
-    //             return res.status(400).json({ message: 'Invalid user type' });
-    //         }
-    
-    //         // Calculate similarity score and order profiles
-    //         const profilesWithScores = profiles.map(profile => {
-    //             const profileAttributes = profile.profileInfo;
-    
-    //             let totalScore =
-    //                 calculateSimilarityScore(department, profileAttributes.department) +
-    //                 calculateSimilarityScore(officeLocation, profileAttributes.officeLocation) +
-    //                 calculateArraySimilarityScore(developmentAreas, profileAttributes.developmentAreas) +
-    //                 calculateArraySimilarityScore(mentoringMethods, profileAttributes.mentoringMethods);
-    
-    //             if (userType === 'mentee') {
-    //                 totalScore += profileAttributes.level ? parseInt(profileAttributes.profileInfo.level) : 0;
-    //             }
-    
-    //             return { ...profile, score: totalScore };
-    //         });
-    
-    //         const sortedProfiles = profilesWithScores.sort((a, b) => b.score - a.score);
-
-    //         console.log("sorted",sortedProfiles);
-    
-    //         // Filter profiles based on common languages
-    //         const filteredProfiles = sortedProfiles.filter(profile => {
-    //             const commonLanguages = profile.profileInfo.languages.filter(language =>
-    //                 languages.includes(language)
-    //             );
-    //             return commonLanguages.length > 0; // Filter profiles with at least one common language
-    //         });
-    
-    //         return res.json({ profiles: filteredProfiles });
-    //     } catch (err) {
-    //         console.error(err);
-    //         res.status(500).json({ message: 'Internal Server Error' });
-    //     }
-    // });
 
     router.get('/getPotentialMatches', async (req, res) => {
         try {
@@ -1410,7 +1358,6 @@ router.post('/logout', async (req, res) => {
         blacklist.add(token);
 
         // Invalidate the token on the client side
-        // You can also set an expiration date in the past to make it immediately invalid
         res.status(200).json({ message: 'Logout successful' });
     } catch (error) {
         console.error('Error during logout:', error);
@@ -1438,8 +1385,6 @@ const matchLogic = async () => {
         const matches = galeShapley(menteePreferences, mentorPreferences, menteesShortlist, mentorsShortlist);
 
         // Update the database with the matching results
-        // (This part will depend on your specific database schema)
-
         console.log('Matching process completed successfully.');
     } catch (error) {
         console.error('Error during matching process:', error);

@@ -14,7 +14,6 @@ const Faqs = ({ faqData }) => {
         }
     };
 
-    // Use useEffect to attach event listeners when the component mounts
     useEffect(() => {
         const faqHeaders = document.querySelectorAll('.faq-header');
 
@@ -41,7 +40,7 @@ const Faqs = ({ faqData }) => {
                 header.removeEventListener('click', toggleAnswer);
             });
         };
-    }, []); // Empty dependency array ensures this effect runs only once, when the component mounts
+    }, []);
 
     return (
         <div className="faq-container" id="faq-section">
