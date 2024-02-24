@@ -196,6 +196,7 @@ const MentorMatches = () => {
                 else if (matchingMethod && matchingMethod === 'Algorithm') {
                     response = await axios.get('http://localhost:3001/getPotentialMatches', {
                         params: {
+                            email: user.email,
                             userType: user.userType,
                             languages: user.languages.join(','),
                             department: user.department,
@@ -205,6 +206,12 @@ const MentorMatches = () => {
 
                         },
                     });
+
+                    const isMatch = response.data.isMatch;
+                    setHasMatch(isMatch);
+
+
+                    if (!isMatch) {
 
                     const menteeProfilesWithNames = await Promise.all(
                         response.data.profiles.map(async (mentor) => {
@@ -216,9 +223,30 @@ const MentorMatches = () => {
                             };
                         })
                     );
+                    setMenteeProfile(menteeProfilesWithNames);
+
+
+                    }
+
+
+                    if (isMatch) {
+
+                        const menteeProfilesWithNames = await Promise.all(
+                            response.data.profiles.map(async (mentee) => {
+                                const userDetailsResponse = await fetchNames(mentee.email);
+                                return {
+                                    ...mentee,
+                                    fname: userDetailsResponse ? userDetailsResponse.user.fname : '',
+                                    sname: userDetailsResponse ? userDetailsResponse.user.sname : '',
+                                };
+                            })
+                        );
+                        setMenteeProfile(menteeProfilesWithNames);
+
+    
+                        }
 
                     // Update your state or UI with the matched profiles
-                    setMenteeProfile(menteeProfilesWithNames);
                     setIsLoadingProfiles(false);
 
                     // Update sessionStorage if necessary
@@ -454,34 +482,6 @@ const MentorMatches = () => {
 
         }),
     };
-    // const [selectedLanguages, setSelectedLanguages] = useState([]);
-
-    // const handleLanguagesChange = (selectedOptions) => {
-    //     const selectedValues = selectedOptions ? selectedOptions.map(option => option.value) : [];
-    //     setSelectedLanguages(selectedValues);
-    // };
-
-    // const [selectedDevelopmentAreas, setSelectedDevelopmentAreas] = useState([]);
-
-    // const handleDevelopmentAreasChange = (selectedOptions) => {
-    //     const selectedValues = selectedOptions ? selectedOptions.map(option => option.value) : [];
-    //     setSelectedDevelopmentAreas(selectedValues);
-    // };
-
-    // const [selectedMethods, setSelectedMethods] = useState([]);
-
-    // const handleMethodsChange = (selectedOptions) => {
-    //     const selectedValues = selectedOptions ? selectedOptions.map(option => option.value) : [];
-    //     setSelectedMethods(selectedValues);
-    // };
-
-    // const [selectedLocation, setSelectedLocation] = useState('');
-
-    // const handleLocationChange = (selectedOption) => {
-    //     const selectedValue = selectedOption ? selectedOption.value : '';
-    //     setSelectedLocation(selectedValue);
-    // };
-
 
     const capitaliseFirstLetter = (str) => {
         if (str === null || str === undefined) {
@@ -710,7 +710,7 @@ const MentorMatches = () => {
                     </>
                 )}
 
-{matchingMethod === 'Manual' && hasMatch && menteeProfile && menteeProfile[0] && (
+{(matchingMethod === 'Manual' || matchingMethod === 'Algorithm' ) && hasMatch && menteeProfile && menteeProfile[0] && (
     <div className="match-section">
         <h2 className='top-match'>You've been Matched!</h2>
                         <div className="user-profile-box">
@@ -785,7 +785,7 @@ const MentorMatches = () => {
     </div>
 )}
 
-                {matchingMethod === "Algorithm" && (
+                {matchingMethod === "Algorithm" && !hasMatch && (
                     <>
                         <h2 className='top-match'>Your Matches:</h2>
                         {isLoadingProfiles ? (

@@ -322,7 +322,7 @@ router.post('/login', async (req, res) => {
 
     router.get('/getPotentialMatches', async (req, res) => {
         try {
-            const { userType, languages, department, officeLocation, developmentAreas, mentoringMethods } = req.query;
+            const { email, userType, languages, department, officeLocation, developmentAreas, mentoringMethods } = req.query;
             let profiles;
     
             if (userType === 'mentee') {
@@ -333,6 +333,22 @@ router.post('/login', async (req, res) => {
                 profiles = await MenteeProfile.find({ 'profileInfo.available': true });
             } else {
                 return res.status(400).json({ message: 'Invalid user type' });
+            }
+    
+            // Check if the user has matches
+            const currentUserEmail = email; // Adjust this based on your authentication setup
+            const currentUserProfile = userType === 'mentee'
+                ? await MenteeProfile.findOne({ email: currentUserEmail })
+                : await MentorProfile.findOne({ email: currentUserEmail });
+    
+            if (currentUserProfile && currentUserProfile.profileInfo.matches.length > 0) {
+                // The user has matches, find the corresponding profiles
+                const matchedUserEmails = currentUserProfile.profileInfo.matches.map(match => userType === 'mentee' ? match.mentorEmail : match.menteeEmail);
+                const matchedProfiles = userType === 'mentee'
+                    ? await MentorProfile.find({ email: { $in: matchedUserEmails } })
+                    : await MenteeProfile.find({ email: { $in: matchedUserEmails } });
+    
+                return res.json({ profiles: matchedProfiles, isMatch: true });
             }
     
             // Calculate similarity score and order profiles
@@ -354,27 +370,24 @@ router.post('/login', async (req, res) => {
     
             const sortedProfiles = profilesWithScores.sort((a, b) => b.score - a.score);
     
-            console.log("sorted", sortedProfiles);
-    
             // Filter profiles based on common languages
             const filteredProfiles = sortedProfiles.filter(profile => {
                 const profileLanguages = profile._doc.profileInfo.languages;
-            
+    
                 // Check if both profileLanguages and languages are defined before using the includes method
                 const commonLanguages = profileLanguages && languages && profileLanguages.filter(language =>
                     languages.includes(language)
                 );
-            
+    
                 return commonLanguages && commonLanguages.length > 0;
             });
-            
-            return res.json({ profiles: filteredProfiles });
+    
+            return res.json({ profiles: filteredProfiles, isMatch: false });
         } catch (err) {
             console.error(err);
             res.status(500).json({ message: 'Internal Server Error' });
         }
     });
-    
     
     
 
