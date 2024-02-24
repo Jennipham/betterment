@@ -47,6 +47,12 @@ const methodOptions = [
     { value: 'Virtual', label: 'Virtual Sessions' },
 ]
 
+const credentialOptions = [
+    { value: '1', label: '1' },
+    { value: '2', label: '2' },
+    { value: '0', label: 'None' },
+]
+
 const officeLocationOptions = [
     { value: 'London', label: 'London' },
     { value: 'Birmingham', label: 'Birmingham' },
@@ -106,7 +112,7 @@ const customStyles = {
 };
 
 const capitaliseFirstLetter = (str) => {
-    if ( str === null || str === undefined) {
+    if (str === null || str === undefined) {
         return;
     }
     return str
@@ -142,20 +148,22 @@ const Profile = () => {
         const officeLocation = sessionStorage.getItem('officeLocation') || '';
         const developmentAreas = sessionStorage.getItem('developmentAreas') || '';
         const mentoringMethods = sessionStorage.getItem('mentoringMethods') || '';
+        const level = sessionStorage.getItem('level') || '';
         const languages = sessionStorage.getItem('languages') || '';
         const sentRequests = sessionStorage.getItem('sentRequests') || '';
         const receivedRequests = sessionStorage.getItem('receivedRequests') || '';
         const matchedUp = sessionStorage.getItem('matchedUp') || '';
 
-        setUser({ firstName, lastName, userType, email, jobRole, officeLocation, developmentAreas, mentoringMethods, languages, sentRequests, receivedRequests, matchedUp });
+        setUser({ firstName, lastName, userType, email, jobRole, officeLocation, developmentAreas, mentoringMethods, level, languages, sentRequests, receivedRequests, matchedUp });
     }, []);
 
-    
+
     const [formData, setFormData] = useState({
         jobRole: '',
         department: '',
         officeLocation: '',
         capacity: '',
+        level: '',
         languages: [],
         developmentAreas: [],
         mentoringMethods: [],
@@ -272,7 +280,7 @@ const Profile = () => {
 
             console.log('Profile saved successfully:', response.data);
 
-            {user.userType === "mentee" ? navigate("/menteematches") : navigate("/mentormatches")}
+            { user.userType === "mentee" ? navigate("/menteematches") : navigate("/mentormatches") }
 
         } catch (error) {
             console.error('Error saving profile:', error);
@@ -303,7 +311,7 @@ const Profile = () => {
                 setReceivedRequests(receivedResponse.data.receivedRequests);
                 setRequestsLength(receivedResponse.data.receivedRequests.length);
 
-    
+
             } catch (error) {
                 console.error('Error fetching requests:', error);
                 setErrorMessage('Error Fetching Requests');
@@ -317,9 +325,9 @@ const Profile = () => {
 
     return (
         <>
-        <div className='profile-page'>
+            <div className='profile-page'>
                 <Header />
-                
+
                 {saveMessage && (
                     <div className={`save-message ${saveMessage.includes('successfully') ? 'success' : 'error'}`}>
                         <p>{saveMessage}</p>
@@ -346,135 +354,134 @@ const Profile = () => {
                 </div>
 
                 <div className="profile-container">
-                 
+
                     <div className="profile-settings-box">
-                        
+
                         <div className='editable-container'>
 
-                        <p className="editable-attribute">
-                            <span className="attribute-label">Job Role:</span>
-                            {isEditingJobRole ? (
-                                <>
-                                    <input
-                                        className='job-role-field'
-                                        type="text"
-                                        value={isEditingJobRole ? jobRoleInput : formData.jobRole}
-                                        onChange={(e) => setJobRoleInput(e.target.value)}
-                                    />
-                                    <button className='save-button' onClick={handleSaveClick}>Save</button>
-                                    <button className='cancel-button' onClick={() => setIsEditingJobRole(false)}>Cancel</button>
-                                </>
-                            ) : (
-                                <>
-                                    <span className='job-role'>{formData.jobRole}</span>
-                                    <span className='edit-icon-container' onClick={() => handleEditClick('Job Role')}>
-                                        <img src={editIcon} alt="Edit" className="edit-icon" />
-                                    </span>
-                                </>
-                            )}
+                            <p className="editable-attribute">
+                                <span className="attribute-label">Job Role:</span>
+                                {isEditingJobRole ? (
+                                    <>
+                                        <input
+                                            className='job-role-field'
+                                            type="text"
+                                            value={isEditingJobRole ? jobRoleInput : formData.jobRole}
+                                            onChange={(e) => setJobRoleInput(e.target.value)}
+                                        />
+                                        <button className='save-button' onClick={handleSaveClick}>Save</button>
+                                        <button className='cancel-button' onClick={() => setIsEditingJobRole(false)}>Cancel</button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <span className='job-role'>{formData.jobRole}</span>
+                                        <span className='edit-icon-container' onClick={() => handleEditClick('Job Role')}>
+                                            <img src={editIcon} alt="Edit" className="edit-icon" />
+                                        </span>
+                                    </>
+                                )}
                             </p>
-                             
+
                             <Tooltip text="Your Occupation">
                                 <img src={moreInfo} alt="More Info" className="more-info-icon" />
-                                </Tooltip>
-  
+                            </Tooltip>
+
                         </div>
                         <div className='editable-container'>
-                        <p className="dropdown-title">
-                        Department:
-                            <Select
-                                isMulti={false}
-                                options={departmentOptions}
-                                placeholder="Select Department"
-                                styles={customStyles}
-                                value={formData.department ? { value: formData.department, label: capitaliseFirstLetter(formData.department) } : null}
-                                onChange={(selectedOption) =>
-                                    handleInputChange('department', selectedOption.value)
-                                }
+                            <p className="dropdown-title">
+                                Department:
+                                <Select
+                                    isMulti={false}
+                                    options={departmentOptions}
+                                    placeholder="Select Department"
+                                    styles={customStyles}
+                                    value={formData.department ? { value: formData.department, label: capitaliseFirstLetter(formData.department) } : null}
+                                    onChange={(selectedOption) =>
+                                        handleInputChange('department', selectedOption.value)
+                                    }
 
-                            />
+                                />
                             </p>
-                            
+
                             <Tooltip text="The Department you work in.">
                                 <img src={moreInfo} alt="More Info" className="more-info-icon" />
                             </Tooltip>
 
-                            </div>
+                        </div>
 
                         <div className='editable-container'>
 
-                    <p className="dropdown-title">
-                            Office Location:
-                            <Select
-                                isMulti={false}
-                                options={officeLocationOptions}
-                                placeholder="Select Office"
-                                styles={customStyles}
-                                value={formData.officeLocation ? { value: formData.officeLocation, label: capitaliseFirstLetter(formData.officeLocation) } : null}
-                                onChange={(selectedOption) =>
-                                    handleInputChange('officeLocation', selectedOption.value)
-                                }
+                            <p className="dropdown-title">
+                                Office Location:
+                                <Select
+                                    isMulti={false}
+                                    options={officeLocationOptions}
+                                    placeholder="Select Office"
+                                    styles={customStyles}
+                                    value={formData.officeLocation ? { value: formData.officeLocation, label: capitaliseFirstLetter(formData.officeLocation) } : null}
+                                    onChange={(selectedOption) =>
+                                        handleInputChange('officeLocation', selectedOption.value)
+                                    }
 
-                            />
+                                />
                             </p>
                             <Tooltip text="The location of your workplace.">
                                 <img src={moreInfo} alt="More Info" className="more-info-icon" />
                             </Tooltip>
-                            </div>
+                        </div>
 
-                        
+
                         <div className='editable-container'>
-                        <p className="editable-attribute">
-                            <span className="attribute-label">Capacity:</span>
-                            {isEditingCapacity ? (
-                                <>
-                                    <input
-                                        className='job-role-field'
-                                        type="text"
-                                        value={isEditingCapacity ? capacityInput : formData.capacity}
-                                        onChange={(e) => setCapacityInput(e.target.value)}
-                                    />
-                                    <button className='save-button' onClick={handleSaveClick}>Save</button>
-                                    <button className='cancel-button' onClick={() => setIsEditingCapacity(false)}>Cancel</button>
-                                </>
-                            ) : (
-                                <>
-                                    <span className='job-role'>{formData.capacity}</span>
-                                    <span className='edit-icon-container' onClick={() => handleEditClick('Capacity')}>
-                                        <img src={editIcon} alt="Edit" className="edit-icon" />
-                                    </span>
-                                </>
-                            )}
+                            <p className="editable-attribute">
+                                <span className="attribute-label">Capacity:</span>
+                                {isEditingCapacity ? (
+                                    <>
+                                        <input
+                                            className='job-role-field'
+                                            type="text"
+                                            value={isEditingCapacity ? capacityInput : formData.capacity}
+                                            onChange={(e) => setCapacityInput(e.target.value)}
+                                        />
+                                        <button className='save-button' onClick={handleSaveClick}>Save</button>
+                                        <button className='cancel-button' onClick={() => setIsEditingCapacity(false)}>Cancel</button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <span className='job-role'>{formData.capacity}</span>
+                                        <span className='edit-icon-container' onClick={() => handleEditClick('Capacity')}>
+                                            <img src={editIcon} alt="Edit" className="edit-icon" />
+                                        </span>
+                                    </>
+                                )}
                             </p>
                             <Tooltip text="The number of mentors/mentees you are willing to be matched with.">
                                 <img src={moreInfo} alt="More Info" className="more-info-icon" />
                             </Tooltip>
                         </div>
-                </div>
+                    </div>
 
-                {/* Right Box */}
                     <div className="profile-settings-box">
                         <div className='editable-container'>
 
-                    <p className='dropdown-title'>
-                        Language(s):
-                            <Select
-                                isMulti= {true}
-                                options={languageOptions}
-                                placeholder="Select Languages"
-                                styles={customStyles}
-                                value={
-                                    formData.languages
-                                        ? formData.languages.map((lang) => ({
-                                            value: lang,
-                                            label: capitaliseFirstLetter(lang),
-                                        }))
-                                        : null
-                                }
-                                onChange={(selectedOptions) =>
-                                    handleMultiInputChange('languages', selectedOptions.map(option => option.value))
-                                }
-                            />
+                            <p className='dropdown-title'>
+                                Language(s):
+                                <Select
+                                    isMulti={true}
+                                    options={languageOptions}
+                                    placeholder="Select Languages"
+                                    styles={customStyles}
+                                    value={
+                                        formData.languages
+                                            ? formData.languages.map((lang) => ({
+                                                value: lang,
+                                                label: capitaliseFirstLetter(lang),
+                                            }))
+                                            : null
+                                    }
+                                    onChange={(selectedOptions) =>
+                                        handleMultiInputChange('languages', selectedOptions.map(option => option.value))
+                                    }
+                                />
                             </p>
                             <Tooltip text="Languages you speak.">
                                 <img src={moreInfo} alt="More Info" className="more-info-icon" />
@@ -482,25 +489,25 @@ const Profile = () => {
                         </div>
                         <div className='editable-container'>
 
-                    <p className='dropdown-title'>
-                        Areas of Development:
-                            <Select
-                                isMulti={true}
-                                placeholder="Select Development Areas"
-                                options={developmentAreaOptions}
-                                styles={customStyles}
-                                value={
-                                    formData.developmentAreas
-                                        ? formData.developmentAreas.map((area) => ({
-                                            value: area,
-                                            label: capitaliseFirstLetter(area),
-                                        }))
-                                        : null
-                                }
-                                onChange={(selectedOptions) =>
-                                    handleMultiInputChange('developmentAreas', selectedOptions.map(option => option.value))
-                                }
-                            />
+                            <p className='dropdown-title'>
+                                Areas of Development:
+                                <Select
+                                    isMulti={true}
+                                    placeholder="Select Development Areas"
+                                    options={developmentAreaOptions}
+                                    styles={customStyles}
+                                    value={
+                                        formData.developmentAreas
+                                            ? formData.developmentAreas.map((area) => ({
+                                                value: area,
+                                                label: capitaliseFirstLetter(area),
+                                            }))
+                                            : null
+                                    }
+                                    onChange={(selectedOptions) =>
+                                        handleMultiInputChange('developmentAreas', selectedOptions.map(option => option.value))
+                                    }
+                                />
                             </p>
                             <Tooltip text="The areas you want to focus on for mentoring.">
                                 <img src={moreInfo} alt="More Info" className="more-info-icon" />
@@ -508,48 +515,70 @@ const Profile = () => {
                         </div>
                         <div className='editable-container'>
 
-                        <p className='dropdown-title'>
-                        Methods of Mentoring:
-                            <Select
-                                isMulti={true}
-                                placeholder="Select Mentoring Methods"
-                                options={methodOptions}
-                                styles={customStyles}
-                                value={
-                                    formData.mentoringMethods
-                                        ? formData.mentoringMethods.map((methods) => ({
-                                            value: methods,
-                                            label: capitaliseFirstLetter(methods),
-                                        }))
-                                        : null
-                                }
-                                onChange={(selectedOptions) =>
-                                    handleMultiInputChange('mentoringMethods',selectedOptions.map(option => option.value))
-                                }
-                            />
+                            <p className='dropdown-title'>
+                                Methods of Mentoring:
+                                <Select
+                                    isMulti={true}
+                                    placeholder="Select Mentoring Methods"
+                                    options={methodOptions}
+                                    styles={customStyles}
+                                    value={
+                                        formData.mentoringMethods
+                                            ? formData.mentoringMethods.map((methods) => ({
+                                                value: methods,
+                                                label: capitaliseFirstLetter(methods),
+                                            }))
+                                            : null
+                                    }
+                                    onChange={(selectedOptions) =>
+                                        handleMultiInputChange('mentoringMethods', selectedOptions.map(option => option.value))
+                                    }
+                                />
                             </p>
                             <Tooltip className="tooltip-text" text="The methods you're happy to receive/give mentoring.">
                                 <img src={moreInfo} alt="More Info" className="more-info-icon" />
                             </Tooltip>
-                            </div>
-                </div>
+                        </div>
+
+                        {user.userType === "mentor" && (
+                        <div className='editable-container'>
+
+                            <p className='dropdown-title'>
+                                Coaching Credentials:
+                                <Select
+                                    isMulti={false}
+                                    options={credentialOptions}
+                                    placeholder="Select Mentor Credentials"
+                                    styles={customStyles}
+                                    value={formData.level ? { value: formData.level, label: formData.level } : null}
+                                    onChange={(selectedOption) =>
+                                        handleInputChange('level', selectedOption.value)
+                                    }
+
+                                />
+                            </p>
+                            <Tooltip className="tooltip-text" text="The methods you're happy to receive/give mentoring.">
+                                <img src={moreInfo} alt="More Info" className="more-info-icon" />
+                            </Tooltip>
+                        </div>)}
+                    </div>
                 </div>
                 {loading ? (
-                        <div className='loader-container'>
+                    <div className='loader-container'>
 
                         <Loader />
-                        </div>
+                    </div>
                 ) : (
-                <div className='save-info'>
-                    <button onClick={handleSaveClick}>Save</button>
-                </div>
+                    <div className='save-info'>
+                        <button onClick={handleSaveClick}>Save</button>
+                    </div>
 
                 )}
 
             </div>
 
-                    <Footer />
-</>
+            <Footer />
+        </>
     );
 };
 
