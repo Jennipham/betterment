@@ -668,7 +668,6 @@ router.get('/getRandomMentorProfile', async (req, res) => {
 
 
 
-
 router.get('/getFilteredMentorProfile', async (req, res) => {
     try {
         const { email, language, developmentAreas, mentoringMethods } = req.query;
@@ -702,19 +701,26 @@ router.get('/getFilteredMentorProfile', async (req, res) => {
             filter['profileInfo.mentoringMethods'] = { $in: mentoringMethods.split(',') };
         }
 
+        const menteeProfile = await MenteeProfile.findOne({ email });
+        if (menteeProfile && menteeProfile.profileInfo.matches.length > 0) {
+            // The mentee has matches, find the corresponding mentors
+            const mentorEmails = menteeProfile.profileInfo.matches.map(match => match.mentorEmail);
+            const mentorsWithMatches = await MentorProfile.find({ email: { $in: mentorEmails } });
+            return res.json({ profiles: mentorsWithMatches, isMatch: true });
+        }
+
         const filteredMentorProfiles = await MentorProfile.find(filter);
 
         if (filteredMentorProfiles.length === 0) {
             return res.status(404).json({ error: 'No mentor profiles found' });
         }
 
-        res.json({ profiles: filteredMentorProfiles });
+        res.json({ profiles: filteredMentorProfiles, isMatch: false });
     } catch (error) {
         console.error('Error fetching filtered mentor profiles:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
-
 
 router.get('/getFilteredMenteeProfile', async (req, res) => {
     try {
@@ -749,13 +755,21 @@ router.get('/getFilteredMenteeProfile', async (req, res) => {
             filter['profileInfo.mentoringMethods'] = { $in: mentoringMethods.split(',') };
         }
 
+        const mentorProfile = await MentorProfile.findOne({ email });
+        if (mentorProfile && mentorProfile.profileInfo.matches.length > 0) {
+            // The mentor has matches, find the corresponding mentees
+            const menteeEmails = mentorProfile.profileInfo.matches.map(match => match.menteeEmail);
+            const menteesWithMatches = await MenteeProfile.find({ email: { $in: menteeEmails } });
+            return res.json({ profiles: menteesWithMatches, isMatch: true });
+        }
+
         const filteredMenteeProfiles = await MenteeProfile.find(filter);
 
         if (filteredMenteeProfiles.length === 0) {
             return res.status(404).json({ error: 'No mentee profiles found' });
         }
 
-        res.json({ profiles: filteredMenteeProfiles });
+        res.json({ profiles: filteredMenteeProfiles, isMatch: false });
     } catch (error) {
         console.error('Error fetching filtered mentee profiles:', error);
         res.status(500).json({ error: 'Internal Server Error' });
