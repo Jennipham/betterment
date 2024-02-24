@@ -70,3 +70,8 @@
 .questionnaire {
     position: relative;
 }
+
+.close-account {
+    width: fit-content;
+    margin: 20px;
+}

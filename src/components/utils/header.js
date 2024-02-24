@@ -20,7 +20,7 @@ const Header = () => {
     const [notifications, setNotifications] = useState(0);
 
     const [receivedRequests, setReceivedRequests] = useState([]);
-    const [requestsLength, setRequestsLength] = useState(0);
+    const [isMatched, setIsMatched] = useState([]);
 
     const isAuthenticated = () => {
         const token = sessionStorage.getItem('token');
@@ -101,13 +101,24 @@ const Header = () => {
                     return;
                 }
 
+                if (user.userType !== '') {
+                    const userResponse = await axios.post('http://localhost:3001/getProfile', {
+                        email: user.email,
+                        userType: user.userType,
+                    });
+
+                    if (userResponse.data.match !== '') {
+                        setIsMatched(true);
+                    }
+                }
+
                 // Fetch received requests directly using user information
                 const receivedResponse = await axios.post('http://localhost:3001/getReceivedRequests', {
                     email: user.email,
                     userType: user.userType,
                 });
                 setReceivedRequests(receivedResponse.data.receivedRequests);
-                setNotifications(receivedResponse.data.receivedRequests);
+                setNotifications(isMatched || receivedResponse.data.receivedRequests.length > 0 ? 1 : 0);
 
             } catch (error) {
                 console.error('Error fetching requests:', error);
@@ -115,7 +126,7 @@ const Header = () => {
         };
 
         fetchData();
-    }, []);
+    }, [user.email, user.userType]);
 
     const handleLogout = async () => {
         try {
@@ -199,7 +210,7 @@ const Header = () => {
                                     <img className='notification-icon-header' src={notification} alt="Requests" />
                                 </RouterLink> :
                                 <RouterLink to="/requests">
-                                    <img className='notification-icon-header' src={notificationExclamation} alt="Requests" />
+                                    <img className='notification-exclamation-icon-header' src={notificationExclamation} alt="Requests" />
                                 </RouterLink>
                             }
                             {user.userType === 'mentee' ? (
@@ -332,7 +343,7 @@ const Header = () => {
                                                 <img className='notification-icon-header' src={notification} alt="Requests" />
                                             </RouterLink> :
                                             <RouterLink to="/requests">
-                                                <img className='notification-icon-header' src={notificationExclamation} alt="Requests" />
+                                                <img className='notification-exclamation-icon-header' src={notificationExclamation} alt="Requests" />
                                             </RouterLink>
                                         }
                                         

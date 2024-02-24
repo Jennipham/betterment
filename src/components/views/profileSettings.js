@@ -133,6 +133,8 @@ const Profile = () => {
 
     const [receivedRequests, setReceivedRequests] = useState([]);
     const [requestsLength, setRequestsLength] = useState(0);
+    const [isMatched, setIsMatched] = useState(false);
+
 
     const [errorMessage, setErrorMessage] = useState('');
 
@@ -201,6 +203,10 @@ const Profile = () => {
 
                 }));
                 sessionStorage.setItem('profile', JSON.stringify(response.data.profile.profileInfo));
+
+                if (response.data.match !== '') {
+                    setIsMatched(true);
+                }
 
             } catch (error) {
                 setErrorMessage('Error Fetching Profile Data');
@@ -325,8 +331,9 @@ const Profile = () => {
 
     return (
         <>
+        <Header/>
+    
             <div className='profile-page'>
-                <Header />
 
                 {saveMessage && (
                     <div className={`save-message ${saveMessage.includes('successfully') ? 'success' : 'error'}`}>
@@ -576,6 +583,7 @@ const Profile = () => {
                 )}
 
             </div>
+
 
             <Footer />
         </>

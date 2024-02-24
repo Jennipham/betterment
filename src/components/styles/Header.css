@@ -33,3 +33,23 @@
     height: 30px;
     width: auto;
 }
+
+.notification-exclamation-icon-header{
+    height: 30px;
+    width: auto;
+    transition: transform 0.5s ease-in-out;
+    animation: pulse 1s infinite;
+}
+
+.notification-exclamation-icon-header.shake {
+    animation: shake 1s ease-in-out infinite; 
+  }
+  
+  @keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}

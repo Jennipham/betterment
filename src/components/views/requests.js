@@ -6,8 +6,8 @@ import SentRequest from './sentRequest';
 import ReceivedRequest from './receivedRequest';
 import Tooltip from '../utils/tooltip';
 import moreInfo from '../images/more-info-icon.png';
-import Modal from '../utils/modal';
 import axios from 'axios';
+import Loader from '../utils/loader';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 
 
@@ -40,6 +40,8 @@ const Requests = () => {
     const [successMessage, setSuccessMessage] = useState('');
 
     const [allRequests, setAllRequests] = useState([]);
+
+    const [iframeLoading, setIframeLoading] = useState(true);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -197,22 +199,27 @@ const Requests = () => {
     return (
         <>
             <Header />
-
             {isMatched && (
-
                 <div className="requests-page">
+                    <h2>Feedback Questionnaire</h2>
 
-                    <h2>
-                        Feedback Questionnaire
-                    </h2>
-
-                    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLScr8utdzUpX86YZn5eQdt7pCYXdZCyr6vblCw9sKMHpcA_wkw/viewform?embedded=true" className="questionnaire" width="640" height="414" frameborder="0" marginheight="0" marginwidth="0">
-                    </iframe>
+                    {iframeLoading ? <Loader /> : <></>}
+                    <>
+                        <iframe src="https://docs.google.com/forms/d/e/1FAIpQLScr8utdzUpX86YZn5eQdt7pCYXdZCyr6vblCw9sKMHpcA_wkw/viewform?embedded=true"
+                            className="questionnaire"
+                            width="640"
+                            height="414"
+                            frameborder="0"
+                            marginheight="0"
+                            marginwidth="0"
+                            onLoad={() => setIframeLoading(false)}
+                        >
+                        </iframe>
+                    </>
                 </div>
-            )
 
+            )}
 
-            }
 
             {!isMatched && (
 
