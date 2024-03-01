@@ -28,9 +28,9 @@ const Requests = () => {
         return daysLeft > 0 ? daysLeft : 0; // Ensure daysLeft is non-negative
     };
 
-    const [daysLeft, setDaysLeft] = useState(calculateDaysLeft());
-
     const [isMatched, setIsMatched] = useState(false);
+
+    const [daysUntilNextMatch, setDaysUntilNextMatch] = useState(null);
 
     const [receivedRequests, setReceivedRequests] = useState([]);
     const [sentRequests, setSentRequests] = useState([]);
@@ -41,15 +41,6 @@ const Requests = () => {
     const [allRequests, setAllRequests] = useState([]);
 
     const [iframeLoading, setIframeLoading] = useState(true);
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setDaysLeft(prevDays => prevDays - 1);
-        }, 24 * 60 * 60 * 1000); // Update every 24 hours
-
-        return () => clearInterval(interval); // Cleanup interval on component unmount
-
-    }, []);
 
     const onDragEnd = async (result) => {
         if (!result.destination) {
@@ -65,6 +56,20 @@ const Requests = () => {
 
         setAllRequests(updatedAllRequests);
     };
+
+    useEffect(() => {
+        // Fetch the number of days until the next match from the backend
+        const fetchDaysUntilNextMatch = async () => {
+            try {
+                const response = await axios.get('http://localhost:3001/getNextMatchDay');
+                setDaysUntilNextMatch(response.data.daysUntilNextMatch);
+            } catch (error) {
+                console.error('Error fetching days until next match:', error);
+            }
+        };
+
+        fetchDaysUntilNextMatch();
+    }, []);
 
 
     useEffect(() => {
@@ -235,6 +240,10 @@ const Requests = () => {
                                 <img src={moreInfo} alt="More Info" className="more-info-icon" />
                             </Tooltip>
                         </h2>
+
+                        {daysUntilNextMatch !== null && (
+                            <p className='next-match'>Days until next match: {daysUntilNextMatch}</p>
+                        )}
 
                         {allRequests.length > 0 ? (
                             <DragDropContext onDragEnd={onDragEnd}>

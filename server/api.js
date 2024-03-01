@@ -1395,7 +1395,7 @@ const matchLogic = async () => {
     }
 };
 
-// Schedule the task to run every 14 days
+// Schedule the task to run every 14 days (14th and 18th of every month)
 cron.schedule('0 0 */14 * *', async () => {
     try {
         console.log('Running matching process...');
@@ -1404,6 +1404,35 @@ cron.schedule('0 0 */14 * *', async () => {
         console.error('Error during scheduled matching process:', error);
     }
 });
+
+const calculateNextMatchDay = () => {
+    const today = new Date();
+    const currentDay = today.getDate();
+    let nextMatchDate;
+
+    // If today's date is before or on the 14th, the next match is on the 14th
+    // If it's after the 14th but before or on the 28th, the next match is on the 28th
+    // If it's after the 28th, the next match is on the 14th of the next month
+    if (currentDay <= 14) {
+        nextMatchDate = new Date(today.getFullYear(), today.getMonth(), 14);
+    } else if (currentDay <= 28) {
+        nextMatchDate = new Date(today.getFullYear(), today.getMonth(), 28);
+    } else {
+        nextMatchDate = new Date(today.getFullYear(), today.getMonth() + 1, 14);
+    }
+
+    // Calculate the difference in days
+    const diffTime = Math.abs(nextMatchDate - today);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    return diffDays;
+};
+
+router.get('/getNextMatchDay', (req, res) => {
+    const daysUntilNextMatch = calculateNextMatchDay();
+    res.json({ daysUntilNextMatch });
+});
+
 
 router.get('/matched-stats/:adminEmail', async (req, res) => {
     try {
