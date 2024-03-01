@@ -174,19 +174,20 @@ const Dashboard = () => {
     }, []);
 
     const renderSignupDurationNumber = () => {
-        if (!signupDurationStats) {
+        if (!signupDurationStats || signupDurationStats.averageSignupDurationDays == null) {
             return null;
         }
-
+    
         const averageSignupDuration = signupDurationStats.averageSignupDurationDays;
         const formattedAverageSignupDuration = averageSignupDuration.toFixed(2);
-
+    
         return (
             <div className='average-duration'>
                 <p>{formattedAverageSignupDuration}</p>
             </div>
         );
     };
+    
 
     useEffect(() => {
         const fetchDepartmentStats = async () => {

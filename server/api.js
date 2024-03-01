@@ -329,6 +329,10 @@ router.post('/login', async (req, res) => {
     
                 return commonLanguages && commonLanguages.length > 0;
             });
+
+            if (filteredProfiles.length === 0) {
+                return res.status(404).json({ message: 'No matching profiles found' });
+            }
     
             return res.json({ profiles: filteredProfiles, isMatch: false });
         } catch (err) {

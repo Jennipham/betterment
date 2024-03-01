@@ -79,16 +79,17 @@ const Requests = () => {
                 }
 
 
-                if (userType !== '') {
+                if (userType !== '' ) {
                     const userResponse = await axios.post('http://localhost:3001/getProfile', {
                         email: email,
                         userType: userType,
                     })
 
 
-                    if (userResponse.data.match !== '') {
+                    if (Array.isArray(userResponse.data.matches) && userResponse.data.matches.length > 0) {
                         setIsMatched(true);
-                    }
+                    } 
+                    
                 }
 
                 // Fetch received requests directly using user information

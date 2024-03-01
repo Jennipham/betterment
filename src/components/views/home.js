@@ -54,6 +54,10 @@ function Home() {
             answer: "Your manager will decide which matching method they would like for your organisation. If they have not chosen yet then this will default to Betterment's Algorithm."
         },
         {
+            question: "What do I do once potential matches are displayed?",
+            answer: "If your matching method has not been set to random, you may request a match with a potential match where they can either decline or accept. All of your requests will be displayed in your shortlist where you may order your requests in order of preference."
+        },
+        {
             question: "What is Blind Matching?",
             answer: "Blind matching is an option provided which will hide the names on the profiles of potential matches to mitigate bias. Your manager will choose to have this setting on or off."
         },
