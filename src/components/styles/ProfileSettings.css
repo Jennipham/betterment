@@ -103,13 +103,16 @@
 }
 
 .save-button {
-        width: 25%;
+        height: 30px;
         font-size: 1em;
+        cursor: pointer;
+
 }
 
 .cancel-button {
-    width: 15%;
+    height: 30px;
     font-size: 1em;
+    cursor: pointer;
 }
 
 .job-role-field {

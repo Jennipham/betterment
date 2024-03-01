@@ -6,6 +6,8 @@ import editIcon from '../images/EditIcon.png';
 import notification from '../images/notification-icon.png';
 import moreInfo from '../images/more-info1.png';
 import Tooltip from '../utils/tooltip';
+import cross from '../images/cross-icon.png';
+import tick from '../images/tick-icon.png';
 import Select from 'react-select';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -300,6 +302,61 @@ const Profile = () => {
         }
     };
 
+    const handleSaveAttributeClick = async () => {
+        setLoading(true);
+
+        try {
+            // Send the form data to the backend API endpoint
+            const updatedJobRole = isEditingJobRole ? jobRoleInput.trim() : formData.jobRole.trim();
+            const updatedDepartment = isEditingDepartment ? departmentInput.trim() : formData.department.trim();
+            const updatedCapacity = isEditingCapacity ? capacityInput.trim() : formData.capacity.trim();
+
+            const response = await axios.post('http://localhost:3001/profile', {
+                ...formData,
+                email: user.email,
+                userType: user.userType,
+                jobRole: updatedJobRole,
+                department: updatedDepartment,
+                capacity: updatedCapacity,
+
+            });
+
+            // Update formData with the response from the server
+            setFormData((prevData) => ({
+                ...prevData,
+                jobRole: response.data.jobRole || updatedJobRole,
+                department: response.data.department || updatedDepartment,
+                capacity: response.data.capacity || updatedCapacity,
+
+            }));
+
+            setIsEditingJobRole(false);
+            setIsEditingDepartment(false);
+            setIsEditingCapacity(false);
+            setLoading(false);
+
+            setSaveMessage('Profile saved successfully');
+
+            setTimeout(() => {
+                setSaveMessage(null);
+            }, 5000);
+
+
+            console.log('Profile saved successfully:', response.data);
+
+        } catch (error) {
+            console.error('Error saving profile:', error);
+            setSaveMessage('Error saving profile');
+            setLoading(false);
+
+            setTimeout(() => {
+                setSaveMessage(null);
+            }, 5000);
+
+        }
+    };
+
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -376,8 +433,8 @@ const Profile = () => {
                                             value={isEditingJobRole ? jobRoleInput : formData.jobRole}
                                             onChange={(e) => setJobRoleInput(e.target.value)}
                                         />
-                                        <button className='save-button' onClick={handleSaveClick}>Save</button>
-                                        <button className='cancel-button' onClick={() => setIsEditingJobRole(false)}>Cancel</button>
+                                        <img className='save-button'  src={tick} alt="Save" onClick={handleSaveAttributeClick} />
+                                        <img className="cancel-button" src={cross} alt="Cancel" onClick={() => setIsEditingJobRole(false)} />
                                     </>
                                 ) : (
                                     <>
@@ -449,8 +506,8 @@ const Profile = () => {
                                             value={isEditingCapacity ? capacityInput : formData.capacity}
                                             onChange={(e) => setCapacityInput(e.target.value)}
                                         />
-                                        <button className='save-button' onClick={handleSaveClick}>Save</button>
-                                        <button className='cancel-button' onClick={() => setIsEditingCapacity(false)}>Cancel</button>
+                                        <img className='save-button'  src={tick} alt="Save" onClick={handleSaveAttributeClick} />
+                                        <img className="cancel-button" src={cross} alt="Cancel" onClick={() => setIsEditingCapacity(false)} />
                                     </>
                                 ) : (
                                     <>
