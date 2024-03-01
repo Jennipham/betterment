@@ -21,7 +21,7 @@ const SignUp = () => {
     });
 
     const [confirmPassword, setConfirmPassword] = useState('');
-   
+
     const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
     const [userTypeErrorMessage, setUserTypeErrorMessage] = useState('');
     const [existingUserMessage, setExistingUserMessage] = useState('');
@@ -29,9 +29,11 @@ const SignUp = () => {
 
     const [loading, setLoading] = useState(false);
 
-
+    const [selectedUserType, setSelectedUserType] = useState('');
 
     const handleUserType = (type) => {
+        setSelectedUserType(type);
+
         setUserType(type);
         setUserTypeErrorMessage('');
     };
@@ -72,7 +74,7 @@ const SignUp = () => {
         event.preventDefault();
 
         const emailExists = await checkEmailExists(formData.email);
-        
+
         if (emailExists) {
             setLoading(false);
 
@@ -80,7 +82,7 @@ const SignUp = () => {
             return;
         }
 
-        
+
         if (formData.password !== confirmPassword) {
             setLoading(false);
 
@@ -100,7 +102,7 @@ const SignUp = () => {
             setEmptyFieldErrorMessage("Please fill in all fields");
             return;
         }
-        
+
         try {
             setLoading(true);
 
@@ -136,13 +138,13 @@ const SignUp = () => {
 
     return (
         <div>
-        <Header />
-        <div className="sign-up-container">
+            <Header />
+            <div className="sign-up-container">
                 <div className="left-section">
                     {userType === 'mentee' ? (
                         <h7>Searching for a Mentor?</h7>
                     ) : userType === 'admin' ? (
-                            <h7>Launching a mentoring program?</h7>
+                        <h7>Launching a mentoring program?</h7>
                     ) : (
                         <h7>Looking for a Mentee?</h7>
                     )}
@@ -155,16 +157,30 @@ const SignUp = () => {
                         <img src={signUpCoach} alt="I am a Mentor" className="bottom" />
                     )}
 
-            </div>
+                </div>
                 <div className="right-section">
 
                     <h2>Sign Up</h2>
                     <h9>Please Select:</h9>
                     <div className="signButtons">
-                        <button className="signUpbutton" onClick={() => handleUserType('mentee')}>Find a Mentor</button>
-                        <button className="signUpbutton" onClick={() => handleUserType('mentor')}>I am a Mentor</button>
-                        <button className="signUpbutton" onClick={() => handleUserType('admin')}>I am an Admin</button>
-
+                        <button
+                            className={`signUpButton ${selectedUserType === 'mentee' ? 'selected' : ''}`}
+                            onClick={() => handleUserType('mentee')}
+                        >
+                            Find a Mentor
+                        </button>
+                        <button
+                            className={`signUpButton ${selectedUserType === 'mentor' ? 'selected' : ''}`}
+                            onClick={() => handleUserType('mentor')}
+                        >
+                            I am a Mentor
+                        </button>
+                        <button
+                            className={`signUpButton ${selectedUserType === 'admin' ? 'selected' : ''}`}
+                            onClick={() => handleUserType('admin')}
+                        >
+                            I am an Admin
+                        </button>
                     </div>
                     {userTypeErrorMessage && <p className="error-message">{userTypeErrorMessage}</p>}
                     {loading ? (
@@ -227,7 +243,7 @@ const SignUp = () => {
                             <p>Already on BetterMent? <a href="/login" className='underline-login'>Log In</a></p>
                         </>
                     )}
-            </div>
+                </div>
             </div>
             <Footer />
         </div>

@@ -19,23 +19,27 @@ const Help = () => {
     const faqData = [
         {
             question: "What is BetterMent?",
-            answer: "BetterMent is a platform that..."
+            answer: "BetterMent is an online platform that takes user profile information and matches employees to executive mentors within an organisation."
         },
         {
-            question: "How do I get started?",
-            answer: "To sign up as a mentor, go to our registration page and fill out the necessary information."
+            question: "How does matching work?",
+            answer: "Betterment provides 3 methods of matching. The first is random allocation. The second is manual matching where users can filter through and choose their match. The final method is the Betterment Algorithm which creates a similarity score between profiles for users to add their preferred matches to a shortlist. Users can order this shortlist in order of match preference and after 2 weeks this will be fed into the Gale-Shapely Algorithm where matches will be allocated."
         },
         {
-            question: "How does the matching algorithm work?",
-            answer: "The algorithm is..."
+            question: "How is the matching method picked?",
+            answer: "Your manager will decide which matching method they would like for your organisation. If they have not chosen yet then this will default to Betterment's Algorithm."
         },
         {
-            question: "Why Development Coaching?",
-            answer: "Development coaching..."
+            question: "What do I do once potential matches are displayed?",
+            answer: "If your matching method has not been set to random, you may request a match with a potential match where they can either decline or accept. All of your requests will be displayed in your shortlist where you may order your requests in order of preference."
         },
         {
-            question: "What Development Areas are available?",
-            answer: "Areas available include..."
+            question: "What is Blind Matching?",
+            answer: "Blind matching is an option provided which will hide the names on the profiles of potential matches to mitigate bias. Your manager will choose to have this setting on or off."
+        },
+        {
+            question: "I've been matched, what now?",
+            answer: "Congratulations! Once Betterment has found you a matc, you can choose to contact your match which will open up an email template for you to send to your mentor. You will also be notified to complete a user experience questionnaire. 2 weeks after you have been matched, your account will be automatically deleted."
         },
     ];
 
