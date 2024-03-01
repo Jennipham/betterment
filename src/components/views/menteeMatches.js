@@ -79,12 +79,13 @@ const MenteeMatches = () => {
     const [hasMatch, setHasMatch] = useState(false);
     const [names, setNames] = useState({});
 
+    const handleShortlistClick = () => {
+        navigate('/requests');
+    };
+
     const highestScore = findHighestScore(mentorProfile, matchingMethod);
 
-
-
     const [isLoadingProfiles, setIsLoadingProfiles] = useState(true);
-
 
     const [selectedMentorEmail, setSelectedMentorEmail] = useState('');
 
@@ -972,9 +973,10 @@ const MenteeMatches = () => {
                     
 
                 )}
-                
+            <button className='view-shortlist' onClick={handleShortlistClick}>View Shortlist</button>
 
             </div >
+
 
             <Footer />
         </>

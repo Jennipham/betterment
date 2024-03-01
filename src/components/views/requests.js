@@ -195,7 +195,6 @@ const Requests = () => {
 
     const hasShortlistOrder = allRequests.length > 0;
 
-
     return (
         <>
             <Header />
@@ -221,8 +220,7 @@ const Requests = () => {
             )}
 
 
-            {!isMatched && (
-
+{!isMatched && (
                 <div className="requests-page">
                     <div className='error-message-profile-container'>
                         {errorMessage && <p className="error-message-profile">{errorMessage}</p>}
@@ -238,7 +236,7 @@ const Requests = () => {
                             </Tooltip>
                         </h2>
 
-                        {hasShortlistOrder && (
+                        {allRequests.length > 0 ? (
                             <DragDropContext onDragEnd={onDragEnd}>
                                 <Droppable droppableId="allRequests">
                                     {(provided) => (
@@ -280,38 +278,20 @@ const Requests = () => {
                                     )}
                                 </Droppable>
                             </DragDropContext>
+                        ) : (
+                            <p className="no-requests-message">You have no sent or received requests at the moment. <br></br>Please go to the matching page to view potential matches.</p>
                         )}
 
-                        {!hasShortlistOrder && (
-                            <div>
-                                {allRequests.map((request) => (
-                                    request && request.type === 'sent' ? (
-                                        <SentRequest
-                                            key={request.receiverEmail}
-                                            request={request}
-                                            onRemoveRequest={onRemoveSentRequest}
-                                        />
-                                    ) : request && request.type === 'received' ? (
-                                        <ReceivedRequest
-                                            key={request.senderEmail}
-                                            request={request}
-                                            onDecline={onDecline}
-                                        />
-                                    ) : null
-                                ))}
-                            </div>
+                        {hasShortlistOrder && (
+                            <button className='save-shortlist' onClick={onSaveShortlistClick}>Save</button>
                         )}
-
                     </div>
-                    <button className='save-shortlist' onClick={onSaveShortlistClick}>Save</button>
                 </div>
-
             )}
 
             <Footer />
         </>
     );
 };
-
 
 export default Requests;
