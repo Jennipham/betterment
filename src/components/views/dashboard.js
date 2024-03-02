@@ -212,7 +212,9 @@ const Dashboard = () => {
             return null;
         }
 
-        const labels = departmentStats.map((department) => department.department);
+        const labels = departmentStats.map((entry) => entry.department === '' ? 'Not Disclosed' : entry.department);
+
+        // const labels = departmentStats.map((department) => department.department);
         const data = departmentStats.map((department) => department.userCount);
 
         const doughnutData = {
