@@ -3,13 +3,16 @@ import Header from '../utils/header';
 import Footer from '../utils/footer';
 import Loader from '../utils/loader';
 import editIcon from '../images/EditIcon.png';
-import notification from '../images/notification-icon.png';
+import cross from '../images/cross-icon.png';
+import tick from '../images/tick-icon.png';
 import moreInfo from '../images/more-info1.png';
 import Tooltip from '../utils/tooltip';
 import Select from 'react-select';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../styles/ProfileSettings.css';
+import { useNavigate } from 'react-router-dom';
+
 
 const blindMatchingOptions = [
     { value: 'On', label: 'On' },
@@ -49,7 +52,7 @@ const AdminSettings = () => {
     });
 
     const [errorMessage, setErrorMessage] = useState('');
-
+    const navigate = useNavigate();
 
     useEffect(() => {
         // Retrieve user information from sessionStorage
@@ -168,6 +171,62 @@ const AdminSettings = () => {
                 setSaveMessage(null);
             }, 5000);
 
+             navigate("/dashboard");
+
+            console.log('Profile saved successfully:', response.data);
+        } catch (error) {
+            console.error('Error saving profile:', error);
+            setSaveMessage('Error saving profile');
+            setLoading(false);
+
+            setTimeout(() => {
+                setSaveMessage(null);
+            }, 5000);
+
+            // Handle error, show a message, etc.
+        }
+    };
+
+    const handleSaveAttributeClick = async () => {
+        setLoading(true);
+
+        try {
+            // Send the form data to the backend API endpoint
+            const updatedOrgName = isEditingOrgName ? orgNameInput.trim() : formData.orgName.trim();
+            const updatedMatchingMethod = isEditingMatchingMethod ? matchingMethodInput.trim() : formData.matchingMethod.trim();
+            const updatedBlindMatching = isEditingBlindMatching ? blindMatchingInput.trim() : formData.blindMatching.trim();
+
+
+            const response = await axios.post('http://localhost:3001/managerProfile', {
+                ...formData,
+                email: user.email,
+                userType: user.userType,
+                orgName: updatedOrgName,
+                matchingMethod: updatedMatchingMethod,
+                blindMatching: updatedBlindMatching,
+
+            });
+
+            // Update formData with the response from the server
+            setFormData((prevData) => ({
+                ...prevData,
+                orgName: response.data.orgName || updatedOrgName,
+                matchingMethod: response.data.matchingMethod || updatedMatchingMethod,
+                blindMatching: response.data.blindMatching || updatedBlindMatching,
+            }));
+
+            setIsEditingOrgName(false);
+            setIsEditingMatchingMethod(false);
+            setIsEditingBlindMatching(false);
+
+            setLoading(false);
+
+            setSaveMessage('Profile saved successfully');
+
+            setTimeout(() => {
+                setSaveMessage(null);
+            }, 5000);
+
 
             console.log('Profile saved successfully:', response.data);
         } catch (error) {
@@ -225,8 +284,9 @@ const AdminSettings = () => {
                                             value={isEditingOrgName ? orgNameInput : formData.orgName}
                                             onChange={(e) => setOrgNameInput(e.target.value)}
                                         />
-                                        <button className='save-button' onClick={handleSaveClick}>Save</button>
-                                        <button className='cancel-button' onClick={() => setIsEditingOrgName(false)}>Cancel</button>
+
+                                        <img className='save-button'  src={tick} alt="Save" onClick={handleSaveAttributeClick} />
+                                        <img className="cancel-button" src={cross} alt="Cancel" onClick={() => setIsEditingOrgName(false)} />   
                                     </>
                                 ) : (
                                     <>

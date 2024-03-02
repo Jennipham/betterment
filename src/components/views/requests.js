@@ -37,6 +37,8 @@ const Requests = () => {
 
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
+    const [profile, setProfile] = useState();
+    const [matchingMethod, setMatchingMethod] = useState();
 
     const [allRequests, setAllRequests] = useState([]);
 
@@ -70,7 +72,6 @@ const Requests = () => {
 
         fetchDaysUntilNextMatch();
     }, []);
-
 
     useEffect(() => {
         const fetchData = async () => {
@@ -163,6 +164,36 @@ const Requests = () => {
         fetchData();
     }, []);
 
+    useEffect(() => {
+        const fetchUserProfileAndMatchSettings = async () => {
+            try {
+                const email = sessionStorage.getItem('email');
+                const userType = sessionStorage.getItem('userType');
+
+                // Fetch user profile
+                const profileResponse = await axios.post('http://localhost:3001/getProfile', {
+                    email: email,
+                    userType: userType,
+                });
+                setProfile(profileResponse.data);
+
+                // Fetch admin match settings
+                if (profileResponse && profileResponse.data && profileResponse.data.profile && profileResponse.data.profile.profileInfo && profileResponse.data.profile.profileInfo.admin) {
+                    const matchSettingsResponse = await axios.get('http://localhost:3001/getAdminMatchingSettings', {
+                        params: { email: profileResponse.data.profile.profileInfo.admin }
+                    });
+                    const { blindMatching, matchingMethod } = matchSettingsResponse.data;
+
+                    setMatchingMethod(matchingMethod);
+                }
+            } catch (error) {
+                console.error('Error fetching profile and match settings:', error);
+            }
+        };
+
+        fetchUserProfileAndMatchSettings();
+    }, []);
+
 
     const onSaveShortlistClick = async () => {
         const email = sessionStorage.getItem('email');
@@ -206,7 +237,7 @@ const Requests = () => {
     return (
         <>
             <Header />
-            {isMatched && (
+            {isMatched || matchingMethod === 'Random' ? (
                 <div className="requests-page">
                     <h2>Feedback Questionnaire</h2>
 
@@ -225,10 +256,10 @@ const Requests = () => {
                     </>
                 </div>
 
-            )}
+            ) : <></>}
 
 
-{!isMatched && (
+{!isMatched && matchingMethod !== 'Random' ?  (
                 <div className="requests-page">
                     <div className='error-message-profile-container'>
                         {errorMessage && <p className="error-message-profile">{errorMessage}</p>}
@@ -298,7 +329,7 @@ const Requests = () => {
                             <button className='save-shortlist' onClick={onSaveShortlistClick}>Save</button>
                         )}
                 </div>
-            )}
+            ): <></>}
 
             <Footer />
         </>

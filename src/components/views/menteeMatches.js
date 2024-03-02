@@ -213,18 +213,18 @@ const MenteeMatches = () => {
                     if (!isMatch) {
 
 
-                    const menteeProfilesWithNames = await Promise.all(
-                        response.data.profiles.map(async (mentor) => {
-                            const userDetailsResponse = await fetchNames(mentor._doc.email);
-                            return {
-                                ...mentor,
-                                fname: userDetailsResponse ? userDetailsResponse.user.fname : '',
-                                sname: userDetailsResponse ? userDetailsResponse.user.sname : '',
-                            };
-                        })
-                    );
+                        const menteeProfilesWithNames = await Promise.all(
+                            response.data.profiles.map(async (mentor) => {
+                                const userDetailsResponse = await fetchNames(mentor._doc.email);
+                                return {
+                                    ...mentor,
+                                    fname: userDetailsResponse ? userDetailsResponse.user.fname : '',
+                                    sname: userDetailsResponse ? userDetailsResponse.user.sname : '',
+                                };
+                            })
+                        );
 
-                    setMentorProfile(menteeProfilesWithNames);
+                        setMentorProfile(menteeProfilesWithNames);
                     }
 
                     if (isMatch) {
@@ -241,8 +241,8 @@ const MenteeMatches = () => {
                         );
                         setMentorProfile(menteeProfilesWithNames);
 
-    
-                        }
+
+                    }
 
 
                     setIsLoadingProfiles(false);
@@ -289,32 +289,32 @@ const MenteeMatches = () => {
             try {
                 if (matchingMethod && matchingMethod === 'Manual') {
 
-                const response = await axios.get(`http://localhost:3001/getFilteredMentorProfile?email=${user.email}`, {
-                    params: {
-                        language: selectedLanguages.join(','),
-                        developmentAreas: selectedDevelopmentAreas.join(','),
-                        mentoringMethods: selectedMethods.join(','),
-                    },
-                });
+                    const response = await axios.get(`http://localhost:3001/getFilteredMentorProfile?email=${user.email}`, {
+                        params: {
+                            language: selectedLanguages.join(','),
+                            developmentAreas: selectedDevelopmentAreas.join(','),
+                            mentoringMethods: selectedMethods.join(','),
+                        },
+                    });
 
-                const isMatch = response.data.isMatch;
-                setHasMatch(isMatch);
+                    const isMatch = response.data.isMatch;
+                    setHasMatch(isMatch);
 
-                // Fetch names for each mentor profile
-                const mentorProfilesWithNames = await Promise.all(
-                    response.data.profiles.map(async (mentor) => {
-                        const userDetailsResponse = await fetchNames(mentor.email);
-                        return {
-                            ...mentor,
-                            fname: userDetailsResponse ? userDetailsResponse.user.fname : '',
-                            sname: userDetailsResponse ? userDetailsResponse.user.sname : '',
-                        };
-                    })
-                );
+                    // Fetch names for each mentor profile
+                    const mentorProfilesWithNames = await Promise.all(
+                        response.data.profiles.map(async (mentor) => {
+                            const userDetailsResponse = await fetchNames(mentor.email);
+                            return {
+                                ...mentor,
+                                fname: userDetailsResponse ? userDetailsResponse.user.fname : '',
+                                sname: userDetailsResponse ? userDetailsResponse.user.sname : '',
+                            };
+                        })
+                    );
 
-                setMentorProfile(mentorProfilesWithNames);
-                setIsLoadingProfiles(false);
-                sessionStorage.setItem('matchProfile', JSON.stringify(response.data.profiles));
+                    setMentorProfile(mentorProfilesWithNames);
+                    setIsLoadingProfiles(false);
+                    sessionStorage.setItem('matchProfile', JSON.stringify(response.data.profiles));
 
                 }
 
@@ -394,7 +394,7 @@ const MenteeMatches = () => {
             console.log('Match request sent successfully:', response.data);
             setLoading(false);
 
-         navigate("/requests");
+            navigate("/requests");
 
         } catch (error) {
             setLoading(false);
@@ -740,9 +740,9 @@ const MenteeMatches = () => {
                 )}
 
 
-{(matchingMethod === 'Manual' || matchingMethod === 'Algorithm' ) && hasMatch && mentorProfile && mentorProfile[0] && (
-    <div className="match-section">
-        <h2 className='top-match'>You've been Matched!</h2>
+                {(matchingMethod === 'Manual' || matchingMethod === 'Algorithm') && hasMatch && mentorProfile && mentorProfile[0] && (
+                    <div className="match-section">
+                        <h2 className='top-match'>You've been Matched!</h2>
                         <div className="user-profile-box">
                             <div className="profile-left">
                                 <div className="profile-left-info">
@@ -770,53 +770,53 @@ const MenteeMatches = () => {
                             </div>
 
 
-            <div className="matching-icon">
-                {loading ? (
-                    <Loader />
-                ) : (
-                    <img src={connect} alt="Connect Icon" />
+                            <div className="matching-icon">
+                                {loading ? (
+                                    <Loader />
+                                ) : (
+                                    <img src={connect} alt="Connect Icon" />
+                                )}
+                            </div>
+
+                            <div className="profile-right">
+                                <div className="profile-right-info">
+
+                                    <div className='profile-top'>
+                                        <div className="profile-icon">
+                                            <img src={white} alt="White Profile Icon" />
+                                        </div>
+                                        <div className="match-info">
+                                            {blindMatching === 'Off' ? (
+                                                <p>Name: {mentorProfile && mentorProfile[0] && mentorProfile[0].profileInfo && mentorProfile[0].fname && mentorProfile[0].sname ? `${mentorProfile[0].fname} ${mentorProfile[0].sname}` : ''}</p>) : <p>Names are hidden for Blind Matching</p>}
+                                            <p>Job Role: {mentorProfile && mentorProfile[0].profileInfo && mentorProfile[0].profileInfo.jobRole ? capitaliseFirstLetter(mentorProfile[0].profileInfo.jobRole) : ''}</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="matching-info-right">
+                                        <p>Location: {mentorProfile[0].profileInfo && mentorProfile[0].profileInfo.officeLocation ? capitaliseFirstLetter(mentorProfile[0].profileInfo.officeLocation) : ''}</p>
+                                        <p>Development Areas: {mentorProfile[0].profileInfo && mentorProfile[0].profileInfo.developmentAreas ? mentorProfile[0].profileInfo.developmentAreas.join(', ') : ''}</p>
+                                        <p>Methods of Matching: {mentorProfile[0].profileInfo && mentorProfile[0].profileInfo.mentoringMethods ? mapValuesToLabels(mentorProfile[0].profileInfo.mentoringMethods, methodOptions).join(', ') : ''}</p>
+                                    </div>
+
+                                    <div className="bottom-buttons-container">
+                                        <button className="full-profile-button" onClick={() => openModal()}>View Full Profile</button>
+                                        {isModalOpen && (
+                                            <Modal onClose={handleCloseModal}>
+                                                <iframe title="Full Profile" src={`/fullprofile/${mentorProfile[0].email}`} width="100%" height="100%">
+                                                </iframe>
+                                            </Modal>
+                                        )}
+
+                                        <button onClick={() => handleContactMatch(mentorProfile[0].email, mentorProfile[0].fname)}>Contact Match</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 )}
-            </div>
-
-            <div className="profile-right">
-                <div className="profile-right-info">
-
-                    <div className='profile-top'>
-                        <div className="profile-icon">
-                            <img src={white} alt="White Profile Icon" />
-                        </div>
-                        <div className="match-info">
-                            {blindMatching === 'Off' ? (
-                                <p>Name: {mentorProfile && mentorProfile[0] && mentorProfile[0].profileInfo && mentorProfile[0].fname && mentorProfile[0].sname ? `${mentorProfile[0].fname} ${mentorProfile[0].sname}` : ''}</p>) : <p>Names are hidden for Blind Matching</p>}
-                            <p>Job Role: {mentorProfile && mentorProfile[0].profileInfo && mentorProfile[0].profileInfo.jobRole ? capitaliseFirstLetter(mentorProfile[0].profileInfo.jobRole) : ''}</p>
-                        </div>
-                    </div>
-
-                    <div className="matching-info-right">
-                        <p>Location: {mentorProfile[0].profileInfo && mentorProfile[0].profileInfo.officeLocation ? capitaliseFirstLetter(mentorProfile[0].profileInfo.officeLocation) : ''}</p>
-                        <p>Development Areas: {mentorProfile[0].profileInfo && mentorProfile[0].profileInfo.developmentAreas ? mentorProfile[0].profileInfo.developmentAreas.join(', ') : ''}</p>
-                        <p>Methods of Matching: {mentorProfile[0].profileInfo && mentorProfile[0].profileInfo.mentoringMethods ? mapValuesToLabels(mentorProfile[0].profileInfo.mentoringMethods, methodOptions).join(', ') : ''}</p>
-                    </div>
-
-                    <div className="bottom-buttons-container">
-                        <button className="full-profile-button" onClick={() => openModal()}>View Full Profile</button>
-                        {isModalOpen && (
-                            <Modal onClose={handleCloseModal}>
-                                <iframe title="Full Profile" src={`/fullprofile/${mentorProfile[0].email}`} width="100%" height="100%">
-                                </iframe>
-                            </Modal>
-                        )}
-
-                            <button onClick={() => handleContactMatch(mentorProfile[0].email, mentorProfile[0].fname)}>Contact Match</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-)}
 
 
-{matchingMethod === "Algorithm" && !hasMatch && (
+                {matchingMethod === "Algorithm" && !hasMatch && (
                     <>
                         <h2 className='top-match'>Your Matches:</h2>
                         {isLoadingProfiles ? (
@@ -832,7 +832,7 @@ const MenteeMatches = () => {
                                         <div key={rowIndex} className="mentor-profile-row">
                                             {row.map((mentor, index) => (
                                                 <div key={index} className="profile-containers">
-                                                   <p className="rank-number">
+                                                    <p className="rank-number">
                                                         {mentor.score !== highestScore ? (
                                                             <p className='top-match-label'>{`Ranking: ${index + 1}`}</p>
                                                         ) : (
@@ -890,7 +890,7 @@ const MenteeMatches = () => {
                     </>
                 )}
 
-{matchingMethod === "Random" && (
+                {matchingMethod === "Random" && (
                     <div className="match-section">
                         <h2 className='top-match'>Your Random Match:</h2>
                         <div className="user-profile-box">
@@ -970,10 +970,13 @@ const MenteeMatches = () => {
                         </div>
 
                     </div>
-                    
+
 
                 )}
-            <button className='view-shortlist' onClick={handleShortlistClick}>View Shortlist</button>
+                {matchingMethod !== 'Random' ?
+                    (<button className='view-shortlist' onClick={handleShortlistClick}>View Shortlist</button>) :
+                    (<button className='view-shortlist' onClick={handleShortlistClick}>Complete Feedback Questionnaire</button>) 
+                }
 
             </div >
 

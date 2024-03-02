@@ -941,8 +941,10 @@ const MentorMatches = () => {
                     </div>)
                 }
 
-                <button className='view-shortlist' onClick={handleShortlistClick}>View Shortlist</button>
-
+                {matchingMethod !== 'Random' ?
+                    (<button className='view-shortlist' onClick={handleShortlistClick}>View Shortlist</button>) :
+                    (<button className='view-shortlist' onClick={handleShortlistClick}>Complete Feedback Questionnaire</button>)
+                }
 
             </div >
 
