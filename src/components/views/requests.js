@@ -103,6 +103,9 @@ const Requests = () => {
                     userType,
                 });
 
+                const activeReceivedRequests = receivedResponse.data.receivedRequests.filter(request => !request.declined);
+
+
                 // Fetch sent requests
                 const sentResponse = await axios.post('http://localhost:3001/getSentRequests', {
                     email,
@@ -111,7 +114,7 @@ const Requests = () => {
 
                 // Combine received and sent requests
                 const combinedRequests = [
-                    ...receivedResponse.data.receivedRequests.map(request => ({ ...request, type: 'received' })),
+                    ...activeReceivedRequests.map(request => ({ ...request, type: 'received' })),
                     ...sentResponse.data.sentRequests.map(request => ({ ...request, type: 'sent' })),
                 ];
 
@@ -236,7 +239,7 @@ const Requests = () => {
                     <div className="requests-box">
                         <h2>
                             Shortlist
-                            <Tooltip text="Create your shortlist in order of preference">
+                            <Tooltip text="Drag and drop your requests to put them in order of preference to be matched.">
                                 <img src={moreInfo} alt="More Info" className="more-info-icon" />
                             </Tooltip>
                         </h2>
@@ -289,12 +292,11 @@ const Requests = () => {
                             </DragDropContext>
                         ) : (
                             <p className="no-requests-message">You have no sent or received requests at the moment. <br></br>Please go to the matching page to view potential matches.</p>
-                        )}
-
-                        {hasShortlistOrder && (
+                        )}     
+                    </div>
+                    {hasShortlistOrder && (
                             <button className='save-shortlist' onClick={onSaveShortlistClick}>Save</button>
                         )}
-                    </div>
                 </div>
             )}
 

@@ -91,42 +91,48 @@ const Header = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-
                 if (!user.email || !user.userType) {
                     console.error('User information is missing.');
                     return;
                 }
-
+    
                 if (user.userType === 'admin') {
                     return;
                 }
-
+    
                 if (user.userType !== '') {
                     const userResponse = await axios.post('http://localhost:3001/getProfile', {
                         email: user.email,
                         userType: user.userType,
                     });
-
+    
                     if (userResponse.data.match !== '') {
                         setIsMatched(true);
+                    } else {
+                        setIsMatched(false);
                     }
                 }
-
-                // Fetch received requests directly using user information
+    
                 const receivedResponse = await axios.post('http://localhost:3001/getReceivedRequests', {
                     email: user.email,
                     userType: user.userType,
                 });
-                setReceivedRequests(receivedResponse.data.receivedRequests);
-                setNotifications(isMatched || receivedResponse.data.receivedRequests.length > 0 ? 1 : 0);
-
+    
+                // Filter out declined requests
+                const activeReceivedRequests = receivedResponse.data.receivedRequests.filter(req => !req.declined);
+                setReceivedRequests(activeReceivedRequests);
+    
+                // Set notifications for non-declined requests only
+                setNotifications(activeReceivedRequests.length > 0 ? 1 : 0);
+    
             } catch (error) {
                 console.error('Error fetching requests:', error);
             }
         };
-
+    
         fetchData();
     }, [user.email, user.userType]);
+    
 
     const handleLogout = async () => {
         try {
@@ -205,7 +211,7 @@ const Header = () => {
 
                 ) : loggedInStatus && location.pathname === '/profileSettings' ? ( //checks if logged in
                     <>
-                            {notifications > 0 ?
+                            {notifications < 1 ?
                                 <RouterLink to="/requests">
                                     <img className='notification-icon-header' src={notification} alt="Requests" />
                                 </RouterLink> :
@@ -251,7 +257,7 @@ const Header = () => {
                 )
                         : loggedInStatus && location.pathname === '/help' ? ( //checks if logged in
                             <>
-                                    {notifications > 0 ?
+                                    {notifications < 1 ?
                                     <RouterLink to="/requests">
                                         <img className='notification-icon-header' src={notification} alt="Requests" />
                                     </RouterLink> :
@@ -338,7 +344,7 @@ const Header = () => {
                             
                             : loggedInStatus && (location.pathname === '/menteematches' || location.pathname === '/mentormatches') ? ( //checks if logged in
                                 <>
-                                                {notifications > 0 ?
+                                                {notifications < 1 ?
                                             <RouterLink to="/requests">
                                                 <img className='notification-icon-header' src={notification} alt="Requests" />
                                             </RouterLink> :

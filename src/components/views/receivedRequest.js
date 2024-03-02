@@ -19,8 +19,8 @@ const ReceivedRequest = ({ request, onDecline }) => {
     const [matchFname, setMatchFname] = useState('');
     const [matchSname, setMatchSname] = useState('');
     const [matchUserType, setMatchUserType] = useState('');
-
-
+    const [blindMatching, setBlindMatching] = useState('');
+    const [isAccepted, setIsAccepted] = useState(request.accepted);
 
     const openModal = () => {
         setIsModalOpen(true);
@@ -32,7 +32,6 @@ const ReceivedRequest = ({ request, onDecline }) => {
 
     const handleDecline = async () => {
         try {
-            // Make API call to decline the request
             await axios.post('http://localhost:3001/declineRequest', {
                 email: sessionStorage.getItem('email'),
                 senderEmail: request.senderEmail,
@@ -54,7 +53,7 @@ const ReceivedRequest = ({ request, onDecline }) => {
                 senderEmail: request.senderEmail,
                 userType: userType,
             });
-
+            setIsAccepted(true);
         } catch (error) {
             console.error('Error accepting request:', error);
         }
@@ -93,6 +92,30 @@ const ReceivedRequest = ({ request, onDecline }) => {
         fetchMatchProfile();
     }, [request.senderEmail]); // Add dependencies to the dependency array
 
+    const fetchAdminMatchSettings = async () => {
+        try {
+            if (matchProfile && matchProfile.profileInfo && matchProfile.profileInfo.admin) {
+                const response = await axios.get('http://localhost:3001/getAdminMatchingSettings', {
+                    params: {
+                        email: matchProfile.profileInfo.admin,
+                    },
+                });
+                const { blindMatching } = response.data;
+
+                setBlindMatching(blindMatching);
+            }
+        } catch (error) {
+            console.error('Error fetching admin match settings:', error);
+            // Handle error if necessary
+        }
+    };
+
+    useEffect(() => {
+        if (matchProfile && matchProfile.profileInfo) {
+            fetchAdminMatchSettings();
+        }
+    }, [matchProfile, matchProfile?.profileInfo?.admin]);
+
 
     return (
         <div className='received-container'>
@@ -110,13 +133,16 @@ const ReceivedRequest = ({ request, onDecline }) => {
                     )}
                 </div>
                 <div className="received-profile-info">
-                    <p className='received-name'>{`${matchFname} ${matchSname}`}</p>
-                </div>
+                {blindMatching === "Off" ? (
+                                    <p className='sent-name'>{`${matchFname} ${matchSname}`}</p>
+                                ) : (
+                                    <p className='sent-name'>{"Names are hidden"}</p>
+                                )}                </div>
                 <div className='action-buttons'>
-                {!request.accepted ? (
+                {!isAccepted ? (
                         <>
-                    <img src={cross} alt="Reject" className="action-icon" onClick={handleDecline} title='Accept' />
-                    <img src={tick} alt="Accept" className="action-icon" onClick={handleAccept} title='Reject'/>
+                    <img src={cross} alt="Reject" className="action-icon" onClick={handleDecline} title='Reject' />
+                    <img src={tick} alt="Accept" className="action-icon" onClick={handleAccept} title='Accept'/>
                     </>
                     ) : (
                         <img src={accepted} alt="Accept" className="accepted-icon" title='Accepted' />

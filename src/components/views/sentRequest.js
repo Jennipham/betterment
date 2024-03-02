@@ -20,6 +20,8 @@ const SentRequest = ({ request, onRemoveRequest }) => {
     const [matchFname, setMatchFname] = useState('');
     const [matchSname, setMatchSname] = useState('');
     const [matchUserType, setMatchUserType] = useState('');
+    const [blindMatching, setBlindMatching] = useState('');
+
 
 
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -65,6 +67,30 @@ const SentRequest = ({ request, onRemoveRequest }) => {
         fetchMatchProfile();
     }, [request.receiverEmail]); // Add dependencies to the dependency array
 
+    const fetchAdminMatchSettings = async () => {
+        try {
+            if (matchProfile && matchProfile.profileInfo && matchProfile.profileInfo.admin) {
+                const response = await axios.get('http://localhost:3001/getAdminMatchingSettings', {
+                    params: {
+                        email: matchProfile.profileInfo.admin,
+                    },
+                });
+                const { blindMatching } = response.data;
+
+                setBlindMatching(blindMatching);
+            }
+        } catch (error) {
+            console.error('Error fetching admin match settings:', error);
+            // Handle error if necessary
+        }
+    };
+
+    useEffect(() => {
+        if (matchProfile && matchProfile.profileInfo) {
+            fetchAdminMatchSettings();
+        }
+    }, [matchProfile, matchProfile?.profileInfo?.admin]);
+
     const handleCancelClick = async () => {
         setLoading(true);
         try {
@@ -92,31 +118,36 @@ const SentRequest = ({ request, onRemoveRequest }) => {
                 loading ? (
                     <Loader />
                 ) : (
-                        <div className='sent-container'>
+                    <div className='sent-container'>
 
-                    <div className={`request-box-sent ${isExpired ? 'expired-request' : ''}`}>
-                        <div className='icon-box'>
-                            <button className="match-profile-button" onClick={() => openModal(request)}>
-                                <img className='request-profile-icon' src={profile} alt="Profile Icon" />
-                            </button>
-                            <button className="view-profile" onClick={() => openModal(request)}>View Full Profile</button>
-                            {isModalOpen && (
-                                <Modal onClose={handleCloseModal}>
-                                            <iframe title="Full Profile" src={`/fullprofile/${request.receiverEmail}`} width="100%" height="100%">
-                                                </iframe>
-                                </Modal>
-                            )}
-                        </div>
-                        <div className="sent-profile-info">
-                            <p className='sent-name'>{`${matchFname} ${matchSname}`}</p>
-                        </div>
-                        <div className='action-buttons'>
-                            <img src={cross} alt="Cancel" className="action-icon" onClick={handleCancelClick} title='Cancel' />
-                        </div>
+                        <div className={`request-box-sent ${isExpired ? 'expired-request' : ''}`}>
+                            <div className='icon-box'>
+                                <button className="match-profile-button" onClick={() => openModal(request)}>
+                                    <img className='request-profile-icon' src={profile} alt="Profile Icon" />
+                                </button>
+                                <button className="view-profile" onClick={() => openModal(request)}>View Full Profile</button>
+                                {isModalOpen && (
+                                    <Modal onClose={handleCloseModal}>
+                                        <iframe title="Full Profile" src={`/fullprofile/${request.receiverEmail}`} width="100%" height="100%">
+                                        </iframe>
+                                    </Modal>
+                                )}
                             </div>
-                            <img className='sent-icon' src={sent} alt="Sent Request" title='Sent Request' />
+                            <div className="sent-profile-info">
+                                {blindMatching === "Off" ? (
+                                    <p className='sent-name'>{`${matchFname} ${matchSname}`}</p>
+                                ) : (
+                                    <p className='sent-name'>{"Names are hidden"}</p>
+                                )}
+                            </div>
 
+                            <div className='action-buttons'>
+                                <img src={cross} alt="Cancel" className="action-icon" onClick={handleCancelClick} title='Cancel' />
                             </div>
+                        </div>
+                        <img className='sent-icon' src={sent} alt="Sent Request" title='Sent Request' />
+
+                    </div>
                 )
             }</>);
 };
