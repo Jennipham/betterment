@@ -908,7 +908,7 @@ const MenteeMatches = () => {
                                     </div>
 
                                     <div className="matching-info-left">
-                                        <p>Location: {capitaliseFirstLetter(user.officeLocation)}</p>
+                                        <p>Location: {capitaliseFirstLetter(user.location)}</p>
                                         <p>Development Areas: {user.developmentAreas ? user.developmentAreas.join(', ') : ''}</p>
                                         <p>Methods of Matching: {user.mentoringMethods ? mapValuesToLabels(user.mentoringMethods, methodOptions).join(', ') : ''}</p>
                                     </div>
