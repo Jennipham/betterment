@@ -45,7 +45,7 @@ const customStyles = {
 };
 
 const findHighestScore = (profiles, matchingMethod) => {
-    if (profiles && (matchingMethod === 'Manual' || matchingMethod === 'Algorithm')) {
+    if (profiles && matchingMethod === 'Algorithm') {
         return Math.max(...profiles.map(mentor => mentor.score), 0);
     } else {
         return 0;
@@ -67,6 +67,7 @@ const MenteeMatches = () => {
     });
 
     const [mentorProfile, setMentorProfile] = useState([]);
+    const [rankedMentorProfiles, setRankedMentorProfiles] = useState([]);
     const [mentorFname, setMentorFname] = useState('');
     const [mentorSname, setMentorSname] = useState('');
 
@@ -84,6 +85,28 @@ const MenteeMatches = () => {
     };
 
     const highestScore = findHighestScore(mentorProfile, matchingMethod);
+    useEffect(() => {
+        if (matchingMethod === "Algorithm") {
+            let currentRank = 1;
+            let lastScore = highestScore; // Start with the highest score
+
+            const newRankedProfiles = mentorProfile.map(mentee => {
+                let rank;
+                if (mentee.score === highestScore) {
+                    rank = 'Top Match';
+                } else {
+                    if (mentee.score !== lastScore) {
+                        currentRank++;
+                        lastScore = mentee.score;
+                    }
+                    rank = `Ranking: ${currentRank}`;
+                }
+                return { ...mentee, rank };
+            });
+
+            setRankedMentorProfiles(newRankedProfiles);
+        }
+    }, [mentorProfile, matchingMethod, highestScore]);
 
     const [isLoadingProfiles, setIsLoadingProfiles] = useState(true);
 
@@ -825,23 +848,22 @@ const MenteeMatches = () => {
                             </div>
                         ) : (
                             <div className="mentor-profiles">
-                                {mentorProfile ? (
-
-
-                                    chunkArray(mentorProfile, 2).map((row, rowIndex) => (
+                                {rankedMentorProfiles ? (
+                                    chunkArray(rankedMentorProfiles, 2).map((row, rowIndex) => (
                                         <div key={rowIndex} className="mentor-profile-row">
                                             {row.map((mentor, index) => (
+
                                                 <div key={index} className="profile-containers">
-                                                    <p className="rank-number">
-                                                        {mentor.score !== highestScore ? (
-                                                            <p className='top-match-label'>{`Ranking: ${index + 1}`}</p>
-                                                        ) : (
+                                                    <div className="rank-number">
+                                                        {mentor.rank === 'Top Match' ? (
                                                             <p className='top-match-label'>
-                                                                <img className="star-icon" src={star} />
+                                                                <img className="star-icon" src={star} alt="Star" />
                                                                 Top Match
                                                             </p>
+                                                        ) : (
+                                                            <p className='top-match-label'>{mentor.rank}</p>
                                                         )}
-                                                    </p>
+                                                    </div>
 
                                                     <div className="mentor-profiles-box">
                                                         <div className="profile-mentor">

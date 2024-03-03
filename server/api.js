@@ -558,70 +558,50 @@ router.get('/getRandomMentorProfile', async (req, res) => {
             return res.status(400).json({ error: 'Invalid email format' });
         }
 
+        // Check if the mentee already has a match
         const existingMatch = await MenteeProfile.findOne({
             'email': email,
             'profileInfo.matches': { $exists: true, $ne: [] },
         });
-        
+
+        // If a match exists, return the matched mentor profile
         if (existingMatch) {
             const mentorEmail = existingMatch.profileInfo.matches[0].mentorEmail;
-        
-            // Find the corresponding mentee profile
             const matchedMentorProfile = await MentorProfile.findOne({ 'email': mentorEmail });
-        
             if (matchedMentorProfile) {
-                // Return the matched mentee profile
                 return res.json({ profile: matchedMentorProfile });
             }
         }
 
-        // Get all mentor profiles with the same domain and available
-        const mentorProfiles = await MentorProfile.find({
+        // Fetch the mentee profile to check availability
+        const menteeProfile = await MenteeProfile.findOne({ email: email });
+        if (!menteeProfile || !menteeProfile.profileInfo.available) {
+            return res.status(404).json({ error: 'Mentee not available for matching' });
+        }
+
+        // Get all available mentor profiles with the same domain
+        const availableMentorProfiles = await MentorProfile.find({
             'email': { $regex: new RegExp(`@${domain}$`, 'i') },
             'profileInfo.available': true,
         });
 
-        if (mentorProfiles.length === 0) {
-            return res.status(404).json({ error: 'No available mentor profiles with the specified domain' });
-        }
-
-        // Filter out profiles that are already a match for the mentee
-        const availableMentorProfiles = mentorProfiles.filter(profile =>
-            !profile.profileInfo.matches.some(match => match.menteeEmail === email)
-        );
-
         if (availableMentorProfiles.length === 0) {
-            return res.status(404).json({ error: 'No available mentor profiles without a match' });
+            return res.status(404).json({ error: 'No available mentors with the specified domain' });
         }
 
         // Choose a random mentor profile
         const randomMentorProfile = availableMentorProfiles[Math.floor(Math.random() * availableMentorProfiles.length)];
 
-        // Update the mentee's profile with the match information
-        const menteeEmail = email;
-        const menteeProfile = await MenteeProfile.findOne({ email: menteeEmail });
-
-        if (!menteeProfile) {
-            return res.status(404).json({ error: 'Mentee profile not found' });
-        }
-
-        // Check the user capacity and set available accordingly
+        // Set both the mentee and mentor as not available
         menteeProfile.profileInfo.available = false;
+        randomMentorProfile.profileInfo.available = false;
 
-        // Add the mentor email to the matches profile
-        menteeProfile.profileInfo.matches.push({
-            mentorEmail: randomMentorProfile.email,
-        });
+        // Update matches in both profiles
+        menteeProfile.profileInfo.matches.push({ mentorEmail: randomMentorProfile.email });
+        randomMentorProfile.profileInfo.matches.push({ menteeEmail: email });
 
-        // Save the updated mentee profile
+        // Save the updated profiles
         await menteeProfile.save();
-
-        // Update the mentor profile with the match information
-        randomMentorProfile.profileInfo.matches.push({
-            menteeEmail: menteeEmail,
-        });
-
-        // Save the updated mentor profile
         await randomMentorProfile.save();
 
         res.json({ profile: randomMentorProfile });
@@ -630,6 +610,8 @@ router.get('/getRandomMentorProfile', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
+
 
 
 
@@ -755,24 +737,22 @@ router.get('/getRandomMenteeProfile', async (req, res) => {
             return res.status(400).json({ error: 'Invalid email format' });
         }
 
+        // Check if the mentor already has a matched mentee
         const existingMatch = await MentorProfile.findOne({
             'email': email,
             'profileInfo.matches': { $exists: true, $ne: [] },
         });
         
-        if (existingMatch) {
-            // Get the first mentee email from matches (assuming a mentor can have multiple matches)
+        if (existingMatch && existingMatch.profileInfo.available === false) {
             const menteeEmail = existingMatch.profileInfo.matches[0].menteeEmail;
-        
-            // Find the corresponding mentee profile
             const matchedMenteeProfile = await MenteeProfile.findOne({ 'email': menteeEmail });
-        
+
             if (matchedMenteeProfile) {
-                // Return the matched mentee profile
                 return res.json({ profile: matchedMenteeProfile });
             }
         }
-        // Get all mentee profiles with the same domain and available
+
+        // Find available mentee profiles with the same domain
         const menteeProfiles = await MenteeProfile.find({
             'email': { $regex: new RegExp(`@${domain}$`, 'i') },
             'profileInfo.available': true,
@@ -782,7 +762,7 @@ router.get('/getRandomMenteeProfile', async (req, res) => {
             return res.status(404).json({ error: 'No available mentee profiles with the specified domain' });
         }
 
-        // Filter out profiles that are already a match for the mentor
+        // Filter out profiles already matched with the mentor
         const availableMenteeProfiles = menteeProfiles.filter(profile =>
             !profile.profileInfo.matches.some(match => match.mentorEmail === email)
         );
@@ -791,43 +771,35 @@ router.get('/getRandomMenteeProfile', async (req, res) => {
             return res.status(404).json({ error: 'No available mentee profiles without a match' });
         }
 
-        // Choose a random mentee profile
+        // Select a random mentee profile
         const randomMenteeProfile = availableMenteeProfiles[Math.floor(Math.random() * availableMenteeProfiles.length)];
 
-        // Update the mentor's profile with the match information
-        const mentorEmail = email;
-        const mentorProfile = await MentorProfile.findOne({ email: mentorEmail });
+        // Update the mentor profile with the match information
+        const mentorProfile = await MentorProfile.findOne({ email: email });
 
         if (!mentorProfile) {
             return res.status(404).json({ error: 'Mentor profile not found' });
         }
 
-        // Check the user capacity and set available accordingly
         mentorProfile.profileInfo.available = false;
-
-        // Add the mentee email to the matches profile
         mentorProfile.profileInfo.matches.push({
             menteeEmail: randomMenteeProfile.email,
         });
-
-        // Save the updated mentor profile
         await mentorProfile.save();
 
         // Update the mentee profile with the match information
         randomMenteeProfile.profileInfo.matches.push({
-            mentorEmail: mentorEmail,
+            mentorEmail: email,
         });
-
-        // Save the updated mentee profile
         await randomMenteeProfile.save();
 
-        // Return the matched mentee profile
         res.json({ profile: randomMenteeProfile });
     } catch (error) {
         console.error('Error fetching random mentee profile:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 
 
 
