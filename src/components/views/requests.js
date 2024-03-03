@@ -43,6 +43,7 @@ const Requests = () => {
     const [allRequests, setAllRequests] = useState([]);
 
     const [iframeLoading, setIframeLoading] = useState(true);
+    const [shortlistLoading, setShortlistLoading] = useState(false);
 
     const onDragEnd = async (result) => {
         if (!result.destination) {
@@ -199,6 +200,8 @@ const Requests = () => {
         const email = sessionStorage.getItem('email');
         const userType = sessionStorage.getItem('userType');
 
+        setShortlistLoading(true);
+
         try {
             // Extract the order information from allRequests and send it to the server
             const orderInformation = allRequests.map((request, index) => ({
@@ -212,12 +215,21 @@ const Requests = () => {
                 email,
             });
 
-            setTimeout(() => {
-                setSuccessMessage("Shortlist Sucessfully Saved")
+            setSuccessMessage("Shortlist Sucessfully Saved");
+
+            const timeoutId = setTimeout(() => {
+                setSuccessMessage("");
             }, 5000);
+    
+            // Cleanup timeout on component unmount
+            return () => clearTimeout(timeoutId);
+
             console.log('Successfully updated order on the server');
         } catch (error) {
             console.error('Error updating order on the server:', error);
+        }
+        finally {
+            setShortlistLoading(false);
         }
     };
 
@@ -326,7 +338,7 @@ const Requests = () => {
                         )}     
                     </div>
                     {hasShortlistOrder && (
-                            <button className='save-shortlist' onClick={onSaveShortlistClick}>Save</button>
+                            <button className='save-shortlist' onClick={onSaveShortlistClick}>{shortlistLoading ? <Loader /> : "Save"}</button>
                         )}
                 </div>
             ): <></>}
