@@ -1,35 +1,36 @@
-// Gale-Shapley algorithm for stable matching with sign-up date priority and declinedRequestsCount
 function galeShapley(menteePreferences, mentorPreferences, mentees, mentors) {
     const matches = {};
 
+    // Loop until all mentees are matched
     while (Object.keys(matches).length < menteePreferences.length) {
         for (const mentee of menteePreferences) {
+            // Check if the current mentee is not yet matched
             if (!matches[mentee.email]) {
+                // Get the current mentee's most preferred mentor that hasn't been rejected yet
                 const menteePreferredMentor = mentee.preferences.shift();
 
+                // Check if the mentor is not yet matched
                 if (!matches[menteePreferredMentor]) {
-                    // Mentor is not yet matched, match them
+                    // If the mentor is available, make a match
                     matches[menteePreferredMentor] = mentee.email;
                 } else {
-                    // Mentor is already matched, compare preferences, sign-up date, and declinedRequestsCount
-                    const currentMentee = mentorPreferences[menteePreferredMentor].findIndex(email => email === matches[menteePreferredMentor]);
-                    const potentialMentee = mentorPreferences[menteePreferredMentor].findIndex(email => email === mentee.email);
+                    // Mentor is already matched compare based on: The comparison is based on: The mentor's preference order, Sign-up date of the mentees, Count of declined requests by the mentees.
+                    const currentMenteeIndex = mentorPreferences[menteePreferredMentor].findIndex(email => email === matches[menteePreferredMentor]);
+                    const potentialMenteeIndex = mentorPreferences[menteePreferredMentor].findIndex(email => email === mentee.email);
 
+                    // Get profiles for comparison
                     const currentMenteeProfile = mentors.find(m => m.email === matches[menteePreferredMentor]);
                     const potentialMenteeProfile = mentees.find(m => m.email === mentee.email);
 
-                    const currentMenteeDeclinedCount = currentMenteeProfile.profileInfo.declinedRequestsCount || 0;
-                    const potentialMenteeDeclinedCount = potentialMenteeProfile.profileInfo.declinedRequestsCount || 0;
-
-                    if (
-                        potentialMentee < currentMentee ||
-                        (potentialMentee === currentMentee &&
+                    // Check if the new potential mentee is preferred based on sign-up date and declined requests count
+                    const isNewMenteePreferred = (potentialMenteeIndex < currentMenteeIndex) ||
+                        (potentialMenteeIndex === currentMenteeIndex &&
                             (potentialMenteeProfile.signUpDate < currentMenteeProfile.signUpDate ||
-                                potentialMenteeDeclinedCount < currentMenteeDeclinedCount))
-                    ) {
-                        // New mentee is preferred or has an earlier sign-up date or fewer declined requests, unmatch current mentee and match the new one
+                                potentialMenteeProfile.profileInfo.declinedRequestsCount < currentMenteeProfile.profileInfo.declinedRequestsCount));
+
+                    if (isNewMenteePreferred) {
+                        // If the new mentee is preferred, update the match
                         matches[menteePreferredMentor] = mentee.email;
-                        delete matches[matches[menteePreferredMentor]];
                     }
                 }
             }

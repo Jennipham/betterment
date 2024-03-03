@@ -167,181 +167,191 @@ router.post('/login', async (req, res) => {
     }
 });
 
-    router.post('/getProfile', async (req, res) => {
-        try {
-            const { email, userType } = req.body;
-            let profile, defaultProfile;
+router.post('/getProfile', async (req, res) => {
+    try {
+        const { email, userType } = req.body;
+        let profile, defaultProfile;
+
+        if (userType === 'mentee') {
+            profile = await MenteeProfile.findOne({ email });
+            if (!profile) {
+                console.log('Profile not found for email:', email);
+                defaultProfile = {
+                    email: email,
+                    userType: '',
+                    profileInfo: {
+                        signUpDate: new Date(),
+                        jobRole: '',
+                        department: '',
+                        capacity: '1',
+                        officeLocation: '',
+                        languages: [],
+                        developmentAreas: [],
+                        mentoringMethods: [],
+                        sentRequests: [],
+                        receivedRequests: [],
+                        shortlistOrder: [],
+                        available: 'true',
+                        matchedInCurrentRound: false,
+                        declinedRequestsCount: 0,
+                        matches: [],
+                        admin: '',
+
+                    },
+                };
+            }
+        }
+
+        if (userType === 'mentor') {
+            profile = await MentorProfile.findOne({ email });
+            if (!profile) {
+                console.log('Profile not found for email:', email);
+                defaultProfile = {
+                    email: email,
+                    userType: '',
+                    profileInfo: {
+                        signUpDate: new Date(),
+                        jobRole: '',
+                        department: '',
+                        capacity: '1',
+                        level: '',
+                        officeLocation: '',
+                        languages: [],
+                        developmentAreas: [],
+                        mentoringMethods: [],
+                        sentRequests: [],
+                        receivedRequests: [],
+                        shortlistOrder: [],
+                        available: 'true',
+                        matchedInCurrentRound: false,
+                        declinedRequestsCount: 0,
+                        matches: [],
+                        admin: '',
+
+                    },
+                };
+            }
+        }
+
+        profile = profile || defaultProfile;
+
+        const token = jwt.sign(
+            { userId: profile._id || '', email, userType: profile.userType || '' },
+            secretKey,
+            { expiresIn: '1h' }
+        );
+
+        res.json({
+            profile,
+            token,
+            email,
+            userType: profile.userType || '',
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
+
+function calculateSimilarityScore(attribute1, attribute2) {
+    return attribute1 === attribute2 ? 1 : 0;
+}
+
+// Function to calculate similarity score for two arrays
+const calculateArraySimilarityScore = (array1, array2) => {
+    if (!Array.isArray(array1) || !Array.isArray(array2)) {
+        // Handle the case where either array1 or array2 is not an array
+        return 0;
+    }
+
+    const commonElements = array1.filter(element => array2.includes(element));
+    return commonElements.length;
+};
+router.get('/getPotentialMatches', async (req, res) => {
+    try {
+        const { email, userType, languages, department, officeLocation, developmentAreas, mentoringMethods } = req.query;
+
+        // Extract domain from the email
+        const emailParts = email.split('@');
+        const domain = emailParts.length === 2 ? emailParts[1] : null;
+
+        if (!domain) {
+            return res.status(400).json({ message: 'Invalid email format' });
+        }
+
+        let profiles;
+
+        if (userType === 'mentee') {
+            // Retrieve all mentor profiles with the same domain and available set to true
+            profiles = await MentorProfile.find({
+                'email': { $regex: new RegExp(`@${domain}$`, 'i') },
+                'profileInfo.available': true
+            });
+        } else if (userType === 'mentor') {
+            // Retrieve all mentee profiles with the same domain and available set to true
+            profiles = await MenteeProfile.find({
+                'email': { $regex: new RegExp(`@${domain}$`, 'i') },
+                'profileInfo.available': true
+            });
+        } else {
+            return res.status(400).json({ message: 'Invalid user type' });
+        }
+
+        const currentUserEmail = email;
+        const currentUserProfile = userType === 'mentee'
+            ? await MenteeProfile.findOne({ email: currentUserEmail })
+            : await MentorProfile.findOne({ email: currentUserEmail });
+
+        if (currentUserProfile && currentUserProfile.profileInfo.matches.length > 0) {
+            // The user has matches, find the corresponding profiles
+            const matchedUserEmails = currentUserProfile.profileInfo.matches.map(match => userType === 'mentee' ? match.mentorEmail : match.menteeEmail);
+            const matchedProfiles = userType === 'mentee'
+                ? await MentorProfile.find({ email: { $in: matchedUserEmails } })
+                : await MenteeProfile.find({ email: { $in: matchedUserEmails } });
+
+            return res.json({ profiles: matchedProfiles, isMatch: true });
+        }
+
+        // Calculate similarity score and order profiles
+        const profilesWithScores = profiles.map(profile => {
+            const { _doc: { profileInfo } } = profile;
+
+            let totalScore =
+                calculateSimilarityScore(department, profileInfo.department) +
+                calculateSimilarityScore(officeLocation, profileInfo.officeLocation) +
+                calculateArraySimilarityScore(developmentAreas, profileInfo.developmentAreas) +
+                calculateArraySimilarityScore(mentoringMethods, profileInfo.mentoringMethods);
 
             if (userType === 'mentee') {
-                profile = await MenteeProfile.findOne({ email });
-                if (!profile) {
-                    console.log('Profile not found for email:', email);
-                    defaultProfile = {
-                        email: email,
-                        userType: '',
-                        profileInfo: {
-                            signUpDate: new Date(),
-                            jobRole: '',
-                            department: '',
-                            capacity: '1',
-                            officeLocation: '',
-                            languages: [],
-                            developmentAreas: [],
-                            mentoringMethods: [],
-                            sentRequests: [],
-                            receivedRequests: [],
-                            shortlistOrder: [],
-                            available: 'true',
-                            matchedInCurrentRound: false,
-                            declinedRequestsCount: 0,
-                            matches:[],
-                            admin:'',
-
-                        },
-                    };
-                }
+                totalScore += profileInfo.level ? parseInt(profileInfo.level) : 0;
             }
 
-            if (userType === 'mentor') {
-                profile = await MentorProfile.findOne({ email });
-                if (!profile) {
-                    console.log('Profile not found for email:', email);
-                    defaultProfile = {
-                        email: email,
-                        userType: '',
-                        profileInfo: {
-                            signUpDate: new Date(),
-                            jobRole: '',
-                            department: '',
-                            capacity: '1',
-                            level: '',
-                            officeLocation: '',
-                            languages: [],
-                            developmentAreas: [],
-                            mentoringMethods: [],
-                            sentRequests: [],
-                            receivedRequests: [],
-                            shortlistOrder: [],
-                            available: 'true',
-                            matchedInCurrentRound: false,
-                            declinedRequestsCount: 0,
-                            matches:[],
-                            admin:'',
+            return { ...profile, score: totalScore };
+        });
 
-                        },
-                    };
-                }
-            }
+        const sortedProfiles = profilesWithScores.sort((a, b) => b.score - a.score);
 
-            profile = profile || defaultProfile;
+        // Filter profiles based on common languages
+        const filteredProfiles = sortedProfiles.filter(profile => {
+            const profileLanguages = profile._doc.profileInfo.languages;
 
-            const token = jwt.sign(
-                { userId: profile._id || '', email, userType: profile.userType || '' },
-                secretKey,
-                { expiresIn: '1h' }
+            const commonLanguages = profileLanguages && languages && profileLanguages.filter(language =>
+                languages.includes(language)
             );
 
-            res.json({
-                profile,
-                token,
-                email,
-                userType: profile.userType || '',
-            });
-        } catch (err) {
-            console.error(err);
-            res.status(500).json({ message: 'Internal Server Error' });
-        }
-    });
+            return commonLanguages && commonLanguages.length > 0;
+        });
 
-    function calculateSimilarityScore(attribute1, attribute2) {
-        return attribute1 === attribute2 ? 1 : 0;
+        if (filteredProfiles.length === 0) {
+            return res.status(404).json({ message: 'No matching profiles found' });
+        }
+
+        return res.json({ profiles: filteredProfiles, isMatch: false });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Internal Server Error' });
     }
-    
-    // Function to calculate similarity score for two arrays
-    const calculateArraySimilarityScore = (array1, array2) => {
-        if (!Array.isArray(array1) || !Array.isArray(array2)) {
-            // Handle the case where either array1 or array2 is not an array
-            return 0; 
-        }
-    
-        const commonElements = array1.filter(element => array2.includes(element));
-        return commonElements.length;
-    };
-
-    router.get('/getPotentialMatches', async (req, res) => {
-        try {
-            const { email, userType, languages, department, officeLocation, developmentAreas, mentoringMethods } = req.query;
-            let profiles;
-    
-            if (userType === 'mentee') {
-                // Retrieve all mentor profiles with available set to true
-                profiles = await MentorProfile.find({ 'profileInfo.available': true });
-            } else if (userType === 'mentor') {
-                // Retrieve all mentee profiles with available set to true
-                profiles = await MenteeProfile.find({ 'profileInfo.available': true });
-            } else {
-                return res.status(400).json({ message: 'Invalid user type' });
-            }
-    
-            // Check if the user has matches
-            const currentUserEmail = email; // Adjust this based on your authentication setup
-            const currentUserProfile = userType === 'mentee'
-                ? await MenteeProfile.findOne({ email: currentUserEmail })
-                : await MentorProfile.findOne({ email: currentUserEmail });
-    
-            if (currentUserProfile && currentUserProfile.profileInfo.matches.length > 0) {
-                // The user has matches, find the corresponding profiles
-                const matchedUserEmails = currentUserProfile.profileInfo.matches.map(match => userType === 'mentee' ? match.mentorEmail : match.menteeEmail);
-                const matchedProfiles = userType === 'mentee'
-                    ? await MentorProfile.find({ email: { $in: matchedUserEmails } })
-                    : await MenteeProfile.find({ email: { $in: matchedUserEmails } });
-    
-                return res.json({ profiles: matchedProfiles, isMatch: true });
-            }
-    
-            // Calculate similarity score and order profiles
-            const profilesWithScores = profiles.map(profile => {
-                const { _doc: { profileInfo } } = profile;
-    
-                let totalScore =
-                    calculateSimilarityScore(department, profileInfo.department) +
-                    calculateSimilarityScore(officeLocation, profileInfo.officeLocation) +
-                    calculateArraySimilarityScore(developmentAreas, profileInfo.developmentAreas) +
-                    calculateArraySimilarityScore(mentoringMethods, profileInfo.mentoringMethods);
-    
-                if (userType === 'mentee') {
-                    totalScore += profileInfo.level ? parseInt(profileInfo.level) : 0;
-                }
-    
-                return { ...profile, score: totalScore };
-            });
-    
-            const sortedProfiles = profilesWithScores.sort((a, b) => b.score - a.score);
-    
-            // Filter profiles based on common languages
-            const filteredProfiles = sortedProfiles.filter(profile => {
-                const profileLanguages = profile._doc.profileInfo.languages;
-    
-                // Check if both profileLanguages and languages are defined before using the includes method
-                const commonLanguages = profileLanguages && languages && profileLanguages.filter(language =>
-                    languages.includes(language)
-                );
-    
-                return commonLanguages && commonLanguages.length > 0;
-            });
-
-            if (filteredProfiles.length === 0) {
-                return res.status(404).json({ message: 'No matching profiles found' });
-            }
-    
-            return res.json({ profiles: filteredProfiles, isMatch: false });
-        } catch (err) {
-            console.error(err);
-            res.status(500).json({ message: 'Internal Server Error' });
-        }
-    });
-    
-    
+});
 
 router.post('/getManagerProfile', async (req, res) => {
     try {
@@ -742,7 +752,7 @@ router.get('/getRandomMenteeProfile', async (req, res) => {
             'email': email,
             'profileInfo.matches': { $exists: true, $ne: [] },
         });
-        
+
         if (existingMatch && existingMatch.profileInfo.available === false) {
             const menteeEmail = existingMatch.profileInfo.matches[0].menteeEmail;
             const matchedMenteeProfile = await MenteeProfile.findOne({ 'email': menteeEmail });
@@ -1346,12 +1356,15 @@ const matchLogic = async () => {
         const menteesShortlist = await MenteeProfile.find({}, 'email profileInfo.shortlistOrder');
         const mentorsShortlist = await MentorProfile.find({}, 'email profileInfo.shortlistOrder');
 
+
+        // Obtain Shortlist order and Declined Requests count
         const menteePreferences = menteesShortlist.map(mentee => ({
             email: mentee.email,
             preferences: mentee.profileInfo.shortlistOrder.map(item => item.requestId.toString()),
             declinedRequestsCount: mentee.profileInfo.declinedRequestsCount,
         }));
 
+        // Obtain Shortlist order and Declined Requests count
         const mentorPreferences = mentorsShortlist.map(mentor => ({
             email: mentor.email,
             preferences: mentor.profileInfo.shortlistOrder.map(item => item.requestId.toString()),
@@ -1361,6 +1374,30 @@ const matchLogic = async () => {
         const matches = galeShapley(menteePreferences, mentorPreferences, menteesShortlist, mentorsShortlist);
 
         // Update the database with the matching results
+        for (const [mentorEmail, menteeEmail] of Object.entries(matches)) {
+            // Find and update the mentor profile
+            await MentorProfile.findOneAndUpdate(
+                { email: mentorEmail },
+                {
+                    $set: {
+                        'profileInfo.matches': [{ menteeEmail }],
+                        'profileInfo.available': false
+                    }
+                }
+            );
+
+            // Find and update the mentee profile
+            await MenteeProfile.findOneAndUpdate(
+                { email: menteeEmail },
+                {
+                    $set: {
+                        'profileInfo.matches': [{ mentorEmail }],
+                        'profileInfo.available': false
+                    }
+                }
+            );
+        }
+
         console.log('Matching process completed successfully.');
     } catch (error) {
         console.error('Error during matching process:', error);
