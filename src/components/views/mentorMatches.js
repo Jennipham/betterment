@@ -427,8 +427,21 @@ const MentorMatches = () => {
 
         } catch (error) {
             setLoading(false);
-            console.error('Error sending match request:', error);
-            handleErrorMessage('Error sending Match Request');
+            if (error.response) {
+                if (error.response.status === 400) {
+                    handleErrorMessage('Invalid user type - Please try again later.');
+                } else if (error.response.status === 404) {
+                    handleErrorMessage('Profile not found - please try again later.');
+                }
+                else if (error.response.status === 401) {
+                    handleErrorMessage('Match request already sent or received');
+                }
+                else {
+                    console.error('Error sending match request:', error);
+                    handleErrorMessage('Error sending Match Request');
+                }
+            }
+
         }
     };
 
