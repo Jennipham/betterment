@@ -995,7 +995,7 @@ const MenteeMatches = () => {
 
 
                 )}
-                {matchingMethod !== 'Random' ?
+                {matchingMethod !== 'Random' && !hasMatch  ?
                     (<button className='view-shortlist' onClick={handleShortlistClick}>View Shortlist</button>) :
                     (<button className='view-shortlist' onClick={handleShortlistClick}>Complete Feedback Questionnaire</button>) 
                 }

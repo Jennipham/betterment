@@ -86,17 +86,17 @@ const Requests = () => {
                 }
 
 
-                if (userType !== '' ) {
+                if (userType !== '') {
                     const userResponse = await axios.post('http://localhost:3001/getProfile', {
                         email: email,
                         userType: userType,
                     })
 
 
-                    if (Array.isArray(userResponse.data.matches) && userResponse.data.matches.length > 0) {
+                    if (Array.isArray(userResponse.data.profile.profileInfo.matches) && userResponse.data.profile.profileInfo.matches.length > 0) {
                         setIsMatched(true);
-                    } 
-                    
+                    }
+
                 }
 
                 // Fetch received requests directly using user information
@@ -220,7 +220,7 @@ const Requests = () => {
             const timeoutId = setTimeout(() => {
                 setSuccessMessage("");
             }, 5000);
-    
+
             // Cleanup timeout on component unmount
             return () => clearTimeout(timeoutId);
 
@@ -271,7 +271,7 @@ const Requests = () => {
             ) : <></>}
 
 
-{!isMatched && matchingMethod !== 'Random' ?  (
+            {!isMatched && matchingMethod !== 'Random' ? (
                 <div className="requests-page">
                     <div className='error-message-profile-container'>
                         {errorMessage && <p className="error-message-profile">{errorMessage}</p>}
@@ -335,13 +335,13 @@ const Requests = () => {
                             </DragDropContext>
                         ) : (
                             <p className="no-requests-message">You have no sent or received requests at the moment. <br></br>Please go to the matching page to view potential matches.</p>
-                        )}     
+                        )}
                     </div>
                     {hasShortlistOrder && (
-                            <button className='save-shortlist' onClick={onSaveShortlistClick}>{shortlistLoading ? <Loader /> : "Save"}</button>
-                        )}
+                        <button className='save-shortlist' onClick={onSaveShortlistClick}>{shortlistLoading ? <Loader /> : "Save"}</button>
+                    )}
                 </div>
-            ): <></>}
+            ) : <></>}
 
             <Footer />
         </>
