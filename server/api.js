@@ -1351,51 +1351,104 @@ router.post('/logout', async (req, res) => {
     }
 });
 
-const matchLogic = async () => {
+const matchLogic = async (domainFilter = null) => {
     try {
-        const menteesShortlist = await MenteeProfile.find({}, 'email profileInfo.shortlistOrder');
-        const mentorsShortlist = await MentorProfile.find({}, 'email profileInfo.shortlistOrder');
+        let query = {};
+        if (domainFilter) {
+            const regex = new RegExp(`@${domainFilter}$`, 'i');
+            query = { 'email': { $regex: regex } };
+        }
 
+        // Fetch shortlists for mentees and mentors
+        const menteesShortlist = await MenteeProfile.find(query, 'email profileInfo.shortlistOrder');
+        const mentorsShortlist = await MentorProfile.find(query, 'email profileInfo.shortlistOrder');
 
-        // Obtain Shortlist order and Declined Requests count
+        let allRequestIds = []; // Array to store all request IDs
+        let requestIdToMatchEmailMap = {}; // Mapping of request IDs to match emails
+
+        // Fetch and process each mentee's shortlist
+        for (const mentee of menteesShortlist) {
+            for (const item of mentee.profileInfo.shortlistOrder) {
+                allRequestIds.push(item.requestId);
+
+                // Fetch received request
+                const receivedRequest = await MenteeProfile.findOne({ 'profileInfo.receivedRequests._id': item.requestId }, 'profileInfo.receivedRequests.$');
+                if (receivedRequest) {
+                    requestIdToMatchEmailMap[item.requestId.toString()] = receivedRequest.profileInfo.receivedRequests[0].senderEmail;
+                    continue;
+                }
+
+                // Fetch sent request
+                const sentRequest = await MenteeProfile.findOne({ 'profileInfo.sentRequests._id': item.requestId }, 'profileInfo.sentRequests.$');
+                if (sentRequest) {
+                    requestIdToMatchEmailMap[item.requestId.toString()] = sentRequest.profileInfo.sentRequests[0].receiverEmail;
+                }
+            }
+        }
+
+        // Fetch and process each mentor's shortlist (similar to mentees)
+        for (const mentor of mentorsShortlist) {
+            for (const item of mentor.profileInfo.shortlistOrder) {
+                allRequestIds.push(item.requestId);
+
+                // Fetch received request
+                const receivedRequest = await MentorProfile.findOne({ 'profileInfo.receivedRequests._id': item.requestId }, 'profileInfo.receivedRequests.$');
+                if (receivedRequest) {
+                    requestIdToMatchEmailMap[item.requestId.toString()] = receivedRequest.profileInfo.receivedRequests[0].senderEmail;
+                    continue;
+                }
+
+                // Fetch sent request
+                const sentRequest = await MentorProfile.findOne({ 'profileInfo.sentRequests._id': item.requestId }, 'profileInfo.sentRequests.$');
+                if (sentRequest) {
+                    requestIdToMatchEmailMap[item.requestId.toString()] = sentRequest.profileInfo.sentRequests[0].receiverEmail;
+                }
+            }
+        }
+
+        // Remove duplicate request IDs
+        allRequestIds = [...new Set(allRequestIds)];
+
+        // Replace request IDs in preferences with match emails
+        const updatePreferencesWithMatchEmails = (preferences) => {
+            return preferences.map(requestId => requestIdToMatchEmailMap[requestId.toString()] || requestId);
+        };
+
+        // Update mentee preferences
         const menteePreferences = menteesShortlist.map(mentee => ({
             email: mentee.email,
-            preferences: mentee.profileInfo.shortlistOrder.map(item => item.requestId.toString()),
+            preferences: updatePreferencesWithMatchEmails(mentee.profileInfo.shortlistOrder.map(item => item.requestId.toString())),
             declinedRequestsCount: mentee.profileInfo.declinedRequestsCount,
         }));
 
-        // Obtain Shortlist order and Declined Requests count
+        // Update mentor preferences
         const mentorPreferences = mentorsShortlist.map(mentor => ({
             email: mentor.email,
-            preferences: mentor.profileInfo.shortlistOrder.map(item => item.requestId.toString()),
+            preferences: updatePreferencesWithMatchEmails(mentor.profileInfo.shortlistOrder.map(item => item.requestId.toString())),
             declinedRequestsCount: mentor.profileInfo.declinedRequestsCount,
         }));
 
-        const matches = galeShapley(menteePreferences, mentorPreferences, menteesShortlist, mentorsShortlist);
+        // Implement Gale-Shapley algorithm
+        const matches = galeShapley(menteePreferences, mentorPreferences);
+        console.log(matches);
 
-        // Update the database with the matching results
-        for (const [mentorEmail, menteeEmail] of Object.entries(matches)) {
-            // Find and update the mentor profile
-            await MentorProfile.findOneAndUpdate(
-                { email: mentorEmail },
-                {
-                    $set: {
-                        'profileInfo.matches': [{ menteeEmail }],
-                        'profileInfo.available': false
-                    }
-                }
-            );
+        // Iterate through matches and update profiles
+        for (const [mentorId, menteeEmail] of Object.entries(matches)) {
+            // Fetch the mentor's email using their ID
+            const mentorProfile = await MentorProfile.findOne({ email: mentorId });
+            const mentorEmail = mentorProfile ? mentorProfile.email : null;
 
-            // Find and update the mentee profile
-            await MenteeProfile.findOneAndUpdate(
-                { email: menteeEmail },
-                {
-                    $set: {
-                        'profileInfo.matches': [{ mentorEmail }],
-                        'profileInfo.available': false
-                    }
-                }
-            );
+            if (mentorEmail && menteeEmail) {
+                await MentorProfile.findOneAndUpdate(
+                    { email: mentorEmail },
+                    { $set: { 'profileInfo.matches': [{ menteeEmail }], 'profileInfo.available': false } }
+                );
+
+                await MenteeProfile.findOneAndUpdate(
+                    { email: menteeEmail },
+                    { $set: { 'profileInfo.matches': [{ mentorEmail }], 'profileInfo.available': false } }
+                );
+            }
         }
 
         console.log('Matching process completed successfully.');
@@ -1404,15 +1457,26 @@ const matchLogic = async () => {
     }
 };
 
-// Schedule the task to run every 14 days (14th and 18th of every month)
+
+// Scheduled task for all accounts every 14th and 28th
 cron.schedule('0 0 */14 * *', async () => {
     try {
-        console.log('Running matching process...');
-        await matchLogic(); // Call the function containing the matching logic
+        console.log('Running scheduled matching process for all accounts...');
+        await matchLogic();
     } catch (error) {
         console.error('Error during scheduled matching process:', error);
     }
 });
+
+// Minute then hour
+// cron.schedule('27 20 * * *', async () => {
+//     try {
+//         console.log('Running matching process for @test.com accounts...');
+//         await matchLogic("test.com"); // Pass "test.com" as the domain
+//     } catch (error) {
+//         console.error('Error during scheduled matching process:', error);
+//     }
+// });
 
 const calculateNextMatchDay = () => {
     const today = new Date();

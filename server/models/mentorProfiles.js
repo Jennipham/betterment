@@ -53,7 +53,7 @@ const mentorProfileSchema = new mongoose.Schema({
         shortlistOrder: [
             {
                 requestId: {
-                    type: mongoose.Schema.Types.ObjectId,  // Assuming _id is of type ObjectId
+                    type: mongoose.Schema.Types.ObjectId,
                     ref: 'MentorProfiles',  // Reference to the MenteeProfiles collection
                     required: true,
                 }
