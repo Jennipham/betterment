@@ -39,7 +39,7 @@ const Help = () => {
         },
         {
             question: "I've been matched, what now?",
-            answer: "Congratulations! Once Betterment has found you a matc, you can choose to contact your match which will open up an email template for you to send to your mentor. You will also be notified to complete a user experience questionnaire. 2 weeks after you have been matched, your account will be automatically deleted."
+            answer: "Congratulations! Once Betterment has found you a match, you can choose to contact your match which will open up an email template for you to send to your mentor. You will also be notified to complete a user experience questionnaire. 2 weeks after you have been matched, your account will be automatically deleted."
         },
     ];
 

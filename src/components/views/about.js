@@ -75,8 +75,8 @@ const About = () => {
                                 <p>3. Get Connected!</p>
                                 <img src={handshake} alt="get-connected" />
                                 <h3>
-                                    Our matching algorithm will provide you with a list of the
-                                    most compatible mentors for you to get in touch with!
+                                Our matching algorithm will provide you with a list of the
+                                    most compatible employees to get you matched!
                                 </h3>
                             </div>
                         </>
@@ -106,7 +106,7 @@ const About = () => {
                                 <img src={handshake} alt="get-connected" />
                                 <h3>
                                     Our matching algorithm will provide you with a list of the
-                                    most compatible employees for you to get in touch with!
+                                    most compatible employees to get you matched!
                                 </h3>
                             </div>
                         </>
