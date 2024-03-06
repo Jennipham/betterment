@@ -81,7 +81,7 @@ const FullProfile = () => {
                     },
                 });
                 const { blindMatching } = response.data;
-    
+
                 setBlindMatching(blindMatching);
             }
         } catch (error) {
@@ -89,13 +89,13 @@ const FullProfile = () => {
             // Handle error if necessary
         }
     };
-    
+
     useEffect(() => {
         if (matchProfile && matchProfile.profileInfo) {
             fetchAdminMatchSettings();
         }
-    },[matchProfile, matchProfile?.profileInfo?.admin]);
-    
+    }, [matchProfile, matchProfile?.profileInfo?.admin]);
+
 
 
     return (
@@ -119,13 +119,17 @@ const FullProfile = () => {
                     </div>
                     <div className='match-profile-info'>
                         <div className="profile-info">
-                            <p>Department: {matchProfile && matchProfile.profileInfo.department ? capitaliseFirstLetter(matchProfile.profileInfo.department) : ''}</p>
-                            <p>Location: {matchProfile && matchProfile.profileInfo.officeLocation ? capitaliseFirstLetter(matchProfile.profileInfo.officeLocation) : ''}</p>
-                            <p>Languages: {matchProfile && matchProfile.profileInfo.languages ? matchProfile.profileInfo.languages.join(', ') : ''}</p>
+                            <p className='full-user-info'> Department: {matchProfile && matchProfile.profileInfo.department ? capitaliseFirstLetter(matchProfile.profileInfo.department) : ''}</p>
+                            <p className='full-user-info'>Location: {matchProfile && matchProfile.profileInfo.officeLocation ? capitaliseFirstLetter(matchProfile.profileInfo.officeLocation) : ''}</p>
+                            <p className='full-user-info'>Languages: {matchProfile && matchProfile.profileInfo.languages ? matchProfile.profileInfo.languages.join(', ') : ''}</p>
+
                         </div>
                         <div className="profile-info">
-                            <p>Development Areas: {matchProfile && matchProfile.profileInfo.developmentAreas ? matchProfile.profileInfo.developmentAreas.join(', ') : ''}</p>
-                            <p>Methods of Mentoring: {matchProfile && matchProfile.profileInfo.mentoringMethods ? mapValuesToLabels(matchProfile.profileInfo.mentoringMethods, methodOptions).join(', ') : ''}</p>
+                        <p className='full-user-info'>Development Areas: {matchProfile && matchProfile.profileInfo.developmentAreas ? matchProfile.profileInfo.developmentAreas.join(', ') : ''}</p>
+                        <p className='full-user-info'>Methods of Mentoring: {matchProfile && matchProfile.profileInfo.mentoringMethods ? mapValuesToLabels(matchProfile.profileInfo.mentoringMethods, methodOptions).join(', ') : ''}</p>
+                        {matchProfile && matchProfile.userType === 'mentor' && (
+                                <p className='full-user-info'>Coaching Level Qualification: {matchProfile.profileInfo.level}</p>
+                            )}
                         </div>
                     </div>
                 </div>
