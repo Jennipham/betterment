@@ -599,7 +599,7 @@ const Profile = () => {
                                     }
                                 />
                             </p>
-                            <Tooltip className="tooltip-text" text="The methods you're happy to receive/give mentoring.">
+                            <Tooltip className="tooltip-text" text="Your preferences for receiving mentoring in person or online">
                                 <img src={moreInfo} alt="More Info" className="more-info-icon" />
                             </Tooltip>
                         </div>
