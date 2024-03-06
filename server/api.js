@@ -1353,7 +1353,7 @@ router.post('/logout', async (req, res) => {
 
 const matchLogic = async (domainFilter = null) => {
     try {
-        let query = {};
+        let query = { 'profileInfo.available': true };
         if (domainFilter) {
             const regex = new RegExp(`@${domainFilter}$`, 'i');
             query = { 'email': { $regex: regex } };
@@ -1469,14 +1469,14 @@ cron.schedule('0 0 */14 * *', async () => {
 });
 
 // Minute then hour
-// cron.schedule('27 20 * * *', async () => {
-//     try {
-//         console.log('Running matching process for @test.com accounts...');
-//         await matchLogic("test.com"); // Pass "test.com" as the domain
-//     } catch (error) {
-//         console.error('Error during scheduled matching process:', error);
-//     }
-// });
+cron.schedule('17 10 * * *', async () => {
+    try {
+        console.log('Running matching process for @test.com accounts...');
+        await matchLogic("test.com"); // Pass "test.com" as the domain
+    } catch (error) {
+        console.error('Error during scheduled matching process:', error);
+    }
+});
 
 const calculateNextMatchDay = () => {
     const today = new Date();
