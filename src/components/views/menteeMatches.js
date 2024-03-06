@@ -246,7 +246,7 @@ const MenteeMatches = () => {
     
                 const mentorProfilesWithNames = await Promise.all(
                     response.data.profiles.map(async (mentor) => {
-                        const userDetailsResponse = await fetchNames(mentor._doc.email);
+                        const userDetailsResponse = await fetchNames(mentor.email);
                         return {
                             ...mentor,
                             fname: userDetailsResponse ? userDetailsResponse.user.fname : '',
