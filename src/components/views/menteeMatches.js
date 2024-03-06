@@ -237,16 +237,19 @@ const MenteeMatches = () => {
                         developmentAreas: selectedDevelopmentAreas.join(','),
                         mentoringMethods: selectedMethods.join(','),
                         department: user.department,
-                        officeLocation: user.location,
+                        officeLocation: user.officeLocation,
                     },
                 });
-    
+        
                 const isMatch = response.data.isMatch;
                 setHasMatch(isMatch);
-    
+        
                 const mentorProfilesWithNames = await Promise.all(
                     response.data.profiles.map(async (mentor) => {
-                        const userDetailsResponse = await fetchNames(mentor.email);
+                        // Determine the email based on the match status
+                        const emailToFetch = isMatch ? mentor.email : mentor._doc.email;
+                        
+                        const userDetailsResponse = await fetchNames(emailToFetch);
                         return {
                             ...mentor,
                             fname: userDetailsResponse ? userDetailsResponse.user.fname : '',
@@ -255,7 +258,7 @@ const MenteeMatches = () => {
                     })
                 );
                 setMentorProfile(mentorProfilesWithNames);
-    
+        
                 sessionStorage.setItem('matchProfile', JSON.stringify(response.data.profiles));
             } catch (error) {
                 if (error.response && error.response.status === 404) {
@@ -266,7 +269,7 @@ const MenteeMatches = () => {
             } finally {
                 setIsLoadingProfiles(false);
             }
-        };
+        };        
     
         if (matchingMethod && matchingMethod === 'Algorithm') {
             fetchAlgorithmMatches();

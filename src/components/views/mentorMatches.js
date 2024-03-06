@@ -246,13 +246,16 @@ const MentorMatches = () => {
                         officeLocation: user.officeLocation,
                     },
                 });
-    
+        
                 const isMatch = response.data.isMatch;
                 setHasMatch(isMatch);
-    
+        
                 const menteeProfilesWithNames = await Promise.all(
                     response.data.profiles.map(async (mentee) => {
-                        const userDetailsResponse = await fetchNames(mentee.email);
+                        // Determine the email based on the match status
+                        const emailToFetch = isMatch ? mentee.email : mentee._doc.email;
+                        
+                        const userDetailsResponse = await fetchNames(emailToFetch);
                         return {
                             ...mentee,
                             fname: userDetailsResponse ? userDetailsResponse.user.fname : '',
@@ -261,7 +264,7 @@ const MentorMatches = () => {
                     })
                 );
                 setMenteeProfile(menteeProfilesWithNames);
-    
+        
                 sessionStorage.setItem('matchProfile', JSON.stringify(response.data.profiles));
             } catch (error) {
                 if (error.response && error.response.status === 404) {
@@ -272,7 +275,7 @@ const MentorMatches = () => {
             } finally {
                 setIsLoadingProfiles(false);
             }
-        };
+        };        
     
         if (matchingMethod && matchingMethod === 'Algorithm') {
             fetchAlgorithmMatches();
