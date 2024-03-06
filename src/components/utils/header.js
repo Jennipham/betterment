@@ -64,7 +64,7 @@ const Header = () => {
         }, 60000);
 
         return () => {
-            clearInterval(tokenCheckInterval); 
+            clearInterval(tokenCheckInterval);
         };
     }, []);
 
@@ -81,11 +81,11 @@ const Header = () => {
         const developmentAreas = sessionStorage.getItem('developmentAreas') || '';
         const mentoringMethods = sessionStorage.getItem('mentoringMethods') || '';
         const languages = sessionStorage.getItem('languages') || '';
-        
+
         const profileString = sessionStorage.getItem('profile');
         setUser({ firstName, lastName, userType, email, jobRole, officeLocation, developmentAreas, mentoringMethods, languages });
         // console.log('User Information:', { firstName, lastName, userType, email, jobRole, officeLocation, developmentAreas, mentoringMethods, languages });
-   
+
     }, []);
 
     useEffect(() => {
@@ -95,44 +95,44 @@ const Header = () => {
                     console.error('User information is missing.');
                     return;
                 }
-    
+
                 if (user.userType === 'admin') {
                     return;
                 }
-    
+
                 if (user.userType !== '') {
                     const userResponse = await axios.post('http://localhost:3001/getProfile', {
                         email: user.email,
                         userType: user.userType,
                     });
-    
+
                     if (userResponse.data.match !== '') {
                         setIsMatched(true);
                     } else {
                         setIsMatched(false);
                     }
                 }
-    
+
                 const receivedResponse = await axios.post('http://localhost:3001/getReceivedRequests', {
                     email: user.email,
                     userType: user.userType,
                 });
-    
+
                 // Filter out declined requests
                 const activeReceivedRequests = receivedResponse.data.receivedRequests.filter(req => !req.declined);
                 setReceivedRequests(activeReceivedRequests);
-    
+
                 // Set notifications for non-declined requests only
                 setNotifications(activeReceivedRequests.length > 0 ? 1 : 0);
-    
+
             } catch (error) {
                 console.error('Error fetching requests:', error);
             }
         };
-    
+
         fetchData();
     }, [user.email, user.userType]);
-    
+
 
     const handleLogout = async () => {
         try {
@@ -167,14 +167,14 @@ const Header = () => {
                             }}
                         >
                             <img src={logo} alt="BetterMent Logo" />
-                        </RouterLink>                    ) : (
+                        </RouterLink>) : (
                         <RouterLink
                             to={{
                                 pathname: "/profileSettings",
                                 state: { user: { userType: user.userType, email: user.email } }
                             }}
-                            >
-                                <img src={logo} alt="BetterMent Logo" />
+                        >
+                            <img src={logo} alt="BetterMent Logo" />
                         </RouterLink>
                     )
                 ) : (
@@ -211,14 +211,38 @@ const Header = () => {
 
                 ) : loggedInStatus && location.pathname === '/profileSettings' ? ( //checks if logged in
                     <>
-                            {notifications < 1 ?
-                                <RouterLink to="/requests">
-                                    <img className='notification-icon-header' src={notification} alt="Requests" />
-                                </RouterLink> :
-                                <RouterLink to="/requests">
-                                    <img className='notification-exclamation-icon-header' src={notificationExclamation} alt="Requests" />
+                        {notifications < 1 ?
+                            <RouterLink to="/requests">
+                                <img className='notification-icon-header' src={notification} alt="Requests" />
+                            </RouterLink> :
+                            <RouterLink to="/requests">
+                                <img className='notification-exclamation-icon-header' src={notificationExclamation} alt="Requests" />
+                            </RouterLink>
+                        }
+                        {user.userType === 'mentee' ? (
+                            <RouterLink to="/menteematches">Matching</RouterLink>
+                        ) : user.userType === 'mentor' ? (
+                            <RouterLink to="/mentormatches">Matching</RouterLink>
+                        ) : null}
+                        <RouterLink to="/help">Help</RouterLink>
+                        <RouterLink to="/" onClick={handleLogout}>
+                            Log Out
+                        </RouterLink>
+
+                    </>
+                )
+                    : loggedInStatus && location.pathname === '/requests' ? ( //checks if logged in
+                        <>
+                            {user.userType === 'admin' ? (
+                                <RouterLink to="/adminSettings">Profile</RouterLink>
+                            ) : (
+                                <RouterLink to={{
+                                    pathname: "/profileSettings",
+                                    state: { user: { userType: user.userType, email: user.email } }
+                                }}>
+                                    Profile
                                 </RouterLink>
-                            }
+                            )}
                             {user.userType === 'mentee' ? (
                                 <RouterLink to="/menteematches">Matching</RouterLink>
                             ) : user.userType === 'mentor' ? (
@@ -229,44 +253,17 @@ const Header = () => {
                                 Log Out
                             </RouterLink>
 
-                    </>
+                        </>
                     )
-                         : loggedInStatus && location.pathname === '/requests' ? ( //checks if logged in
-                <>
-                                {user.userType === 'admin' ? (
-                                    <RouterLink to="/managerSettings">Profile</RouterLink>
-                                ) : (
-                                    <RouterLink to={{
-                                        pathname: "/profileSettings",
-                                        state: { user: { userType: user.userType, email: user.email } }
-                                    }}>
-                                        Profile
-                                    </RouterLink>
-                                )}
-                    {user.userType === 'mentee' ? (
-                        <RouterLink to="/menteematches">Matching</RouterLink>
-                    ) : user.userType === 'mentor' ? (
-                        <RouterLink to="/mentormatches">Matching</RouterLink>
-                    ) : null}
-                    <RouterLink to="/help">Help</RouterLink>
-                    <RouterLink to="/" onClick={handleLogout}>
-                        Log Out
-                    </RouterLink>
-
-                </>
-                )
                         : loggedInStatus && location.pathname === '/help' ? ( //checks if logged in
                             <>
-                                    {notifications < 1 ?
+                                {user.userType !== "admin" ? (
                                     <RouterLink to="/requests">
-                                        <img className='notification-icon-header' src={notification} alt="Requests" />
-                                    </RouterLink> :
-                                    <RouterLink to="/requests">
-                                        <img className='notification-icon-header' src={notificationExclamation} alt="Requests" />
+                                        <img className='notification-icon-header' src={notifications < 1 ? notification : notificationExclamation} alt="Requests" />
                                     </RouterLink>
-                                }
+                                ) : null}
                                 {user.userType === 'admin' ? (
-                                    <RouterLink to="/managerSettings">Profile</RouterLink>
+                                    <RouterLink to="/adminSettings">Profile</RouterLink>
                                 ) : (
                                     <RouterLink to={{
                                         pathname: "/profileSettings",
@@ -279,106 +276,106 @@ const Header = () => {
                                     <RouterLink to="/menteematches">Matching</RouterLink>
                                 ) : user.userType === 'mentor' ? (
                                     <RouterLink to="/mentormatches">Matching</RouterLink>
-                                ) : null}
-                                <RouterLink to="/help">Help</RouterLink>
+                                ) : <RouterLink to="/dashboard">Insights</RouterLink>}
+                                {/* <RouterLink to="/help">Help</RouterLink> */}
                                 <RouterLink to="/" onClick={handleLogout}>
                                     Log Out
                                 </RouterLink>
 
                             </>
                         )
-                        
-                        
-                        : loggedInStatus && location.pathname === '/signupSuccess' ? ( //checks if logged in
-                            <>
-                                {user.userType === 'admin' ? (
-                                    <RouterLink to="/managerSettings">Profile</RouterLink>
-                                ) : (
-                                        <RouterLink to={{
-                                            pathname: "/profileSettings",
-                                            state: {user: {userType: user.userType, email: user.email } } 
-                                        }}>
-                                            Profile
-                                    </RouterLink>
-                                )}
-
-                                {user.userType === 'mentee' ? (
-                                    <RouterLink to="/menteematches">Matching</RouterLink>
-                                ) : user.userType === 'mentor' ? (
-                                    <RouterLink to="/mentormatches">Matching</RouterLink>
-                                ) : null}
-                            <RouterLink to="/help">Help</RouterLink>
-                            <RouterLink to="/" onClick={handleLogout}>
-                                Log Out
-                            </RouterLink>
-
-                            </>
-                        
-                    )
-                
-                
-                        : loggedInStatus && location.pathname === '/adminSettings' ? ( //checks if logged in
-                    <>
-                        <RouterLink to="/dashboard">Insights</RouterLink>
-                        <RouterLink to="/help">Help</RouterLink>
-
-                                    <RouterLink to="/" onClick={handleLogout}>
-                                        Log Out
-                                    </RouterLink>
-                    </>
 
 
-                            )
-                            : loggedInStatus && location.pathname === '/dashboard' ? ( //checks if logged in
-                    <>
-                        <RouterLink to="/adminSettings">Profile</RouterLink>
-                        <RouterLink to="/help">Help</RouterLink>
-                                    <RouterLink to="/" onClick={handleLogout}>
-                                        Log Out
-                                    </RouterLink>
-                    </>
-
-
-                            )  
-                            
-                            
-                            : loggedInStatus && (location.pathname === '/menteematches' || location.pathname === '/mentormatches') ? ( //checks if logged in
+                            : loggedInStatus && location.pathname === '/signupSuccess' ? ( //checks if logged in
                                 <>
-                                                {notifications < 1 ?
-                                            <RouterLink to="/requests">
-                                                <img className='notification-icon-header' src={notification} alt="Requests" />
-                                            </RouterLink> :
-                                            <RouterLink to="/requests">
-                                                <img className='notification-exclamation-icon-header' src={notificationExclamation} alt="Requests" />
-                                            </RouterLink>
-                                        }
-                                        
+                                    {user.userType === 'admin' ? (
+                                        <RouterLink to="/adminSettings">Profile</RouterLink>
+                                    ) : (
                                         <RouterLink to={{
                                             pathname: "/profileSettings",
                                             state: { user: { userType: user.userType, email: user.email } }
                                         }}>
                                             Profile
                                         </RouterLink>
+                                    )}
+
+                                    {user.userType === 'mentee' ? (
+                                        <RouterLink to="/menteematches">Matching</RouterLink>
+                                    ) : user.userType === 'mentor' ? (
+                                        <RouterLink to="/mentormatches">Matching</RouterLink>
+                                    ) : null}
+                                    <RouterLink to="/help">Help</RouterLink>
+                                    <RouterLink to="/" onClick={handleLogout}>
+                                        Log Out
+                                    </RouterLink>
+
+                                </>
+
+                            )
+
+
+                                : loggedInStatus && location.pathname === '/adminSettings' ? ( //checks if logged in
+                                    <>
+                                        <RouterLink to="/dashboard">Insights</RouterLink>
                                         <RouterLink to="/help">Help</RouterLink>
+
                                         <RouterLink to="/" onClick={handleLogout}>
                                             Log Out
                                         </RouterLink>
-                    </>
+                                    </>
+
+
+                                )
+                                    : loggedInStatus && location.pathname === '/dashboard' ? ( //checks if logged in
+                                        <>
+                                            <RouterLink to="/adminSettings">Profile</RouterLink>
+                                            <RouterLink to="/help">Help</RouterLink>
+                                            <RouterLink to="/" onClick={handleLogout}>
+                                                Log Out
+                                            </RouterLink>
+                                        </>
+
+
+                                    )
+
+
+                                        : loggedInStatus && (location.pathname === '/menteematches' || location.pathname === '/mentormatches') ? ( //checks if logged in
+                                            <>
+                                                {notifications < 1 ?
+                                                    <RouterLink to="/requests">
+                                                        <img className='notification-icon-header' src={notification} alt="Requests" />
+                                                    </RouterLink> :
+                                                    <RouterLink to="/requests">
+                                                        <img className='notification-exclamation-icon-header' src={notificationExclamation} alt="Requests" />
+                                                    </RouterLink>
+                                                }
+
+                                                <RouterLink to={{
+                                                    pathname: "/profileSettings",
+                                                    state: { user: { userType: user.userType, email: user.email } }
+                                                }}>
+                                                    Profile
+                                                </RouterLink>
+                                                <RouterLink to="/help">Help</RouterLink>
+                                                <RouterLink to="/" onClick={handleLogout}>
+                                                    Log Out
+                                                </RouterLink>
+                                            </>
                                         )
 
-                    :
-                    
-                    //not logged in and not on homepage (sign up/login pages)
+                                            :
 
-                (<>
+                                            //not logged in and not on homepage (sign up/login pages)
 
-                    <RouterLink to="/">Home</RouterLink>
-                    <RouterLink to="/signup">Sign Up</RouterLink>
-                    <RouterLink to="/login">Login</RouterLink>
+                                            (<>
+
+                                                <RouterLink to="/">Home</RouterLink>
+                                                <RouterLink to="/signup">Sign Up</RouterLink>
+                                                <RouterLink to="/login">Login</RouterLink>
 
 
-                </>
-                )}
+                                            </>
+                                            )}
             </div>
         </div>
     );
