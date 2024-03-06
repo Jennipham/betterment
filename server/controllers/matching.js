@@ -14,7 +14,7 @@ function galeShapley(menteePreferences, mentorPreferences, mentees, mentors) {
                     // If the mentor is available, make a match
                     matches[menteePreferredMentor] = mentee.email;
                 } else {
-                    // Mentor is already matched compare based on: The comparison is based on: The mentor's preference order, Sign-up date of the mentees, Count of declined requests by the mentees.
+                    // The comparison is based on: The mentor's preference order, Sign-up date of the mentees, Count of declined requests by the mentees.
                     const currentMenteeIndex = mentorPreferences[menteePreferredMentor].findIndex(email => email === matches[menteePreferredMentor]);
                     const potentialMenteeIndex = mentorPreferences[menteePreferredMentor].findIndex(email => email === mentee.email);
 

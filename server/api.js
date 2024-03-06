@@ -843,6 +843,11 @@ router.post('/requestMatch', async (req, res) => {
             return res.status(404).json({ error: 'Profile not found' });
         }
 
+        // Check if receiver has already sent a request to the sender
+        if (receiverProfile.profileInfo.sentRequests.some(request => request.receiverEmail === senderEmail)) {
+            return res.status(401).json({ error: 'You already have a received request from this user' });
+        }
+
         if (
             senderProfile.profileInfo.sentRequests.some(request => request.receiverEmail === receiverEmail) ||
             receiverProfile.profileInfo.receivedRequests.some(request => request.senderEmail === senderEmail)
@@ -1353,6 +1358,8 @@ router.post('/logout', async (req, res) => {
 
 const matchLogic = async (domainFilter = null) => {
     try {
+
+        // Filter by Available accounts and by Domain
         let query = { 'profileInfo.available': true };
         if (domainFilter) {
             const regex = new RegExp(`@${domainFilter}$`, 'i');
