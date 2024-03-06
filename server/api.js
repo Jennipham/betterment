@@ -269,7 +269,7 @@ const calculateArraySimilarityScore = (array1, array2) => {
 };
 router.get('/getPotentialMatches', async (req, res) => {
     try {
-        const { email, userType, languages, department, officeLocation, developmentAreas, mentoringMethods } = req.query;
+        const { email, userType, language, department, officeLocation, developmentAreas, mentoringMethods } = req.query;
 
         // Extract domain from the email
         const emailParts = email.split('@');
@@ -335,8 +335,8 @@ router.get('/getPotentialMatches', async (req, res) => {
         const filteredProfiles = sortedProfiles.filter(profile => {
             const profileLanguages = profile._doc.profileInfo.languages;
 
-            const commonLanguages = profileLanguages && languages && profileLanguages.filter(language =>
-                languages.includes(language)
+            const commonLanguages = profileLanguages && language && profileLanguages.filter(language =>
+                language.includes(language)
             );
 
             return commonLanguages && commonLanguages.length > 0;

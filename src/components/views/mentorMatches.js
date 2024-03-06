@@ -44,13 +44,12 @@ const customStyles = {
 };
 
 const findHighestScore = (profiles, matchingMethod) => {
-    if (profiles && matchingMethod === 'Algorithm') {
+    if (Array.isArray(profiles) && matchingMethod === 'Algorithm') {
         return Math.max(...profiles.map(mentor => mentor.score), 0);
     } else {
         return 0;
     }
 };
-
 
 const MentorMatches = () => {
 
@@ -190,7 +189,6 @@ const MentorMatches = () => {
             setMatchingMethod(matchingMethod);
         } catch (error) {
             console.error('Error fetching admin match settings:', error);
-            // Handle error if necessary
         }
     };
 
@@ -206,94 +204,81 @@ const MentorMatches = () => {
 
 
     useEffect(() => {
-        const fetchMenteeProfile = async () => {
+        const fetchRandomMentorProfile = async () => {
             try {
-                let response;
+                setIsLoadingProfiles(true);
+                const response = await axios.get(`http://localhost:3001/getRandomMenteeProfile?email=${user.email}`);
+                const userResponse = await axios.get(`http://localhost:3001/getUserDetails?email=${response.data.profile.email}`);
 
-                if (matchingMethod && matchingMethod === 'Random') {
-                    response = await axios.get(`http://localhost:3001/getRandomMenteeProfile?email=${user.email}`);
-                    const userResponse = await axios.get(`http://localhost:3001/getUserDetails?email=${response.data.profile.email}`);
-                    setMenteeProfile(response.data.profile);
-                    setMenteeFname(userResponse.data.user.fname);
-                    setMenteeSname(userResponse.data.user.sname);
-                    sessionStorage.setItem('matchProfile', JSON.stringify(response.data.profile));
+                setMenteeProfile(response.data.profile);
+                setMenteeFname(userResponse.data.user.fname);
+                setMenteeSname(userResponse.data.user.sname);
 
-                }
-
-                else if (matchingMethod && matchingMethod === 'Algorithm') {
-                    response = await axios.get('http://localhost:3001/getPotentialMatches', {
-                        params: {
-                            email: user.email,
-                            userType: user.userType,
-                            languages: user.languages.join(','),
-                            department: user.department,
-                            officeLocation: user.officeLocation,
-                            developmentAreas: user.developmentAreas.join(','),
-                            mentoringMethods: user.mentoringMethods.join(','),
-
-                        },
-                    });
-
-                    const isMatch = response.data.isMatch;
-                    setHasMatch(isMatch);
-
-
-                    if (!isMatch) {
-
-                        const menteeProfilesWithNames = await Promise.all(
-                            response.data.profiles.map(async (mentor) => {
-                                const userDetailsResponse = await fetchNames(mentor._doc.email);
-                                return {
-                                    ...mentor,
-                                    fname: userDetailsResponse ? userDetailsResponse.user.fname : '',
-                                    sname: userDetailsResponse ? userDetailsResponse.user.sname : '',
-                                };
-                            })
-                        );
-                        setMenteeProfile(menteeProfilesWithNames);
-
-
-                    }
-
-
-                    if (isMatch) {
-
-                        const menteeProfilesWithNames = await Promise.all(
-                            response.data.profiles.map(async (mentee) => {
-                                const userDetailsResponse = await fetchNames(mentee.email);
-                                return {
-                                    ...mentee,
-                                    fname: userDetailsResponse ? userDetailsResponse.user.fname : '',
-                                    sname: userDetailsResponse ? userDetailsResponse.user.sname : '',
-                                };
-                            })
-                        );
-                        setMenteeProfile(menteeProfilesWithNames);
-
-
-                    }
-
-                    setIsLoadingProfiles(false);
-
-                    // Update sessionStorage if necessary
-                    sessionStorage.setItem('matchProfile', JSON.stringify(response.data.profiles));
-
-                }
-
+                sessionStorage.setItem('matchProfile', JSON.stringify(response.data.profile));
             } catch (error) {
-                setIsLoadingProfiles(false);
-                console.error('Error fetching data:', error);
                 if (error.response && error.response.status === 404) {
-                    handleErrorMessage('No Mentees Currently Available - Please try again later.');
+                    handleErrorMessage('No Mentors Currently Available - Please try again later.');
                 } else {
                     handleErrorMessage('Error Finding Match.');
                 }
+            } finally {
+                setIsLoadingProfiles(false);
             }
         };
 
-        setIsLoadingProfiles(true);
-        fetchMenteeProfile();
-    }, [matchingMethod, user]);
+        if (matchingMethod && matchingMethod === 'Random') {
+            fetchRandomMentorProfile();
+        }
+    }, [user, matchingMethod]);
+
+    useEffect(() => {
+        const fetchAlgorithmMatches = async () => {
+            try {
+                setIsLoadingProfiles(true);
+                const response = await axios.get('http://localhost:3001/getPotentialMatches', {
+                    params: {
+                        email: user.email,
+                        userType: user.userType,
+                        language: selectedLanguages.join(','),
+                        developmentAreas: selectedDevelopmentAreas.join(','),
+                        mentoringMethods: selectedMethods.join(','),
+                        department: user.department,
+                        officeLocation: user.officeLocation,
+                    },
+                });
+    
+                const isMatch = response.data.isMatch;
+                setHasMatch(isMatch);
+    
+                const menteeProfilesWithNames = await Promise.all(
+                    response.data.profiles.map(async (mentee) => {
+                        const userDetailsResponse = await fetchNames(mentee._doc.email);
+                        return {
+                            ...mentee,
+                            fname: userDetailsResponse ? userDetailsResponse.user.fname : '',
+                            sname: userDetailsResponse ? userDetailsResponse.user.sname : '',
+                        };
+                    })
+                );
+                setMenteeProfile(menteeProfilesWithNames);
+    
+                sessionStorage.setItem('matchProfile', JSON.stringify(response.data.profiles));
+            } catch (error) {
+                if (error.response && error.response.status === 404) {
+                    handleErrorMessage('No Mentors Currently Available - Please try again later.');
+                } else {
+                    handleErrorMessage('Error Finding Match.');
+                }
+            } finally {
+                setIsLoadingProfiles(false);
+            }
+        };
+    
+        if (matchingMethod && matchingMethod === 'Algorithm') {
+            fetchAlgorithmMatches();
+        }
+    }, [user, selectedLanguages, selectedDevelopmentAreas, selectedMethods, matchingMethod]);
+    
 
     const fetchNames = async (email) => {
         try {
@@ -826,6 +811,60 @@ const MentorMatches = () => {
 
                 {matchingMethod === "Algorithm" && !hasMatch && (
                     <>
+                      <div className="filter-section">
+                            <Select
+                                options={languageOptions}
+                                placeholder={selectedLanguages.length > 0 ? `Languages (${selectedLanguages.length})` : 'Languages'}
+                                styles={{ ...customStyles, ...customStylesWithCheckbox }}
+                                isMulti={true}
+                                hideSelectedOptions={false}
+                                controlShouldRenderValue={false}
+                                value={languageOptions.filter(option => selectedLanguages.includes(option.value))}
+                                onChange={(selectedOptions) => handleLanguagesChange(selectedOptions)}
+                            />
+
+
+                            <Select
+                                options={developmentAreaOptions}
+                                placeholder={selectedDevelopmentAreas.length > 0 ? `Development Areas (${selectedDevelopmentAreas.length})` : 'Development Areas'}
+                                styles={{ ...customStyles, ...customStylesWithCheckbox }}
+                                isMulti={true}
+                                hideSelectedOptions={false}
+                                controlShouldRenderValue={false}
+                                value={developmentAreaOptions.filter(option => selectedDevelopmentAreas.includes(option.value))}
+                                onChange={(selectedOptions) => handleDevelopmentAreasChange(selectedOptions)}
+                            />
+
+                            <Select
+                                options={methodOptions}
+                                placeholder={selectedMethods.length > 0 ? `Mentoring Methods (${selectedMethods.length})` : 'Mentoring Methods'}
+                                styles={{ ...customStyles, ...customStylesWithCheckbox }}
+                                isMulti={true}
+                                hideSelectedOptions={false}
+                                controlShouldRenderValue={false}
+                                value={methodOptions.filter(option => selectedMethods.includes(option.value))}
+                                onChange={(selectedOptions) => handleMethodsChange(selectedOptions)}
+
+                            />
+
+                            <Select
+                                isMulti={false}
+                                options={officeLocationOptions}
+                                placeholder="Office Location"
+                                styles={customStyles}
+                                value={officeLocationOptions.find(option => option.value === selectedLocation)}
+                                onChange={(selectedOption) => handleLocationChange(selectedOption)}
+                            />
+
+                            <div className='save-icon'>
+                                <img src={save} onClick={handleSave} alt="Save to Profile" title="Save to Profile" />
+                            </div>
+
+                            <div className='reset-icon'>
+                                <img src={reset} onClick={handleReset} alt="Reset Filters" title="Reset Filters" />
+                            </div>
+
+                        </div>
                         <h2 className='top-match'>Your Matches:</h2>
                         {isLoadingProfiles ? (
                             <div className="loader-container">
@@ -914,7 +953,7 @@ const MentorMatches = () => {
                                     </div>
 
                                     <div className="matching-info-left">
-                                        <p>Location: {capitaliseFirstLetter(user.location)}</p>
+                                        <p>Location: {capitaliseFirstLetter(user.officeLocation)}</p>
                                         <p>Development Areas: {user.developmentAreas ? user.developmentAreas.join(', ') : ''}</p>
                                         <p>Methods of Mentoring: {user.mentoringMethods ? mapValuesToLabels(user.mentoringMethods, methodOptions).join(', ') : ''}</p>
                                     </div>
