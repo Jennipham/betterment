@@ -45,7 +45,7 @@ const customStyles = {
 
 const findHighestScore = (profiles, matchingMethod) => {
     if (Array.isArray(profiles) && matchingMethod === 'Algorithm') {
-        return Math.max(...profiles.map(mentor => mentor.score), 0);
+        return Math.max(...profiles.map(mentee => mentee.score), 0);
     } else {
         return 0;
     }
@@ -204,7 +204,7 @@ const MentorMatches = () => {
 
 
     useEffect(() => {
-        const fetchRandomMentorProfile = async () => {
+        const fetchRandomMenteeProfile = async () => {
             try {
                 setIsLoadingProfiles(true);
                 const response = await axios.get(`http://localhost:3001/getRandomMenteeProfile?email=${user.email}`);
@@ -227,7 +227,7 @@ const MentorMatches = () => {
         };
 
         if (matchingMethod && matchingMethod === 'Random') {
-            fetchRandomMentorProfile();
+            fetchRandomMenteeProfile();
         }
     }, [user, matchingMethod]);
 
@@ -252,7 +252,7 @@ const MentorMatches = () => {
     
                 const menteeProfilesWithNames = await Promise.all(
                     response.data.profiles.map(async (mentee) => {
-                        const userDetailsResponse = await fetchNames(mentee._doc.email);
+                        const userDetailsResponse = await fetchNames(mentee.email);
                         return {
                             ...mentee,
                             fname: userDetailsResponse ? userDetailsResponse.user.fname : '',
@@ -863,6 +863,7 @@ const MentorMatches = () => {
                             <div className='reset-icon'>
                                 <img src={reset} onClick={handleReset} alt="Reset Filters" title="Reset Filters" />
                             </div>
+
 
                         </div>
                         <h2 className='top-match'>Your Matches:</h2>
