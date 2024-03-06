@@ -1512,13 +1512,11 @@ router.get('/matched-stats/:adminEmail', async (req, res) => {
         // Get all mentor profiles with the same domain and available
         const mentorProfiles = await MentorProfile.find({
             'email': { $regex: new RegExp(`@${domain}$`, 'i') },
-            'profileInfo.available': true,
         });
 
         // Get all mentee profiles with the same domain and available
         const menteeProfiles = await MenteeProfile.find({
             'email': { $regex: new RegExp(`@${domain}$`, 'i') },
-            'profileInfo.available': true,
         });
 
         // Calculate total number of users
