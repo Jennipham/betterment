@@ -125,7 +125,7 @@ const FullProfile = () => {
                         </div>
                         <div className="profile-info">
                             <p>Development Areas: {matchProfile && matchProfile.profileInfo.developmentAreas ? matchProfile.profileInfo.developmentAreas.join(', ') : ''}</p>
-                            <p>Methods of Matching: {matchProfile && matchProfile.profileInfo.matchingMethods ? mapValuesToLabels(matchProfile.profileInfo.mentoringMethods, methodOptions).join(', ') : ''}</p>
+                            <p>Methods of Mentoring: {matchProfile && matchProfile.profileInfo.mentoringMethods ? mapValuesToLabels(matchProfile.profileInfo.mentoringMethods, methodOptions).join(', ') : ''}</p>
                         </div>
                     </div>
                 </div>

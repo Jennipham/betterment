@@ -235,3 +235,17 @@
     margin: 0px;
 }
 
+.view-questionnaire {
+    width: 600px;
+    transition: transform 0.5s ease-in-out;
+    animation: pulse 1s infinite;
+}
+  
+  @keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.03);
+    }
+}

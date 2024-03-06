@@ -731,7 +731,7 @@ const MenteeMatches = () => {
                                                             <div className="matching-info-left">
                                                                 <p>Location: {mentor.profileInfo && mentor.profileInfo.officeLocation ? capitaliseFirstLetter(mentor.profileInfo.officeLocation) : 'Not specified'}</p>
                                                                 <p>Development Areas: {mentor.profileInfo && mentor.profileInfo.developmentAreas ? mentor.profileInfo.developmentAreas.join(', ') : 'Not specified'}</p>
-                                                                <p>Methods of Matching: {mentor.profileInfo && mentor.profileInfo.mentoringMethods ? mentor.profileInfo.mentoringMethods.join(', ') : 'Not specified'}</p>
+                                                                <p>Methods of Mentoring: {mentor.profileInfo && mentor.profileInfo.mentoringMethods ? mentor.profileInfo.mentoringMethods.join(', ') : 'Not specified'}</p>
                                                             </div>
 
                                                             <div className="bottom-buttons-container-manual">
@@ -783,7 +783,7 @@ const MenteeMatches = () => {
                                     <div className="matching-info-left">
                                         <p>Location: {capitaliseFirstLetter(user.officeLocation)}</p>
                                         <p>Development Areas: {user.developmentAreas ? user.developmentAreas.join(', ') : ''}</p>
-                                        <p>Methods of Matching: {user.mentoringMethods ? mapValuesToLabels(user.mentoringMethods, methodOptions).join(', ') : ''}</p>
+                                        <p>Methods of Mentoring: {user.mentoringMethods ? mapValuesToLabels(user.mentoringMethods, methodOptions).join(', ') : ''}</p>
                                     </div>
 
                                     <div className="bottom-right-button">
@@ -818,7 +818,7 @@ const MenteeMatches = () => {
                                     <div className="matching-info-right">
                                         <p>Location: {mentorProfile[0].profileInfo && mentorProfile[0].profileInfo.officeLocation ? capitaliseFirstLetter(mentorProfile[0].profileInfo.officeLocation) : ''}</p>
                                         <p>Development Areas: {mentorProfile[0].profileInfo && mentorProfile[0].profileInfo.developmentAreas ? mentorProfile[0].profileInfo.developmentAreas.join(', ') : ''}</p>
-                                        <p>Methods of Matching: {mentorProfile[0].profileInfo && mentorProfile[0].profileInfo.mentoringMethods ? mapValuesToLabels(mentorProfile[0].profileInfo.mentoringMethods, methodOptions).join(', ') : ''}</p>
+                                        <p>Methods of Mentoring: {mentorProfile[0].profileInfo && mentorProfile[0].profileInfo.mentoringMethods ? mapValuesToLabels(mentorProfile[0].profileInfo.mentoringMethods, methodOptions).join(', ') : ''}</p>
                                     </div>
 
                                     <div className="bottom-buttons-container">
@@ -885,7 +885,7 @@ const MenteeMatches = () => {
                                                                 <div className="matching-info-left">
                                                                     <p>Location: {mentor._doc && mentor._doc.profileInfo && mentor._doc.profileInfo.officeLocation ? capitaliseFirstLetter(mentor._doc.profileInfo.officeLocation) : 'Not specified'}</p>
                                                                     <p>Development Areas: {mentor._doc && mentor._doc.profileInfo && mentor._doc.profileInfo.developmentAreas ? mentor._doc.profileInfo.developmentAreas.join(', ') : 'Not specified'}</p>
-                                                                    <p>Methods of Matching: {mentor._doc && mentor._doc.profileInfo && mentor._doc.profileInfo.mentoringMethods ? mentor._doc.profileInfo.mentoringMethods.join(', ') : 'Not specified'}</p>
+                                                                    <p>Methods of Mentoring: {mentor._doc && mentor._doc.profileInfo && mentor._doc.profileInfo.mentoringMethods ? mentor._doc.profileInfo.mentoringMethods.join(', ') : 'Not specified'}</p>
                                                                 </div>
 
                                                                 <div className="bottom-buttons-container-manual">
@@ -932,7 +932,7 @@ const MenteeMatches = () => {
                                     <div className="matching-info-left">
                                         <p>Location: {capitaliseFirstLetter(user.location)}</p>
                                         <p>Development Areas: {user.developmentAreas ? user.developmentAreas.join(', ') : ''}</p>
-                                        <p>Methods of Matching: {user.mentoringMethods ? mapValuesToLabels(user.mentoringMethods, methodOptions).join(', ') : ''}</p>
+                                        <p>Methods of Mentoring: {user.mentoringMethods ? mapValuesToLabels(user.mentoringMethods, methodOptions).join(', ') : ''}</p>
                                     </div>
 
                                     <div className="bottom-right-button">
@@ -967,7 +967,7 @@ const MenteeMatches = () => {
                                     <div className="matching-info-right">
                                         <p>Location: {mentorProfile.profileInfo && mentorProfile.profileInfo.officeLocation ? capitaliseFirstLetter(mentorProfile.profileInfo.officeLocation) : ''}</p>
                                         <p>Development Areas: {mentorProfile.profileInfo && mentorProfile.profileInfo.developmentAreas ? mentorProfile.profileInfo.developmentAreas.join(', ') : ''}</p>
-                                        <p>Methods of Matching: {mentorProfile.profileInfo && mentorProfile.profileInfo.mentoringMethods ? mapValuesToLabels(mentorProfile.profileInfo.mentoringMethods, methodOptions).join(', ') : ''}</p>
+                                        <p>Methods of Mentoring: {mentorProfile.profileInfo && mentorProfile.profileInfo.mentoringMethods ? mapValuesToLabels(mentorProfile.profileInfo.mentoringMethods, methodOptions).join(', ') : ''}</p>
                                     </div>
 
                                     <div className="bottom-buttons-container">
@@ -997,7 +997,7 @@ const MenteeMatches = () => {
                 )}
                 {matchingMethod !== 'Random' && !hasMatch  ?
                     (<button className='view-shortlist' onClick={handleShortlistClick}>View Shortlist</button>) :
-                    (<button className='view-shortlist' onClick={handleShortlistClick}>Complete Feedback Questionnaire</button>) 
+                    (<button className='view-questionnaire' onClick={handleShortlistClick}>Complete Feedback Questionnaire</button>) 
                 }
 
             </div >
