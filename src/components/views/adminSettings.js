@@ -338,7 +338,7 @@ const AdminSettings = () => {
                                     }
                                 />
                             </p>
-                            <Tooltip text="Withholds users' names in matching to prevent bias">
+                            <Tooltip text="Blind Matching withholds users' names in matching to prevent bias">
                                 <img src={moreInfo} alt="More Info" className="more-info-icon" />
                             </Tooltip>
                         </div>
