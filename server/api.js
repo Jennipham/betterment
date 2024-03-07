@@ -1486,14 +1486,14 @@ cron.schedule('0 0 */14 * *', async () => {
 });
 
 // Minute then hour
-cron.schedule('03 01 * * *', async () => {
-    try {
-        console.log('Running matching process for @test.com accounts...');
-        await matchLogic("test.com"); // Pass "test.com" as the domain
-    } catch (error) {
-        console.error('Error during scheduled matching process:', error);
-    }
-});
+// cron.schedule('03 01 * * *', async () => {
+//     try {
+//         console.log('Running matching process for @test.com accounts...');
+//         await matchLogic("test.com"); // Pass "test.com" as the domain
+//     } catch (error) {
+//         console.error('Error during scheduled matching process:', error);
+//     }
+// });
 
 const calculateNextMatchDay = () => {
     const today = new Date();
