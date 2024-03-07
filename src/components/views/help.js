@@ -19,7 +19,7 @@ const Help = () => {
     const faqData = [
         {
             question: "What is BetterMent?",
-            answer: "BetterMent is an online platform that takes user profile information and matches employees to executive mentors within an organisation."
+            answer: "BetterMent is an online platform that takes user profile information and matches employees to executive mentors within an organisation. BetterMent aims to optimise match pairing as opposed to just match suggestions for users in order to optimise mentoring initiatives for mentees,mentors and the wider organisation."
         },
         {
             question: "How does matching work?",

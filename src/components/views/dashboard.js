@@ -47,7 +47,7 @@ const Dashboard = () => {
         // Function to fetch user stats
         const fetchUserCountStats = async () => {
             try {
-                const adminEmail = user.email; // Replace with your admin email
+                const adminEmail = user.email; 
                 const response = await fetch(`http://localhost:3001/matched-stats/${adminEmail}`);
                 const data = await response.json();
 
@@ -76,8 +76,8 @@ const Dashboard = () => {
             datasets: [
                 {
                     data: [userCountStats.mentorCount, userCountStats.menteeCount],
-                    backgroundColor: ['#3BBED1', '#007785'], // You can customize the colors
-                    hoverBackgroundColor: ['#3BBED1', '#007785'],
+                    backgroundColor: ['#007785', '#3BBED1'],
+                    hoverBackgroundColor: ['#007785', '#3BBED1'],
                 },
             ],
         };

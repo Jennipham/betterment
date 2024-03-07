@@ -22,7 +22,7 @@ Privacy:
 Your privacy is important to us. Review our Privacy Policy to understand how we collect, use, and protect your information.
 Intellectual Property:
 
-All trademarks, logos, and content are the property of [Your Company]. Unauthorized use is prohibited.
+All trademarks, logos, and content are the property of Betterment. Unauthorized use is prohibited.
 Third-Party Links:
 
 Our website may contain links to third-party websites. We are not responsible for the content or practices of these sites.
@@ -31,7 +31,7 @@ Disclaimer of Warranties:
 Use our website at your own risk. We make no warranties regarding the accuracy, completeness, or reliability of the content.
 Limitation of Liability:
 
-[Your Company] shall not be liable for any direct, indirect, incidental, or consequential damages arising from your use of the website.
+BetterMent shall not be liable for any direct, indirect, incidental, or consequential damages arising from your use of the website.
 Termination:
 
 We reserve the right to terminate or suspend your access to the website at our discretion.
@@ -40,8 +40,8 @@ Changes to Terms:
 We may update these terms at any time. Check this page periodically for changes.
 Governing Law:
 
-These terms are governed by and construed in accordance with the laws of [Your Jurisdiction].
-Thank you for using [Your Website/Service]!</p>
+These terms are governed by and construed in accordance with the laws of the United Kingdom.
+Thank you for using BetterMent!</p>
             </div>
         </>
     );
