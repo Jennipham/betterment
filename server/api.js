@@ -1355,8 +1355,30 @@ const matchLogic = async (domainFilter = null) => {
         }
 
         // Fetch shortlists for mentees and mentors
-        const menteesShortlist = await MenteeProfile.find(query, 'email profileInfo.shortlistOrder');
-        const mentorsShortlist = await MentorProfile.find(query, 'email profileInfo.shortlistOrder');
+        // Fetch shortlists for mentees and mentors sorted by sign-up date
+const menteesShortlist = await MenteeProfile.find(query, 'email profileInfo.shortlistOrder').sort({ 'profileInfo.signUpDate': 1 });
+const mentorsShortlist = await MentorProfile.find(query, 'email profileInfo.shortlistOrder').sort({ 'profileInfo.signUpDate': 1 });
+
+
+        console.log('Mentees Shortlist:');
+menteesShortlist.forEach(mentee => {
+    console.log(`Mentee Email: ${mentee.email}`);
+    console.log('Shortlist Order:');
+    mentee.profileInfo.shortlistOrder.forEach(item => {
+        console.log(`  Request ID: ${item.requestId}`);
+    });
+    console.log('-------------------------');
+});
+
+console.log('Mentors Shortlist:');
+mentorsShortlist.forEach(mentor => {
+    console.log(`Mentor Email: ${mentor.email}`);
+    console.log('Shortlist Order:');
+    mentor.profileInfo.shortlistOrder.forEach(item => {
+        console.log(`  Request ID: ${item.requestId}`);
+    });
+    console.log('-------------------------');
+});
 
         let allRequestIds = []; // Array to store all request IDs
         let requestIdToMatchEmailMap = {}; // Mapping of request IDs to match emails
@@ -1464,14 +1486,14 @@ cron.schedule('0 0 */14 * *', async () => {
 });
 
 // Minute then hour
-// cron.schedule('17 10 * * *', async () => {
-//     try {
-//         console.log('Running matching process for @test.com accounts...');
-//         await matchLogic("test.com"); // Pass "test.com" as the domain
-//     } catch (error) {
-//         console.error('Error during scheduled matching process:', error);
-//     }
-// });
+cron.schedule('03 01 * * *', async () => {
+    try {
+        console.log('Running matching process for @test.com accounts...');
+        await matchLogic("test.com"); // Pass "test.com" as the domain
+    } catch (error) {
+        console.error('Error during scheduled matching process:', error);
+    }
+});
 
 const calculateNextMatchDay = () => {
     const today = new Date();
