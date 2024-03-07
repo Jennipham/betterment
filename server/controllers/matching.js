@@ -26,7 +26,8 @@ function galeShapley(menteePreferences, mentorPreferences, mentees, mentors) {
                     const isNewMenteePreferred = (potentialMenteeIndex < currentMenteeIndex) ||
                         (potentialMenteeIndex === currentMenteeIndex &&
                             (potentialMenteeProfile.signUpDate < currentMenteeProfile.signUpDate ||
-                                potentialMenteeProfile.profileInfo.declinedRequestsCount < currentMenteeProfile.profileInfo.declinedRequestsCount));
+                                (potentialMenteeProfile.profileInfo.declinedRequestsCount > 3 &&
+                                 potentialMenteeProfile.profileInfo.declinedRequestsCount < currentMenteeProfile.profileInfo.declinedRequestsCount)));
 
                     if (isNewMenteePreferred) {
                         // If the new mentee is preferred, update the match
