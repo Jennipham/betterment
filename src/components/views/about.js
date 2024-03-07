@@ -7,10 +7,10 @@ import handshake from '../images/handshake.png';
 
 
 const About = () => {
-    const [activeButton, setActiveButton] = useState('I am an Employee');
+    const [activeButton, setActiveButton] = useState('I am a Mentee');
 
     const handleFindCoachClick = () => {
-        setActiveButton('I am an Employee');
+        setActiveButton('I am a Mentee');
     };
 
     const handleIAmCoachClick = () => {
@@ -29,10 +29,10 @@ const About = () => {
                         onClick={() => {
                             handleFindCoachClick();
                         }}
-                        className={`find-coach-button ${activeButton === 'I am an Employee' ? 'active' : ''
+                        className={`find-coach-button ${activeButton === 'I am a Mentee' ? 'active' : ''
                             }`}
                     >
-                        I am an Employee
+                        I am a Mentee
                     </button>
                     <button
                         onClick={() => {
@@ -54,7 +54,7 @@ const About = () => {
                     </button>
                 </div>
                 <div className="card-container">
-                    {activeButton === 'I am an Employee' && (
+                    {activeButton === 'I am a Mentee' && (
                         <>
                             <div className="card">
                                 <p>1. Create Your Profile</p>
