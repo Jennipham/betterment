@@ -28,5 +28,6 @@
     font-size: 1em;
     flex:content;
     text-decoration: underline;
+    cursor: pointer;
 
 }
