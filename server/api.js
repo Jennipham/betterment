@@ -1346,7 +1346,6 @@ router.post('/logout', async (req, res) => {
 
 const matchLogic = async (domainFilter = null) => {
     try {
-
         // Filter by Available accounts and by Domain
         let query = { 'profileInfo.available': true };
         if (domainFilter) {
@@ -1355,30 +1354,28 @@ const matchLogic = async (domainFilter = null) => {
         }
 
         // Fetch shortlists for mentees and mentors
-        // Fetch shortlists for mentees and mentors sorted by sign-up date
-const menteesShortlist = await MenteeProfile.find(query, 'email profileInfo.shortlistOrder').sort({ 'profileInfo.signUpDate': 1 });
-const mentorsShortlist = await MentorProfile.find(query, 'email profileInfo.shortlistOrder').sort({ 'profileInfo.signUpDate': 1 });
-
+        const menteesShortlist = await MenteeProfile.find(query, 'email profileInfo.shortlistOrder').sort({ 'profileInfo.signUpDate': 1 });
+        const mentorsShortlist = await MentorProfile.find(query, 'email profileInfo.shortlistOrder').sort({ 'profileInfo.signUpDate': 1 });
 
         console.log('Mentees Shortlist:');
-menteesShortlist.forEach(mentee => {
-    console.log(`Mentee Email: ${mentee.email}`);
-    console.log('Shortlist Order:');
-    mentee.profileInfo.shortlistOrder.forEach(item => {
-        console.log(`  Request ID: ${item.requestId}`);
-    });
-    console.log('-------------------------');
-});
+        menteesShortlist.forEach(mentee => {
+            console.log(`Mentee Email: ${mentee.email}`);
+            console.log('Shortlist Order:');
+            mentee.profileInfo.shortlistOrder.forEach(item => {
+                console.log(`  Request ID: ${item.requestId}`);
+            });
+            console.log('-------------------------');
+        });
 
-console.log('Mentors Shortlist:');
-mentorsShortlist.forEach(mentor => {
-    console.log(`Mentor Email: ${mentor.email}`);
-    console.log('Shortlist Order:');
-    mentor.profileInfo.shortlistOrder.forEach(item => {
-        console.log(`  Request ID: ${item.requestId}`);
-    });
-    console.log('-------------------------');
-});
+        console.log('Mentors Shortlist:');
+        mentorsShortlist.forEach(mentor => {
+            console.log(`Mentor Email: ${mentor.email}`);
+            console.log('Shortlist Order:');
+            mentor.profileInfo.shortlistOrder.forEach(item => {
+                console.log(`  Request ID: ${item.requestId}`);
+            });
+            console.log('-------------------------');
+        });
 
         let allRequestIds = []; // Array to store all request IDs
         let requestIdToMatchEmailMap = {}; // Mapping of request IDs to match emails
@@ -1398,6 +1395,13 @@ mentorsShortlist.forEach(mentor => {
                 // Fetch sent request
                 const sentRequest = await MenteeProfile.findOne({ 'profileInfo.sentRequests._id': item.requestId }, 'profileInfo.sentRequests.$');
                 if (sentRequest) {
+                    if (!sentRequest.profileInfo.sentRequests[0].accepted) {
+                        // If the request is not accepted, remove it from the shortlistOrder
+                        await MenteeProfile.findOneAndUpdate(
+                            { 'email': mentee.email },
+                            { $pull: { 'profileInfo.shortlistOrder': { 'requestId': item.requestId } } }
+                        );
+                    }
                     requestIdToMatchEmailMap[item.requestId.toString()] = sentRequest.profileInfo.sentRequests[0].receiverEmail;
                 }
             }
@@ -1446,7 +1450,7 @@ mentorsShortlist.forEach(mentor => {
         }));
 
         // Implement Gale-Shapley algorithm
-        const matches = galeShapley(menteePreferences, mentorPreferences);
+        const matches = galeShapley(menteePreferences, mentorPreferences, menteesShortlist, mentorsShortlist);
         console.log(matches);
 
         // Iterate through matches and update profiles
@@ -1486,14 +1490,14 @@ cron.schedule('0 0 */14 * *', async () => {
 });
 
 // Minute then hour
-// cron.schedule('03 01 * * *', async () => {
-//     try {
-//         console.log('Running matching process for @test.com accounts...');
-//         await matchLogic("test.com"); // Pass "test.com" as the domain
-//     } catch (error) {
-//         console.error('Error during scheduled matching process:', error);
-//     }
-// });
+cron.schedule('21 19 * * *', async () => {
+    try {
+        console.log('Running matching process for @test.com accounts...');
+        await matchLogic("test.com"); // Pass "test.com" as the domain
+    } catch (error) {
+        console.error('Error during scheduled matching process:', error);
+    }
+});
 
 const calculateNextMatchDay = () => {
     const today = new Date();
