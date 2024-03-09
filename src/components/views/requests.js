@@ -13,21 +13,6 @@ import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 
 const Requests = () => {
 
-    const calculateDaysLeft = () => {
-        const matchingRoundDate = new Date();
-
-        // Set the time to be the next occurrence of the matching round (e.g., every 14 days)
-        matchingRoundDate.setDate(matchingRoundDate.getDate() + 14);
-
-        // Calculate the time difference in milliseconds
-        const timeDiff = matchingRoundDate.getTime() - Date.now();
-
-        // Calculate days left
-        const daysLeft = Math.ceil(timeDiff / (1000 * 3600 * 24));
-
-        return daysLeft > 0 ? daysLeft : 0; // Ensure daysLeft is non-negative
-    };
-
     const [isMatched, setIsMatched] = useState(false);
 
     const [daysUntilNextMatch, setDaysUntilNextMatch] = useState(null);
@@ -85,18 +70,15 @@ const Requests = () => {
                     return;
                 }
 
-
                 if (userType !== '') {
                     const userResponse = await axios.post('http://localhost:3001/getProfile', {
                         email: email,
                         userType: userType,
-                    })
-
+                    });
 
                     if (Array.isArray(userResponse.data.profile.profileInfo.matches) && userResponse.data.profile.profileInfo.matches.length > 0) {
                         setIsMatched(true);
                     }
-
                 }
 
                 // Fetch received requests directly using user information
@@ -105,8 +87,18 @@ const Requests = () => {
                     userType,
                 });
 
-                const activeReceivedRequests = receivedResponse.data.receivedRequests.filter(request => !request.declined);
+                // Filter out received requests from users who have available: false and are not declined
+                const filteredReceivedRequests = await Promise.all(receivedResponse.data.receivedRequests.map(async (request) => {
+                    const senderProfileResponse = await axios.post('http://localhost:3001/getProfile', {
+                        email: request.senderEmail,
+                        userType: userType === "mentee" ? "mentor" : "mentee",
+                    });
+                    if (senderProfileResponse.data.profileInfo.available && !request.declined) {
+                        return request;
+                    }
+                }));
 
+                setReceivedRequests(filteredReceivedRequests.filter(Boolean));
 
                 // Fetch sent requests
                 const sentResponse = await axios.post('http://localhost:3001/getSentRequests', {
@@ -114,11 +106,24 @@ const Requests = () => {
                     userType,
                 });
 
+                // Filter out sent requests to users who have available: false and are not declined
+                const filteredSentRequests = await Promise.all(sentResponse.data.sentRequests.map(async (request) => {
+                    const receiverProfileResponse = await axios.post('http://localhost:3001/getProfile', {
+                        email: request.receiverEmail,
+                        userType: userType === "mentee" ? "mentor" : "mentee",
+                    });
+                    if (receiverProfileResponse.data.profileInfo.available && !request.declined) {
+                        return request;
+                    }
+                }));
+
+                setSentRequests(filteredSentRequests.filter(Boolean));
+
                 // Combine received and sent requests
                 const combinedRequests = [
-                    ...activeReceivedRequests.map(request => ({ ...request, type: 'received' })),
-                    ...sentResponse.data.sentRequests.map(request => ({ ...request, type: 'sent' })),
-                ];
+                    ...filteredReceivedRequests.map(request => ({ ...request, type: 'received' })),
+                    ...filteredSentRequests.map(request => ({ ...request, type: 'sent' })),
+                ].filter(Boolean);
 
                 console.log('Combined Requests:', combinedRequests);
 
@@ -164,6 +169,7 @@ const Requests = () => {
 
         fetchData();
     }, []);
+
 
     useEffect(() => {
         const fetchUserProfileAndMatchSettings = async () => {
