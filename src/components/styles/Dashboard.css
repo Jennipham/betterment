@@ -48,3 +48,11 @@
     text-align: center; 
     margin-bottom: -20px;
 }
+
+.average-matches-per-date p{
+    color: #007785;
+    font-size: 150px;
+    font-weight: bold;
+    text-align: center; 
+    margin-bottom: -20px;
+}

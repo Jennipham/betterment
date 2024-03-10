@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import '../styles/Dashboard.css';
 import { Doughnut, Bar, Pie } from 'react-chartjs-2';
 import 'chart.js/auto';
+import 'chartjs-adapter-moment';
 import Header from '../utils/header';
 import Footer from '../utils/footer';
 import Loader from '../utils/loader';
+import axios from 'axios';
 
 
 const Dashboard = () => {
@@ -14,6 +16,7 @@ const Dashboard = () => {
     const [departmentStats, setDepartmentStats] = useState(null);
     const [developmentAreaStats, setDevelopmentAreaStats] = useState(null);
     const [locationStats, setLocationStats] = useState(null);
+    const [matchByDateStats, setMatchByDateStats] = useState(null);
 
 
     const [countLoading, setCountLoading] = useState(true);
@@ -22,6 +25,7 @@ const Dashboard = () => {
     const [departmentLoading, setDepartmentLoading] = useState(true);
     const [developmentAreaLoading, setDevelopmentAreaLoading] = useState(true);
     const [locationLoading, setLocationLoading] = useState(true);
+    const [matchByDateLoading, setMatchByDateLoading] = useState(true);
 
 
     const [user, setUser] = useState({
@@ -47,7 +51,7 @@ const Dashboard = () => {
         // Function to fetch user stats
         const fetchUserCountStats = async () => {
             try {
-                const adminEmail = user.email; 
+                const adminEmail = user.email;
                 const response = await fetch(`http://localhost:3001/matched-stats/${adminEmail}`);
                 const data = await response.json();
 
@@ -177,17 +181,17 @@ const Dashboard = () => {
         if (!signupDurationStats || signupDurationStats.averageSignupDurationDays == null) {
             return null;
         }
-    
+
         const averageSignupDuration = signupDurationStats.averageSignupDurationDays;
         const formattedAverageSignupDuration = averageSignupDuration.toFixed(2);
-    
+
         return (
             <div className='average-duration'>
                 <p>{formattedAverageSignupDuration}</p>
             </div>
         );
     };
-    
+
 
     useEffect(() => {
         const fetchDepartmentStats = async () => {
@@ -243,18 +247,18 @@ const Dashboard = () => {
 
     useEffect(() => {
         const fetchDevelopmentAreaStats = async () => {
-        try {
-            const adminEmail = user.email;
-            const response = await fetch(`http://localhost:3001/development-area-stats/${adminEmail}`);
-            const data = await response.json();
+            try {
+                const adminEmail = user.email;
+                const response = await fetch(`http://localhost:3001/development-area-stats/${adminEmail}`);
+                const data = await response.json();
 
-            setDevelopmentAreaStats(data.developmentAreaStats);
-        } catch (error) {
-            console.error('Error fetching development area stats:', error);
-        } finally {
-            setDevelopmentAreaLoading(false);
-        }
-    };
+                setDevelopmentAreaStats(data.developmentAreaStats);
+            } catch (error) {
+                console.error('Error fetching development area stats:', error);
+            } finally {
+                setDevelopmentAreaLoading(false);
+            }
+        };
 
         fetchDevelopmentAreaStats();
     }, []);
@@ -263,7 +267,7 @@ const Dashboard = () => {
         if (!developmentAreaStats) {
             return null;
         }
-    
+
         const data = {
             labels: developmentAreaStats.map((entry) => entry.developmentArea),
             datasets: [
@@ -284,7 +288,7 @@ const Dashboard = () => {
                 },
             ],
         };
-    
+
         return <Pie className="pie-chart" data={data} />;
     };
 
@@ -311,10 +315,10 @@ const Dashboard = () => {
         if (!locationStats) {
             return null;
         }
-    
+
         const labels = locationStats.map((entry) => entry.location === '' ? 'Not Disclosed' : entry.location);
         const data = locationStats.map((entry) => entry.userCount);
-    
+
         const pieChartData = {
             labels,
             datasets: [
@@ -335,10 +339,81 @@ const Dashboard = () => {
                 },
             ],
         };
-    
+
         return <Pie data={pieChartData} />;
     };
+
+    useEffect(() => {
+        const fetchMatchByDateStats = async () => {
+            try {
+                const adminEmail = user.email;
+                const response = await axios.get(`http://localhost:3001/match-data-by-date/${adminEmail}`);
+                setMatchByDateStats(response.data);
+            } catch (error) {
+                console.error('Error fetching match data:', error);
+            } finally {
+                setMatchByDateLoading(false);
+            }
+        };
+
+        fetchMatchByDateStats();
+    }, []);
+
+    const renderMatchDataBarChart = () => {
+        if (!matchByDateStats) {
+            return null;
+        }
     
+        const chartData = {
+            labels: Object.keys(matchByDateStats),
+            datasets: [
+                {
+                    label: 'Matches by Date',
+                    data: Object.values(matchByDateStats),
+                    backgroundColor: '#3BBED1',
+                    borderWidth: 1,
+                },
+            ],
+        };
+    
+        const options = {
+            scales: {
+                x: {
+                    type: 'time',
+                    time: {
+                        unit: 'day',
+                        displayFormats: {
+                            day: 'MMM DD',
+                        },
+                    },
+                },
+                y: {
+                    beginAtZero: true,
+                    stepSize: 1,
+                },
+            },
+        };
+    
+        return <Bar data={chartData} options={options} />;
+    };
+
+    const renderAverageMatchesPerDate = () => {
+        if (!matchByDateStats) {
+            return null;
+        }
+    
+        const dates = Object.keys(matchByDateStats);
+        const matchesPerDate = Object.values(matchByDateStats);
+        const totalMatches = matchesPerDate.reduce((total, matches) => total + matches, 0);
+        const averageMatchesPerDate = totalMatches / dates.length;
+    
+        return (
+            <div className='average-matches-per-date'>
+                <p>{averageMatchesPerDate.toFixed(2)}</p>
+            </div>
+        );
+    };
+
 
 
     return (
@@ -383,6 +458,22 @@ const Dashboard = () => {
                     </div>
 
                 </div>
+
+                <div className="chart-container">
+
+                <div className="chart-item">
+                    <h2 className='chart-title'>Matches by Date</h2>
+                    {matchByDateLoading ? <Loader /> : renderMatchDataBarChart()}
+                </div>
+
+
+                <div className="chart-item">
+                    <h2 className='chart-title'>Average Matches per Round</h2>
+                    {matchByDateLoading ? <Loader /> : renderAverageMatchesPerDate()}
+                </div>
+                </div>
+
+
             </div>
 
             <Footer />

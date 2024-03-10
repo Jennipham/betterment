@@ -8,8 +8,9 @@ const MentorProfile = require('./models/mentorProfiles');
 const ManagerProfile = require('./models/managerProfiles');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const { validationResult } = require('express-validator'); // For input validation
+const { validationResult } = require('express-validator');
 const galeShapley = require('./controllers/matching');
+const moment = require('moment');
 
 require('dotenv').config();
 
@@ -1780,6 +1781,46 @@ router.get('/location-stats/:adminEmail', async (req, res) => {
     }
 });
 
+router.get('/match-data-by-date/:adminEmail', async (req, res) => {
+    try {
+        const adminEmail = req.params.adminEmail;
+
+        // Extract domain from admin email
+        const domain = adminEmail.split('@')[1];
+
+        // Fetch mentee profiles with the same domain
+        const menteeProfiles = await MenteeProfile.find({
+            'email': { $regex: new RegExp(`@${domain}$`, 'i') },
+        });
+
+        // Fetch mentor profiles with the same domain
+        const mentorProfiles = await MentorProfile.find({
+            'email': { $regex: new RegExp(`@${domain}$`, 'i') },
+        });
+
+        // Extract match data from both mentee and mentor profiles
+        const menteeMatchData = menteeProfiles.flatMap(profile => profile.profileInfo.matches);
+        const mentorMatchData = mentorProfiles.flatMap(profile => profile.profileInfo.matches);
+
+        // Combine match data from both mentees and mentors
+        const allMatchData = [...menteeMatchData, ...mentorMatchData];
+
+        // Extract dates from match data
+        const matchDates = allMatchData.map(match => moment(match.date).format('YYYY-MM-DD'));
+
+        // Count matches by date
+        const matchCountByDate = matchDates.reduce((acc, date) => {
+            acc[date] = (acc[date] || 0) + 1;
+            return acc;
+        }, {});
+
+        // Return the match count by date
+        res.json(matchCountByDate);
+    } catch (error) {
+        console.error('Error fetching match data by date:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
 
 
 module.exports = router;
