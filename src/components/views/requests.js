@@ -99,6 +99,7 @@ const Requests = () => {
                 }));
 
                 setReceivedRequests(filteredReceivedRequests.filter(Boolean));
+                console.log("received: ",receivedRequests)
 
                 // Fetch sent requests
                 const sentResponse = await axios.post('http://localhost:3001/getSentRequests', {
@@ -118,11 +119,13 @@ const Requests = () => {
                 }));
 
                 setSentRequests(filteredSentRequests.filter(Boolean));
+                console.log("sent: ", sentRequests);
+
 
                 // Combine received and sent requests
                 const combinedRequests = [
-                    ...filteredReceivedRequests.map(request => ({ ...request, type: 'received' })),
-                    ...filteredSentRequests.map(request => ({ ...request, type: 'sent' })),
+                    ...receivedRequests.map(request => ({ ...request, type: 'received' })),
+                    ...sentRequests.map(request => ({ ...request, type: 'sent' })),
                 ].filter(Boolean);
 
                 console.log('Combined Requests:', combinedRequests);
