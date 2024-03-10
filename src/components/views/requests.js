@@ -93,7 +93,7 @@ const Requests = () => {
                         email: request.senderEmail,
                         userType: userType === "mentee" ? "mentor" : "mentee",
                     });
-                    if (senderProfileResponse.data.profileInfo.available && !request.declined) {
+                    if (senderProfileResponse.data.profile.profileInfo.available && !request.declined) {
                         return request;
                     }
                 }));
@@ -112,7 +112,7 @@ const Requests = () => {
                         email: request.receiverEmail,
                         userType: userType === "mentee" ? "mentor" : "mentee",
                     });
-                    if (receiverProfileResponse.data.profileInfo.available && !request.declined) {
+                    if (receiverProfileResponse.data.profile.profileInfo.available) {
                         return request;
                     }
                 }));
