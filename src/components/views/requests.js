@@ -64,29 +64,29 @@ const Requests = () => {
             try {
                 const email = sessionStorage.getItem('email');
                 const userType = sessionStorage.getItem('userType');
-
+    
                 if (!email || !userType) {
                     console.error('User information is missing.');
                     return;
                 }
-
+    
                 if (userType !== '') {
                     const userResponse = await axios.post('http://localhost:3001/getProfile', {
                         email: email,
                         userType: userType,
                     });
-
+    
                     if (Array.isArray(userResponse.data.profile.profileInfo.matches) && userResponse.data.profile.profileInfo.matches.length > 0) {
                         setIsMatched(true);
                     }
                 }
-
+    
                 // Fetch received requests directly using user information
                 const receivedResponse = await axios.post('http://localhost:3001/getReceivedRequests', {
                     email,
                     userType,
                 });
-
+    
                 // Filter out received requests from users who have available: false and are not declined
                 const filteredReceivedRequests = await Promise.all(receivedResponse.data.receivedRequests.map(async (request) => {
                     const senderProfileResponse = await axios.post('http://localhost:3001/getProfile', {
@@ -97,16 +97,48 @@ const Requests = () => {
                         return request;
                     }
                 }));
-
+    
                 setReceivedRequests(filteredReceivedRequests.filter(Boolean));
-                console.log("received: ",receivedRequests)
-
+    
+            } catch (error) {
+                console.error('Error fetching received requests:', error);
+                setTimeout(() => {
+                    setErrorMessage('Error fetching received requests:');
+                }, 5000);
+            }
+        };
+    
+        fetchData();
+    }, []);
+    
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const email = sessionStorage.getItem('email');
+                const userType = sessionStorage.getItem('userType');
+    
+                if (!email || !userType) {
+                    console.error('User information is missing.');
+                    return;
+                }
+    
+                if (userType !== '') {
+                    const userResponse = await axios.post('http://localhost:3001/getProfile', {
+                        email: email,
+                        userType: userType,
+                    });
+    
+                    if (Array.isArray(userResponse.data.profile.profileInfo.matches) && userResponse.data.profile.profileInfo.matches.length > 0) {
+                        setIsMatched(true);
+                    }
+                }
+    
                 // Fetch sent requests
                 const sentResponse = await axios.post('http://localhost:3001/getSentRequests', {
                     email,
                     userType,
                 });
-
+    
                 // Filter out sent requests to users who have available: false and are not declined
                 const filteredSentRequests = await Promise.all(sentResponse.data.sentRequests.map(async (request) => {
                     const receiverProfileResponse = await axios.post('http://localhost:3001/getProfile', {
@@ -117,61 +149,83 @@ const Requests = () => {
                         return request;
                     }
                 }));
-
+    
                 setSentRequests(filteredSentRequests.filter(Boolean));
-                console.log("sent: ", sentRequests);
-
-
-                // Combine received and sent requests
-                const combinedRequests = [
-                    ...receivedRequests.map(request => ({ ...request, type: 'received' })),
-                    ...sentRequests.map(request => ({ ...request, type: 'sent' })),
-                ].filter(Boolean);
-
-                console.log('Combined Requests:', combinedRequests);
-
-                // Fetch shortlistOrder
+    
+            } catch (error) {
+                console.error('Error fetching sent requests:', error);
+                setTimeout(() => {
+                    setErrorMessage('Error fetching sent requests:');
+                }, 5000);
+            }
+        };
+    
+        fetchData();
+    }, []);
+    
+    useEffect(() => {
+        // Combine received and sent requests
+        const combinedRequests = [
+            ...receivedRequests.map(request => ({ ...request, type: 'received' })),
+            ...sentRequests.map(request => ({ ...request, type: 'sent' })),
+        ].filter(request => {
+            // Check if the request object contains all the required properties
+            if (
+                request &&
+                request._id &&
+                request.type &&
+                request.accepted !== undefined &&
+                ((request.type === 'received' && request.senderEmail) ||
+                (request.type === 'sent' && request.receiverEmail))
+            ) {
+                return true;
+            }
+            return false;
+        });
+    
+        // Fetch shortlistOrder
+        const fetchShortlistOrder = async () => {
+            try {
+                const email = sessionStorage.getItem('email');
+                const userType = sessionStorage.getItem('userType');
+    
                 const shortlistOrderResponse = await axios.post('http://localhost:3001/getShortlistOrder', {
                     email,
                     userType,
                 });
-
+    
                 if (shortlistOrderResponse.data.shortlistOrder.length === 0) {
                     // No shortlist order, set sortedRequests to combinedRequests directly
                     setAllRequests(combinedRequests);
                 } else {
                     // Sort the combined requests based on the order in shortlistOrder
                     const shortlistOrderIds = shortlistOrderResponse.data.shortlistOrder.map(orderItem => orderItem.requestId);
-
                     // Filter out the shortlisted requests from combinedRequests
                     const shortlistedRequests = combinedRequests.filter(request => shortlistOrderIds.includes(request._id));
-
                     // Filter out the unmatched requests from combinedRequests
                     const unmatchedRequests = combinedRequests.filter(request => !shortlistOrderIds.includes(request._id));
-
                     // Sort the shortlisted requests based on the order in shortlistOrder
                     const sortedShortlistRequests = shortlistOrderResponse.data.shortlistOrder.map(orderItem => {
                         const matchingRequest = shortlistedRequests.find(request => request._id === orderItem.requestId);
                         return matchingRequest ? { ...matchingRequest, index: orderItem.index } : null;
                     }).filter(Boolean);
-
                     // Combine the sorted shortlisted requests with unmatched requests
                     const sortedRequests = [...sortedShortlistRequests, ...unmatchedRequests];
-
                     // Update the state with sorted requests
                     setAllRequests(sortedRequests);
                 }
             } catch (error) {
-                console.error('Error fetching requests:', error);
-
+                console.error('Error fetching shortlist order:', error);
                 setTimeout(() => {
-                    setErrorMessage('Error fetching requests:');
+                    setErrorMessage('Error fetching shortlist order:');
                 }, 5000);
             }
         };
-
-        fetchData();
-    }, []);
+    
+        fetchShortlistOrder();
+    
+    }, [receivedRequests, sentRequests]);
+    
 
 
     useEffect(() => {
