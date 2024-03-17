@@ -150,9 +150,9 @@ const SignUp = () => {
                     )}
                     <h8>Look no further with Better<span className='ment'>Ment</span>!</h8>
                     {userType === 'mentee' ? (
-                        <img src={signUpEmployee} alt="Find a Mentor" className="bottom" />
+                        <img src={signUpEmployee} alt="I am a Mentee" className="bottom" />
                     ) : userType === 'admin' ? (
-                        <img src={signUpEmployee} alt="I am an Admin" className="bottom" />
+                        <img src={signUpEmployee} alt="I am a Manager" className="bottom" />
                     ) : (
                         <img src={signUpCoach} alt="I am a Mentor" className="bottom" />
                     )}
@@ -167,7 +167,7 @@ const SignUp = () => {
                             className={`signUpButton ${selectedUserType === 'mentee' ? 'selected' : ''}`}
                             onClick={() => handleUserType('mentee')}
                         >
-                            Find a Mentor
+                            I am a Mentee
                         </button>
                         <button
                             className={`signUpButton ${selectedUserType === 'mentor' ? 'selected' : ''}`}
@@ -179,7 +179,7 @@ const SignUp = () => {
                             className={`signUpButton ${selectedUserType === 'admin' ? 'selected' : ''}`}
                             onClick={() => handleUserType('admin')}
                         >
-                            I am an Admin
+                            I am Manager
                         </button>
                     </div>
                     {userTypeErrorMessage && <p className="error-message">{userTypeErrorMessage}</p>}
