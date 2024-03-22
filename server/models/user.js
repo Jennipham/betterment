@@ -24,9 +24,6 @@ const userSchema = new mongoose.Schema({
         required: true,
     },
 
-    isLoggedOut: {
-        type: Boolean, default: false
-    },
 });
 
 // Create a User model based on the user schema
