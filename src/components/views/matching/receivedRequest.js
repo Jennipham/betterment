@@ -1,14 +1,13 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import FullProfile from './fullViewProfile';
-import Modal from '../utils/modal';
+import Modal from '../../utils/modal';
 import axios from 'axios';
-import profile from '../images/profile-black.png';
-import cross from '../images/cross-icon.png';
-import tick from '../images/tick-icon.png';
-import accepted from '../images/accepted-icon.png';
-import received from '../images/received-icon.png';
-import '../styles/ReceivedRequests.css';
+import profile from '../../images/profile-black.png';
+import cross from '../../images/cross-icon.png';
+import tick from '../../images/tick-icon.png';
+import accepted from '../../images/accepted-icon.png';
+import received from '../../images/received-icon.png';
+import '../../styles/ReceivedRequests.css';
 
 const ReceivedRequest = ({ request, onDecline }) => {
 

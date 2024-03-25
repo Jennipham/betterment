@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import Header from '../utils/header';
-import '../styles/Welcome.css';
-import Footer from '../utils/footer';
-import Modal from '../utils/modal';
+import Header from '../../utils/header';
+import '../../styles/Welcome.css';
+import Footer from '../../utils/footer';
+import Modal from '../../utils/modal';
 import { useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 

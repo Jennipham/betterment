@@ -3,10 +3,10 @@
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
-import Header from '../utils/header';
-import Footer from '../utils/footer';
+import Header from '../../utils/header';
+import Footer from '../../utils/footer';
 import Faqs from './faqs';
-import '../styles/Help.css';
+import '../../styles/Help.css';
 
 const Help = () => {
     const location = useLocation();
@@ -63,7 +63,7 @@ const Help = () => {
             );
 
             if (response.status === 200) {
-               setSuccessMessage('Form submitted successfully!');
+                setSuccessMessage('Form submitted successfully!');
             } else {
                 setErrorMessage('Failed to submit form. Please try again later.');
             }
@@ -78,9 +78,6 @@ const Help = () => {
             <Header className="header" />
 
             <div className="help-page">
-                <div className='faqs-help'>
-                <Faqs faqData={faqData} />
-                </div>
                 <h2 className="help-header">Contact Us</h2>
                 <div className='error-message-profile-container'>
                     {errorMessage && <p className="error-message-profile">{errorMessage}</p>}
@@ -89,7 +86,7 @@ const Help = () => {
                     {successMessage && <p className="success-message-profile">{successMessage}</p>}
                 </div>
                 <div className='contact-form'>
-                <form onSubmit={handleSubmit}>
+                    <form onSubmit={handleSubmit}>
                         <label className='contact-label'>
                             Please leave any Feedback or Queries:
                             <textarea
@@ -100,7 +97,10 @@ const Help = () => {
                         <button type="submit">Submit Form</button>
                     </form>
                 </div>
+                <div className='faqs-help'>
+                <Faqs faqData={faqData} />
                 </div>
+            </div>
             <Footer />
         </>
     );

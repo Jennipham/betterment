@@ -2,7 +2,7 @@ import React from 'react';
 import { Route, Navigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
-import NoPermissions from '../views/noPermissions';
+import NoPermissions from '../views/authentication/noPermissions';
 
 const isAuthenticated = () => {
     const token = sessionStorage.getItem('token');

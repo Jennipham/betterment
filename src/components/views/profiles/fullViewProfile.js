@@ -1,8 +1,8 @@
 import React from 'react';
-import '../styles/FullProfile.css';
-import Footer from '../utils/footer';
+import '../../styles/FullProfile.css';
+import Footer from '../../utils/footer';
 import { useState, useEffect } from 'react';
-import white from '../images/profile-white.png';
+import white from '../../images/profile-white.png';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 

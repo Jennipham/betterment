@@ -1,23 +1,22 @@
 import React from 'react';
 import './App.css';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Home from './components/views/home';
-import SignUp from './components/views/signUp';
-import Login from './components/views/login';
-import Welcome from './components/views/welcome';
-import TermsOfUse from './components/views/termsOfUse';
-import MenteeMatches from './components/views/menteeMatches';
-import ManagerProfile from './components/views/managerProfile';
-import Profile from './components/views/profileSettings';
-import FullProfile from './components/views/fullViewProfile';
-import Help from './components/views/help';
-import AdminSettings from './components/views/adminSettings';
-import MentorMatches from './components/views/mentorMatches';
-import NoPermissions from './components/views/noPermissions';
-import Requests from './components/views/requests';
+import Home from './components/views/utilities/home';
+import SignUp from './components/views/authentication/signUp';
+import Login from './components/views/authentication/login';
+import Welcome from './components/views/utilities/welcome';
+import TermsOfUse from './components/views/utilities/termsOfUse';
+import MenteeMatches from './components/views/matching/menteeMatches';
+import Profile from './components/views/profiles/profileSettings';
+import FullProfile from './components/views/profiles/fullViewProfile';
+import Help from './components/views/utilities/help';
+import AdminSettings from './components/views/profiles/adminSettings';
+import MentorMatches from './components/views/matching/mentorMatches';
+import NoPermissions from './components/views/authentication/noPermissions';
+import Requests from './components/views/matching/requests';
 import ProtectedRoute from './components/utils/protectedRoute';
-import ExpiredSession from './components/views/expiredSession';
-import Dashboard from './components/views/dashboard';
+import ExpiredSession from './components/views/authentication/expiredSession';
+import Dashboard from './components/views/dashboard/dashboard';
 
 
 function App() {
@@ -43,7 +42,6 @@ function App() {
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/mentormatches" element={<ProtectedRoute><MentorMatches /></ProtectedRoute>} />
           <Route path="/menteematches" element={<ProtectedRoute><MenteeMatches /></ProtectedRoute>} />
-          <Route path="/managerprofile" element={<ProtectedRoute><ManagerProfile /></ProtectedRoute>} />
           <Route path="/requests" element={<ProtectedRoute><Requests /></ProtectedRoute>} />
 
         </Routes>

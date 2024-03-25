@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import Header from '../utils/header';
-import '../styles/Requests.css';
-import Footer from '../utils/footer';
+import Header from '../../utils/header';
+import '../../styles/Requests.css';
+import Footer from '../../utils/footer';
 import SentRequest from './sentRequest';
 import ReceivedRequest from './receivedRequest';
-import Tooltip from '../utils/tooltip';
-import moreInfo from '../images/more-info-icon.png';
+import Tooltip from '../../utils/tooltip';
+import moreInfo from '../../images/more-info-icon.png';
 import axios from 'axios';
-import Loader from '../utils/loader';
+import Loader from '../../utils/loader';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 
 

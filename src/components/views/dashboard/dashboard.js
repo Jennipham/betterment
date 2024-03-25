@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import '../styles/Dashboard.css';
+import '../../styles/Dashboard.css';
 import { Doughnut, Bar, Pie } from 'react-chartjs-2';
 import 'chart.js/auto';
 import 'chartjs-adapter-moment';
-import Header from '../utils/header';
-import Footer from '../utils/footer';
-import Loader from '../utils/loader';
+import Header from '../../utils/header';
+import Footer from '../../utils/footer';
+import Loader from '../../utils/loader';
 import axios from 'axios';
 
 

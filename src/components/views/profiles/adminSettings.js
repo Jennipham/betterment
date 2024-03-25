@@ -1,16 +1,16 @@
 import React from 'react';
-import Header from '../utils/header';
-import Footer from '../utils/footer';
-import Loader from '../utils/loader';
-import editIcon from '../images/EditIcon.png';
-import cross from '../images/cross-icon.png';
-import tick from '../images/tick-icon.png';
-import moreInfo from '../images/more-info1.png';
-import Tooltip from '../utils/tooltip';
+import Header from '../../utils/header';
+import Footer from '../../utils/footer';
+import Loader from '../../utils/loader';
+import editIcon from '../../images/EditIcon.png';
+import cross from '../../images/cross-icon.png';
+import tick from '../../images/tick-icon.png';
+import moreInfo from '../../images/more-info1.png';
+import Tooltip from '../../utils/tooltip';
 import Select from 'react-select';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import '../styles/ProfileSettings.css';
+import '../../styles/ProfileSettings.css';
 import { useNavigate } from 'react-router-dom';
 
 

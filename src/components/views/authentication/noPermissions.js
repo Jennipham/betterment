@@ -1,8 +1,8 @@
 import React from 'react';
-import Header from '../utils/header';
-import '../styles/NoPermissions.css';
-import Footer from '../utils/footer';
-import warning from '../images/warning-icon.png';
+import Header from '../../utils/header';
+import '../../styles/NoPermissions.css';
+import Footer from '../../utils/footer';
+import warning from '../../images/warning-icon.png';
 
 
 const NoPermissions = () => {

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import '../styles/About.css';
-import createProfile from '../images/create-profile.png';
-import preferences from '../images/preferences.png';
-import handshake from '../images/handshake.png';
+import '../../styles/About.css';
+import createProfile from '../../images/create-profile.png';
+import preferences from '../../images/preferences.png';
+import handshake from '../../images/handshake.png';
 
 
 

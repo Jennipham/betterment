@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import '../styles/Faqs.css';
-import downChevron from '../images/down-chevron-white.svg';
-import upChevron from '../images/up-chevron-white.svg';
+import '../../styles/Faqs.css';
+import downChevron from '../../images/down-chevron-white.svg';
+import upChevron from '../../images/up-chevron-white.svg';
 
 const Faqs = ({ faqData }) => {
     const [activeIndex, setActiveIndex] = useState(null);

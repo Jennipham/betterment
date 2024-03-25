@@ -1,14 +1,14 @@
 import React from 'react';
 import axios from 'axios';
-import '../styles/SignUp.css';
+import '../../styles/SignUp.css';
 import { useNavigate } from 'react-router-dom';
-import signUpEmployee from '../images/sign-up1.png';
-import signUpCoach from '../images/sign-up2.png';
+import signUpEmployee from '../../images/sign-up1.png';
+import signUpCoach from '../../images/sign-up2.png';
 
-import Header from '../utils/header';
+import Header from '../../utils/header';
 import { useState } from 'react';
-import Footer from '../utils/footer';
-import Loader from '../utils/loader';
+import Footer from '../../utils/footer';
+import Loader from '../../utils/loader';
 
 const SignUp = () => {
     const navigate = useNavigate();

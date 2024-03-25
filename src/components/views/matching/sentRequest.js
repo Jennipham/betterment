@@ -1,12 +1,12 @@
 import React from 'react';
-import profile from '../images/profile-black.png';
-import cross from '../images/cross-icon.png';
-import sent from '../images/sent-icon.png';
+import profile from '../../images/profile-black.png';
+import cross from '../../images/cross-icon.png';
+import sent from '../../images/sent-icon.png';
 import axios from 'axios';
-import Loader from '../utils/loader';
-import Modal from '../utils/modal';
+import Loader from '../../utils/loader';
+import Modal from '../../utils/modal';
 import { useState, useEffect } from 'react';
-import '../styles/SentRequests.css';
+import '../../styles/SentRequests.css';
 
 const SentRequest = ({ request, onRemoveRequest }) => {
 

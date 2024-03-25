@@ -1,6 +1,6 @@
 import React from 'react';
-import top from '../images/TopImage.png'
-import '../styles/Top.css';
+import top from '../../images/TopImage.png'
+import '../../styles/Top.css';
 import { useNavigate } from 'react-router-dom';
 
 

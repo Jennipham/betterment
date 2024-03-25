@@ -1,6 +1,6 @@
 .help-page {
     background-color: #3BBED1;
-    min-height: 100vh;
+    min-height: 100%;
     
 }
 
@@ -15,9 +15,9 @@
 
 
 .help-header {
-    margin-top: 20px;
+    margin-top: 0px;
 
-}
+} 
 
 .form-container {
     display: flex;
