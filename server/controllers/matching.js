@@ -1,17 +1,18 @@
 function galeShapley(menteePreferences, mentorPreferences, mentees, mentors) {
     const matches = {};
     let iterations = 0;
-    const maxIterations = menteePreferences.length * 2; // Maximum iterations to prevent infinite loop
+    const maxIterations = menteePreferences.length * 2;
 
     // Loop until all mentees are matched or maximum iterations reached
     while (Object.keys(matches).length < menteePreferences.length && iterations < maxIterations) {
         for (const mentee of menteePreferences) {
             if (!matches[mentee.email]) {
+                // Get their most preferred, available mentor
                 const menteePreferredMentor = mentee.preferences.shift();
                 if (!matches[menteePreferredMentor]) {
-                    matches[menteePreferredMentor] = mentee.email;
+                    matches[menteePreferredMentor] = mentee.email; // Match the mentee with the mentor
                 } else {
-                    // Check if mentor preferences and profiles exist
+                    // Considers Mentor Shortlist preferences
                     if (mentorPreferences[menteePreferredMentor] && mentors && mentees) {
                         const currentMenteeIndex = mentorPreferences[menteePreferredMentor].findIndex(email => email === matches[menteePreferredMentor]);
                         const potentialMenteeIndex = mentorPreferences[menteePreferredMentor].findIndex(email => email === mentee.email);
@@ -19,15 +20,15 @@ function galeShapley(menteePreferences, mentorPreferences, mentees, mentors) {
                         const currentMenteeProfile = mentors.find(m => m.email === matches[menteePreferredMentor]);
                         const potentialMenteeProfile = mentees.find(m => m.email === mentee.email);
 
-                        // Ensure profiles are found before accessing their properties
+                        // Prioritise mentees with a lower declinedRequests count
                         if (currentMenteeProfile && potentialMenteeProfile) {
-                            const isNewMenteePreferred = (potentialMenteeIndex < currentMenteeIndex) ||
-                                (potentialMenteeIndex === currentMenteeIndex &&
-                                    (potentialMenteeProfile.profileInfo.declinedRequestsCount > 3 &&
-                                        potentialMenteeProfile.profileInfo.declinedRequestsCount < currentMenteeProfile.profileInfo.declinedRequestsCount));
+                            const isNewMenteePreferred = (potentialMenteeIndex < currentMenteeIndex) &&
+                            (
+                                currentMenteeProfile.profileInfo.declinedRequestsCount <= 3 &&
+                                potentialMenteeProfile.profileInfo.declinedRequestsCount > currentMenteeProfile.profileInfo.declinedRequestsCount);                    
 
-                            if (isNewMenteePreferred) {
-                                matches[menteePreferredMentor] = mentee.email;
+                            if (isNewMenteePreferred) { // If the new mentee is preferred over the current one
+                                matches[menteePreferredMentor] = mentee.email; // Replace the current mentee with the new one
                             }
                         }
                     } else {
@@ -36,14 +37,14 @@ function galeShapley(menteePreferences, mentorPreferences, mentees, mentors) {
                 }
             }
         }
-        iterations++; // Increment the iteration count
+        iterations++;
     }
 
     if (iterations >= maxIterations) {
         console.warn("Maximum iterations reached. Not all mentees may be matched.");
     }
 
-    return matches;
+    return matches; // Return the matched pairs
 }
 
 module.exports = galeShapley;
