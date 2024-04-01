@@ -52,7 +52,7 @@ const Dashboard = () => {
         const fetchUserCountStats = async () => {
             try {
                 const adminEmail = user.email;
-                const response = await fetch(`http://localhost:3001/matched-stats/${adminEmail}`);
+                const response = await fetch(`https://localhost:3001/matched-stats/${adminEmail}`);
                 const data = await response.json();
 
                 setUserCountStats(data);
@@ -93,7 +93,7 @@ const Dashboard = () => {
     const fetchMatchedStats = async () => {
         try {
             const adminEmail = user.email;
-            const response = await fetch(`http://localhost:3001/matched-stats/${adminEmail}`);
+            const response = await fetch(`https://localhost:3001/matched-stats/${adminEmail}`);
             const data = await response.json();
 
             setMatchedStats(data);
@@ -160,7 +160,7 @@ const Dashboard = () => {
     const fetchSignupDurationStats = async () => {
         try {
             const adminEmail = user.email;
-            const response = await fetch(`http://localhost:3001/average-signup-duration/${adminEmail}`);
+            const response = await fetch(`https://localhost:3001/average-signup-duration/${adminEmail}`);
             const data = await response.json();
 
             setSignupDurationStats(data);
@@ -197,7 +197,7 @@ const Dashboard = () => {
         const fetchDepartmentStats = async () => {
             try {
                 const adminEmail = user.email;
-                const response = await fetch(`http://localhost:3001/department-stats/${adminEmail}`);
+                const response = await fetch(`https://localhost:3001/department-stats/${adminEmail}`);
                 const data = await response.json();
 
                 setDepartmentStats(data.departmentStats);
@@ -249,7 +249,7 @@ const Dashboard = () => {
         const fetchDevelopmentAreaStats = async () => {
             try {
                 const adminEmail = user.email;
-                const response = await fetch(`http://localhost:3001/development-area-stats/${adminEmail}`);
+                const response = await fetch(`https://localhost:3001/development-area-stats/${adminEmail}`);
                 const data = await response.json();
 
                 setDevelopmentAreaStats(data.developmentAreaStats);
@@ -297,7 +297,7 @@ const Dashboard = () => {
         const fetchLocationStats = async () => {
             try {
                 const adminEmail = user.email;
-                const response = await fetch(`http://localhost:3001/location-stats/${adminEmail}`);
+                const response = await fetch(`https://localhost:3001/location-stats/${adminEmail}`);
                 const data = await response.json();
 
                 setLocationStats(data.locationStats);
@@ -347,7 +347,7 @@ const Dashboard = () => {
         const fetchMatchByDateStats = async () => {
             try {
                 const adminEmail = user.email;
-                const response = await axios.get(`http://localhost:3001/match-data-by-date/${adminEmail}`);
+                const response = await axios.get(`https://localhost:3001/match-data-by-date/${adminEmail}`);
                 setMatchByDateStats(response.data);
             } catch (error) {
                 console.error('Error fetching match data:', error);

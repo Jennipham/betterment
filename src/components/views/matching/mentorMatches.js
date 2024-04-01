@@ -178,7 +178,7 @@ const MentorMatches = () => {
 
     const fetchAdminMatchSettings = async () => {
         try {
-            const response = await axios.get('http://localhost:3001/getAdminMatchingSettings', {
+            const response = await axios.get('https://localhost:3001/getAdminMatchingSettings', {
                 params: {
                     email: user.admin,
                 },
@@ -207,8 +207,8 @@ const MentorMatches = () => {
         const fetchRandomMenteeProfile = async () => {
             try {
                 setIsLoadingProfiles(true);
-                const response = await axios.get(`http://localhost:3001/getRandomMenteeProfile?email=${user.email}`);
-                const userResponse = await axios.get(`http://localhost:3001/getUserDetails?email=${response.data.profile.email}`);
+                const response = await axios.get(`https://localhost:3001/getRandomMenteeProfile?email=${user.email}`);
+                const userResponse = await axios.get(`https://localhost:3001/getUserDetails?email=${response.data.profile.email}`);
 
                 setMenteeProfile(response.data.profile);
                 setMenteeFname(userResponse.data.user.fname);
@@ -235,7 +235,7 @@ const MentorMatches = () => {
         const fetchAlgorithmMatches = async () => {
             try {
                 setIsLoadingProfiles(true);
-                const response = await axios.get('http://localhost:3001/getPotentialMatches', {
+                const response = await axios.get('https://localhost:3001/getPotentialMatches', {
                     params: {
                         email: user.email,
                         userType: user.userType,
@@ -286,7 +286,7 @@ const MentorMatches = () => {
     const fetchNames = async (email) => {
         try {
 
-            const response = await axios.get(`http://localhost:3001/getuserdetails?email=${email}`);
+            const response = await axios.get(`https://localhost:3001/getuserdetails?email=${email}`);
             const userDetails = response.data;
 
             if (userDetails) {
@@ -305,7 +305,7 @@ const MentorMatches = () => {
             try {
                 if (matchingMethod && matchingMethod === 'Manual') {
 
-                    const response = await axios.get(`http://localhost:3001/getFilteredMenteeProfile?email=${user.email}`, {
+                    const response = await axios.get(`https://localhost:3001/getFilteredMenteeProfile?email=${user.email}`, {
                         params: {
                             language: selectedLanguages.join(','),
                             developmentAreas: selectedDevelopmentAreas.join(','),
@@ -357,7 +357,7 @@ const MentorMatches = () => {
         const fetchProfileData = async () => {
             try {
 
-                const response = await axios.post('http://localhost:3001/getProfile', {
+                const response = await axios.post('https://localhost:3001/getProfile', {
                     email: user.email,
                     userType: user.userType,
                 });
@@ -399,7 +399,7 @@ const MentorMatches = () => {
         try {
             setLoading(true);
 
-            const response = await axios.post('http://localhost:3001/requestMatch', {
+            const response = await axios.post('https://localhost:3001/requestMatch', {
                 senderEmail: user.email,
                 receiverEmail: menteeEmail,
                 userType: user.userType,
@@ -559,7 +559,7 @@ const MentorMatches = () => {
             };
 
             // Send a PUT request to update the user's profile
-            const response = await axios.put('http://localhost:3001/updateUserProfile', {
+            const response = await axios.put('https://localhost:3001/updateUserProfile', {
                 email: user.email,
                 userType: user.userType,
                 data: dataToSave,

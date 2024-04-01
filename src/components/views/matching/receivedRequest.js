@@ -31,7 +31,7 @@ const ReceivedRequest = ({ request, onDecline }) => {
 
     const handleDecline = async () => {
         try {
-            await axios.post('http://localhost:3001/declineRequest', {
+            await axios.post('https://localhost:3001/declineRequest', {
                 email: sessionStorage.getItem('email'),
                 senderEmail: request.senderEmail,
                 userType: userType,
@@ -47,7 +47,7 @@ const ReceivedRequest = ({ request, onDecline }) => {
 
     const handleAccept = async () => {
         try {
-            await axios.post('http://localhost:3001/acceptRequest', {
+            await axios.post('https://localhost:3001/acceptRequest', {
                 email: sessionStorage.getItem('email'),
                 senderEmail: request.senderEmail,
                 userType: userType,
@@ -62,7 +62,7 @@ const ReceivedRequest = ({ request, onDecline }) => {
         const fetchMatchProfile = async () => {
             try {
                 // Fetch user details
-                const userDetailsResponse = await axios.get(`http://localhost:3001/getUserDetails?email=${request.senderEmail}`);
+                const userDetailsResponse = await axios.get(`https://localhost:3001/getUserDetails?email=${request.senderEmail}`);
                 const userDetails = userDetailsResponse.data.user;
 
                 // Set user details
@@ -71,7 +71,7 @@ const ReceivedRequest = ({ request, onDecline }) => {
                 setMatchUserType(userDetails.userType);
 
                 // Fetch user profile
-                const userResponse = await axios.post('http://localhost:3001/getProfile', {
+                const userResponse = await axios.post('https://localhost:3001/getProfile', {
                     email: request.senderEmail,
                     userType: userDetails.userType,
                 });
@@ -94,7 +94,7 @@ const ReceivedRequest = ({ request, onDecline }) => {
     const fetchAdminMatchSettings = async () => {
         try {
             if (matchProfile && matchProfile.profileInfo && matchProfile.profileInfo.admin) {
-                const response = await axios.get('http://localhost:3001/getAdminMatchingSettings', {
+                const response = await axios.get('https://localhost:3001/getAdminMatchingSettings', {
                     params: {
                         email: matchProfile.profileInfo.admin,
                     },

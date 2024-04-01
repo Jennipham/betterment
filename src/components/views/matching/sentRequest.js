@@ -38,7 +38,7 @@ const SentRequest = ({ request, onRemoveRequest }) => {
         const fetchMatchProfile = async () => {
             try {
                 // Fetch user details
-                const userDetailsResponse = await axios.get(`http://localhost:3001/getUserDetails?email=${request.receiverEmail}`);
+                const userDetailsResponse = await axios.get(`https://localhost:3001/getUserDetails?email=${request.receiverEmail}`);
                 const userDetails = userDetailsResponse.data.user;
 
                 // Set user details
@@ -47,7 +47,7 @@ const SentRequest = ({ request, onRemoveRequest }) => {
                 setMatchUserType(userDetails.userType);
 
                 // Fetch user profile
-                const userResponse = await axios.post('http://localhost:3001/getProfile', {
+                const userResponse = await axios.post('https://localhost:3001/getProfile', {
                     email: request.receiverEmail,
                     userType: userDetails.userType,
                 });
@@ -70,7 +70,7 @@ const SentRequest = ({ request, onRemoveRequest }) => {
     const fetchAdminMatchSettings = async () => {
         try {
             if (matchProfile && matchProfile.profileInfo && matchProfile.profileInfo.admin) {
-                const response = await axios.get('http://localhost:3001/getAdminMatchingSettings', {
+                const response = await axios.get('https://localhost:3001/getAdminMatchingSettings', {
                     params: {
                         email: matchProfile.profileInfo.admin,
                     },
@@ -95,7 +95,7 @@ const SentRequest = ({ request, onRemoveRequest }) => {
         setLoading(true);
         try {
             // Make API call to delete the email from sentRequests
-            await axios.delete(`http://localhost:3001/cancelRequest/${request.receiverEmail}`, {
+            await axios.delete(`https://localhost:3001/cancelRequest/${request.receiverEmail}`, {
                 data: { email: email, userType: userType }
             });
             // Update the UI by removing the request from the list

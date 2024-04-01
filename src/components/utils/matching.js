@@ -19,7 +19,7 @@ async function findKNearestNeighbors(featureWeights, k) {
     const menteeProfile = JSON.parse(menteeProfileString);
 
     // Fetch mentor profiles from the API
-    const response = await axios.get('/http://localhost:3001/getMentors'); 
+    const response = await axios.get('/https://localhost:3001/getMentors'); 
     const mentorProfiles = response.data;
 
     // Calculate distances and find K-nearest mentors

@@ -40,7 +40,7 @@ const FullProfile = () => {
         const fetchRequestData = async () => {
             try {
                 if (email) {
-                    const response = await axios.get(`http://localhost:3001/getUserDetails?email=${email}`);
+                    const response = await axios.get(`https://localhost:3001/getUserDetails?email=${email}`);
                     setMatchFname(response.data.user.fname);
                     setMatchSname(response.data.user.sname);
                     setMatchUserType(response.data.user.userType);
@@ -57,7 +57,7 @@ const FullProfile = () => {
         const fetchRequestProfile = async () => {
             try {
                 if (matchUserType !== '') {
-                    const userResponse = await axios.post('http://localhost:3001/getProfile', {
+                    const userResponse = await axios.post('https://localhost:3001/getProfile', {
                         email: email,
                         userType: matchUserType,
                     });
@@ -75,7 +75,7 @@ const FullProfile = () => {
     const fetchAdminMatchSettings = async () => {
         try {
             if (matchProfile && matchProfile.profileInfo) {
-                const response = await axios.get('http://localhost:3001/getAdminMatchingSettings', {
+                const response = await axios.get('https://localhost:3001/getAdminMatchingSettings', {
                     params: {
                         email: matchProfile.profileInfo.admin,
                     },

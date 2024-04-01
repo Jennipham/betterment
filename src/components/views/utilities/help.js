@@ -49,7 +49,7 @@ const Help = () => {
         try {
             const token = sessionStorage.getItem('token');
             const response = await axios.post(
-                'http://localhost:3001/send-form',
+                'https://localhost:3001/send-form',
                 {
                     email: user.email,
                     formMessage,

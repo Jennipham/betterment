@@ -16,6 +16,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express-validator": "^7.0.1",
+    "https": "^1.0.0",
     "jwt-decode": "^4.0.0",
     "react": "^18.2.0",
     "react-beautiful-dnd": "^13.1.1",
@@ -30,7 +31,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "set HTTPS=true&&react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
@@ -58,5 +59,6 @@
     "@csstools/normalize.css": "^12.0.0",
     "@rollup/plugin-babel": "^6.0.3",
     "react-scripts": "^5.0.1"
-  }
+  },
+  "proxy": "https://localhost:3001"
 }

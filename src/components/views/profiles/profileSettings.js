@@ -190,7 +190,7 @@ const Profile = () => {
     useEffect(() => {
         const fetchProfileData = async () => {
             try {
-                const response = await axios.post('http://localhost:3001/getProfile', {
+                const response = await axios.post('https://localhost:3001/getProfile', {
                     email: user.email,
                     userType: user.userType,
                 });
@@ -255,7 +255,7 @@ const Profile = () => {
             const updatedDepartment = isEditingDepartment ? departmentInput.trim() : formData.department.trim();
             const updatedCapacity = isEditingCapacity ? capacityInput.trim() : formData.capacity.trim();
 
-            const response = await axios.post('http://localhost:3001/profile', {
+            const response = await axios.post('https://localhost:3001/profile', {
                 ...formData,
                 email: user.email,
                 userType: user.userType,
@@ -311,7 +311,7 @@ const Profile = () => {
             const updatedDepartment = isEditingDepartment ? departmentInput.trim() : formData.department.trim();
             const updatedCapacity = isEditingCapacity ? capacityInput.trim() : formData.capacity.trim();
 
-            const response = await axios.post('http://localhost:3001/profile', {
+            const response = await axios.post('https://localhost:3001/profile', {
                 ...formData,
                 email: user.email,
                 userType: user.userType,
@@ -367,7 +367,7 @@ const Profile = () => {
                 }
 
                 // Fetch received requests directly using user information
-                const receivedResponse = await axios.post('http://localhost:3001/getReceivedRequests', {
+                const receivedResponse = await axios.post('https://localhost:3001/getReceivedRequests', {
                     email: user.email,
                     userType: user.userType,
                 });

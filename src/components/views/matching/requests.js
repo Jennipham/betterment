@@ -49,7 +49,7 @@ const Requests = () => {
         // Fetch the number of days until the next match from the backend
         const fetchDaysUntilNextMatch = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/getNextMatchDay');
+                const response = await axios.get('https://localhost:3001/getNextMatchDay');
                 setDaysUntilNextMatch(response.data.daysUntilNextMatch);
             } catch (error) {
                 console.error('Error fetching days until next match:', error);
@@ -71,7 +71,7 @@ const Requests = () => {
                 }
     
                 if (userType !== '') {
-                    const userResponse = await axios.post('http://localhost:3001/getProfile', {
+                    const userResponse = await axios.post('https://localhost:3001/getProfile', {
                         email: email,
                         userType: userType,
                     });
@@ -82,14 +82,14 @@ const Requests = () => {
                 }
     
                 // Fetch received requests directly using user information
-                const receivedResponse = await axios.post('http://localhost:3001/getReceivedRequests', {
+                const receivedResponse = await axios.post('https://localhost:3001/getReceivedRequests', {
                     email,
                     userType,
                 });
     
                 // Filter out received requests from users who have available: false and are not declined
                 const filteredReceivedRequests = await Promise.all(receivedResponse.data.receivedRequests.map(async (request) => {
-                    const senderProfileResponse = await axios.post('http://localhost:3001/getProfile', {
+                    const senderProfileResponse = await axios.post('https://localhost:3001/getProfile', {
                         email: request.senderEmail,
                         userType: userType === "mentee" ? "mentor" : "mentee",
                     });
@@ -123,7 +123,7 @@ const Requests = () => {
                 }
     
                 if (userType !== '') {
-                    const userResponse = await axios.post('http://localhost:3001/getProfile', {
+                    const userResponse = await axios.post('https://localhost:3001/getProfile', {
                         email: email,
                         userType: userType,
                     });
@@ -134,14 +134,14 @@ const Requests = () => {
                 }
     
                 // Fetch sent requests
-                const sentResponse = await axios.post('http://localhost:3001/getSentRequests', {
+                const sentResponse = await axios.post('https://localhost:3001/getSentRequests', {
                     email,
                     userType,
                 });
     
                 // Filter out sent requests to users who have available: false and are not declined
                 const filteredSentRequests = await Promise.all(sentResponse.data.sentRequests.map(async (request) => {
-                    const receiverProfileResponse = await axios.post('http://localhost:3001/getProfile', {
+                    const receiverProfileResponse = await axios.post('https://localhost:3001/getProfile', {
                         email: request.receiverEmail,
                         userType: userType === "mentee" ? "mentor" : "mentee",
                     });
@@ -189,7 +189,7 @@ const Requests = () => {
                 const email = sessionStorage.getItem('email');
                 const userType = sessionStorage.getItem('userType');
     
-                const shortlistOrderResponse = await axios.post('http://localhost:3001/getShortlistOrder', {
+                const shortlistOrderResponse = await axios.post('https://localhost:3001/getShortlistOrder', {
                     email,
                     userType,
                 });
@@ -235,7 +235,7 @@ const Requests = () => {
                 const userType = sessionStorage.getItem('userType');
 
                 // Fetch user profile
-                const profileResponse = await axios.post('http://localhost:3001/getProfile', {
+                const profileResponse = await axios.post('https://localhost:3001/getProfile', {
                     email: email,
                     userType: userType,
                 });
@@ -243,7 +243,7 @@ const Requests = () => {
 
                 // Fetch admin match settings
                 if (profileResponse && profileResponse.data && profileResponse.data.profile && profileResponse.data.profile.profileInfo && profileResponse.data.profile.profileInfo.admin) {
-                    const matchSettingsResponse = await axios.get('http://localhost:3001/getAdminMatchingSettings', {
+                    const matchSettingsResponse = await axios.get('https://localhost:3001/getAdminMatchingSettings', {
                         params: { email: profileResponse.data.profile.profileInfo.admin }
                     });
                     const { blindMatching, matchingMethod } = matchSettingsResponse.data;
@@ -272,7 +272,7 @@ const Requests = () => {
                 type: request ? request.type : 'unknown',
             }));
 
-            await axios.post('http://localhost:3001/updateRequestOrder', {
+            await axios.post('https://localhost:3001/updateRequestOrder', {
                 orderInformation,
                 userType,
                 email,

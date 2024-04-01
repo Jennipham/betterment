@@ -58,7 +58,7 @@ const SignUp = () => {
 
     const checkEmailExists = async (email) => {
         try {
-            const response = await axios.get('http://localhost:3001/check-email', { params: { email } });
+            const response = await axios.get('https://localhost:3001/check-email', { params: { email } });
 
             return response.data.exists;
         } catch (error) {
@@ -108,7 +108,7 @@ const SignUp = () => {
 
             const { confirmPassword, ...dataToSend } = formData;
             dataToSend.userType = userType;
-            const response = await axios.post('http://localhost:3001/signup', dataToSend);
+            const response = await axios.post('https://localhost:3001/signup', dataToSend);
 
             if (response.status === 201) {
                 const { token, firstName, lastName, userType, email, } = response.data;

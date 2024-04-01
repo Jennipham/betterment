@@ -88,7 +88,7 @@ const AdminSettings = () => {
     useEffect(() => {
         const fetchProfileData = async () => {
             try {
-                const response = await axios.post('http://localhost:3001/getManagerProfile', {
+                const response = await axios.post('https://localhost:3001/getManagerProfile', {
                     email: user.email,
                     userType: user.userType,
                 });
@@ -141,7 +141,7 @@ const AdminSettings = () => {
             const updatedBlindMatching = isEditingBlindMatching ? blindMatchingInput.trim() : formData.blindMatching.trim();
 
 
-            const response = await axios.post('http://localhost:3001/managerProfile', {
+            const response = await axios.post('https://localhost:3001/managerProfile', {
                 ...formData,
                 email: user.email,
                 userType: user.userType,
@@ -197,7 +197,7 @@ const AdminSettings = () => {
             const updatedBlindMatching = isEditingBlindMatching ? blindMatchingInput.trim() : formData.blindMatching.trim();
 
 
-            const response = await axios.post('http://localhost:3001/managerProfile', {
+            const response = await axios.post('https://localhost:3001/managerProfile', {
                 ...formData,
                 email: user.email,
                 userType: user.userType,

@@ -101,7 +101,7 @@ const Header = () => {
                 }
 
                 if (user.userType !== '') {
-                    const userResponse = await axios.post('http://localhost:3001/getProfile', {
+                    const userResponse = await axios.post('https://localhost:3001/getProfile', {
                         email: user.email,
                         userType: user.userType,
                     });
@@ -113,7 +113,7 @@ const Header = () => {
                     }
                 }
 
-                const receivedResponse = await axios.post('http://localhost:3001/getReceivedRequests', {
+                const receivedResponse = await axios.post('https://localhost:3001/getReceivedRequests', {
                     email: user.email,
                     userType: user.userType,
                 });
@@ -136,7 +136,7 @@ const Header = () => {
 
     const handleLogout = async () => {
         try {
-            await axios.post('http://localhost:3001/logout');
+            await axios.post('https://localhost:3001/logout');
             sessionStorage.clear();
 
             setTimeout(() => {
