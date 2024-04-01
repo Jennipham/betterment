@@ -58,6 +58,8 @@
   "devDependencies": {
     "@csstools/normalize.css": "^12.0.0",
     "@rollup/plugin-babel": "^6.0.3",
+    "jest": "^27.5.1",
+    "puppeteer": "^22.6.1",
     "react-scripts": "^5.0.1"
   },
   "proxy": "https://localhost:3001"
