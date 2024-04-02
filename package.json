@@ -36,6 +36,7 @@
     "start": "set HTTPS=true&&react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "precommit": "npm test",
     "eject": "react-scripts eject",
     "deploy": "gh-pages -d build"
   },

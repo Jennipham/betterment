@@ -327,6 +327,10 @@ router.get('/getPotentialMatches', async (req, res) => {
                 totalScore += profileInfo.level ? parseInt(profileInfo.level) : 0;
             }
 
+            if (mentoringMethods === 'InPerson' && profileInfo.mentoringMethods === 'InPerson' && officeLocation === profileInfo.officeLocation) {
+                totalScore += 1;
+            }
+
             return { ...profile, score: totalScore };
         });
 
