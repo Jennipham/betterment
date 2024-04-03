@@ -1152,43 +1152,19 @@ router.post('/acceptRequest', async (req, res) => {
 
 router.post('/declineRequest', async (req, res) => {
     const { email, senderEmail, userType } = req.body;
-
     try {
-        let updateQuery;
-
-        if (userType === 'mentee') {
-            updateQuery = {
-                $set: { 'profileInfo.receivedRequests.$.declined': true },
-                $inc: { 'profileInfo.declinedRequestsCount': 1 },
-            };
-        } else if (userType === 'mentor') {
-            updateQuery = {
-                $set: { 'profileInfo.receivedRequests.$.declined': true },
-                $inc: { 'profileInfo.declinedRequestsCount': 1 },
-            };
-        } else {
-            return res.status(400).json({ error: 'Invalid userType' });
-        }
-
-        const profile = userType === 'mentee'
-            ? await MenteeProfile.findOneAndUpdate(
-                { email, 'profileInfo.receivedRequests.senderEmail': senderEmail },
-                updateQuery,
-                { new: true }
-            )
-            : await MentorProfile.findOneAndUpdate(
-                { email, 'profileInfo.receivedRequests.senderEmail': senderEmail },
-                updateQuery,
-                { new: true }
-            );
-
-        if (!profile) {
-            return res.status(404).json({ error: 'Profile not found' });
-        }
-
-        // Pull the request from the shortlist order array
-        profile.profileInfo.shortlistOrder = profile.profileInfo.shortlistOrder.filter(orderItem => orderItem.requestId.toString() !== profile.profileInfo.receivedRequests.find(request => request.senderEmail === senderEmail)._id.toString());
-
+        const update = { $set: { 'receivedRequests.$.declined': true }, $inc: { 'declinedRequestsCount': 1 } };
+        const Profile = userType === 'mentee' ? MenteeProfile : MentorProfile;
+        
+        const profile = await Profile.findOneAndUpdate(
+            { email, 'receivedRequests.senderEmail': senderEmail },
+            update,
+            { new: true }
+        );
+        if (!profile) return res.status(404).json({ error: 'Profile not found' });
+        
+        // Update shortlistOrder and save
+        profile.shortlistOrder = profile.shortlistOrder.filter(item => item.requestId.toString() !== profile.receivedRequests.find(req => req.senderEmail === senderEmail)._id.toString());
         await profile.save();
 
         res.json({ success: true });

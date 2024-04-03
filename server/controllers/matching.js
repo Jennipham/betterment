@@ -7,11 +7,13 @@ function galeShapley(menteePreferences, mentorPreferences, mentees, mentors) {
     while (Object.keys(matches).length < menteePreferences.length && iterations < maxIterations) {
         for (const mentee of menteePreferences) {
             if (!matches[mentee.email]) {
-                // Get their most preferred, available mentor
+                
+                // Get their next most preferred mentor
                 const menteePreferredMentor = mentee.preferences.shift();
                 if (!matches[menteePreferredMentor]) {
-                    matches[menteePreferredMentor] = mentee.email; // Match the mentee with the mentor
+                    matches[menteePreferredMentor] = mentee.email; // Match if mentor is available
                 } else {
+                    
                     // Considers Mentor Shortlist preferences
                     if (mentorPreferences[menteePreferredMentor] && mentors && mentees) {
                         const currentMenteeIndex = mentorPreferences[menteePreferredMentor].findIndex(email => email === matches[menteePreferredMentor]);
