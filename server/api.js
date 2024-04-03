@@ -328,7 +328,7 @@ router.get('/getPotentialMatches', async (req, res) => {
             }
 
             if (mentoringMethods === 'InPerson' && profileInfo.mentoringMethods === 'InPerson' && officeLocation === profileInfo.officeLocation) {
-                totalScore += 1;
+                totalScore += 2;
             }
 
             return { ...profile, score: totalScore };
