@@ -237,7 +237,7 @@ const MenteeMatches = () => {
                         developmentAreas: selectedDevelopmentAreas.join(','),
                         mentoringMethods: selectedMethods.join(','),
                         department: user.department,
-                        officeLocation: user.officeLocation,
+                        officeLocation: selectedLocation,
                     },
                 });
         
@@ -274,7 +274,7 @@ const MenteeMatches = () => {
         if (matchingMethod && matchingMethod === 'Algorithm') {
             fetchAlgorithmMatches();
         }
-    }, [user, selectedLanguages, selectedDevelopmentAreas, selectedMethods, matchingMethod]);
+    }, [user, selectedLanguages, selectedDevelopmentAreas, selectedMethods, matchingMethod,selectedLocation]);
     
     
 

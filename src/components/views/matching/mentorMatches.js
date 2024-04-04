@@ -243,7 +243,7 @@ const MentorMatches = () => {
                         developmentAreas: selectedDevelopmentAreas.join(','),
                         mentoringMethods: selectedMethods.join(','),
                         department: user.department,
-                        officeLocation: user.officeLocation,
+                        officeLocation: selectedLocation,
                     },
                 });
         
@@ -280,7 +280,7 @@ const MentorMatches = () => {
         if (matchingMethod && matchingMethod === 'Algorithm') {
             fetchAlgorithmMatches();
         }
-    }, [user, selectedLanguages, selectedDevelopmentAreas, selectedMethods, matchingMethod]);
+    }, [user, selectedLanguages, selectedDevelopmentAreas, selectedMethods, matchingMethod, selectedLocation]);
     
 
     const fetchNames = async (email) => {
