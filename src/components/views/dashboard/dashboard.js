@@ -48,7 +48,7 @@ const Dashboard = () => {
 
 
     useEffect(() => {
-        // Function to fetch user stats
+        // Fetch matched the stats for numer of users matched/not matched
         const fetchUserCountStats = async () => {
             try {
                 const adminEmail = user.email;
@@ -60,16 +60,13 @@ const Dashboard = () => {
                 console.error('Error fetching user stats:', error);
             }
             finally {
-                // Set loading to false once data is fetched (whether successful or not)
                 setCountLoading(false);
             }
         };
-
-        // Call the function
         fetchUserCountStats();
-    }, []); // Empty dependency array to run only once when the component mounts
+    }, []);
 
-    // Function to render the pie chart
+    // Render the pie chart
     const renderUserCountPieChart = () => {
         if (!userCountStats) {
             return null;

@@ -1153,18 +1153,20 @@ router.post('/acceptRequest', async (req, res) => {
 router.post('/declineRequest', async (req, res) => {
     const { email, senderEmail, userType } = req.body;
     try {
-        const update = { $set: { 'receivedRequests.$.declined': true }, $inc: { 'declinedRequestsCount': 1 } };
+        const update = { $set: { 'receivedRequests.$.declined': true }, 
+        $inc: { 'declinedRequestsCount': 1 } };
         const Profile = userType === 'mentee' ? MenteeProfile : MentorProfile;
-        
+
         const profile = await Profile.findOneAndUpdate(
             { email, 'receivedRequests.senderEmail': senderEmail },
             update,
             { new: true }
         );
         if (!profile) return res.status(404).json({ error: 'Profile not found' });
-        
+
         // Update shortlistOrder and save
-        profile.shortlistOrder = profile.shortlistOrder.filter(item => item.requestId.toString() !== profile.receivedRequests.find(req => req.senderEmail === senderEmail)._id.toString());
+        profile.shortlistOrder = profile.shortlistOrder.filter(item => item.requestId.toString() 
+        !== profile.receivedRequests.find(req => req.senderEmail === senderEmail)._id.toString());
         await profile.save();
 
         res.json({ success: true });
@@ -1460,8 +1462,8 @@ const matchLogic = async (domainFilter = null) => {
 };
 
 
-// Scheduled task for all accounts every 14th and 28th
-cron.schedule('0 0 */14 * *', async () => {
+// Scheduled matching on the 1st, 14th and 28th of ever month at 00:00
+cron.schedule('0 0 1,14,28 * *', async () => {
     try {
         console.log('Running scheduled matching process for all accounts...');
         await matchLogic();
@@ -1469,6 +1471,8 @@ cron.schedule('0 0 */14 * *', async () => {
         console.error('Error during scheduled matching process:', error);
     }
 });
+
+
 
 // Minute then hour
 // cron.schedule('45 16 * * *', async () => {

@@ -16,8 +16,10 @@ function galeShapley(menteePreferences, mentorPreferences, mentees, mentors) {
                     
                     // Considers Mentor Shortlist preferences
                     if (mentorPreferences[menteePreferredMentor] && mentors && mentees) {
-                        const currentMenteeIndex = mentorPreferences[menteePreferredMentor].findIndex(email => email === matches[menteePreferredMentor]);
-                        const potentialMenteeIndex = mentorPreferences[menteePreferredMentor].findIndex(email => email === mentee.email);
+                        const currentMenteeIndex = mentorPreferences[menteePreferredMentor].findIndex(email => email ===
+                             matches[menteePreferredMentor]);
+                        const potentialMenteeIndex = mentorPreferences[menteePreferredMentor].findIndex(email => email 
+                            === mentee.email);
 
                         const currentMenteeProfile = mentors.find(m => m.email === matches[menteePreferredMentor]);
                         const potentialMenteeProfile = mentees.find(m => m.email === mentee.email);
