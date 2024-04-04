@@ -2,37 +2,38 @@ function galeShapley(menteePreferences, mentorPreferences, mentees, mentors) {
     const matches = {};
     let iterations = 0;
     const maxIterations = menteePreferences.length * 2;
+    const matchedMentees = new Set(); // Keep track of matched mentees
 
     // Loop until all mentees are matched or maximum iterations reached
     while (Object.keys(matches).length < menteePreferences.length && iterations < maxIterations) {
         for (const mentee of menteePreferences) {
-            if (!matches[mentee.email]) {
-                
+            if (!matchedMentees.has(mentee.email)) {
                 // Get their next most preferred mentor
                 const menteePreferredMentor = mentee.preferences.shift();
                 if (!matches[menteePreferredMentor]) {
-                    matches[menteePreferredMentor] = mentee.email; // Match if mentor is available
-                } else {
-                    
+                    // Match if mentor is available
+                    matches[menteePreferredMentor] = mentee.email;
+                    matchedMentees.add(mentee.email);
+                } 
+                
+                else {
                     // Considers Mentor Shortlist preferences
                     if (mentorPreferences[menteePreferredMentor] && mentors && mentees) {
-                        const currentMenteeIndex = mentorPreferences[menteePreferredMentor].findIndex(email => email ===
-                             matches[menteePreferredMentor]);
-                        const potentialMenteeIndex = mentorPreferences[menteePreferredMentor].findIndex(email => email 
-                            === mentee.email);
+                        const currentMenteeIndex = mentorPreferences[menteePreferredMentor].findIndex(email => email === matches[menteePreferredMentor]);
+                        const potentialMenteeIndex = mentorPreferences[menteePreferredMentor].findIndex(email => email === mentee.email);
 
-                        const currentMenteeProfile = mentors.find(m => m.email === matches[menteePreferredMentor]);
+                        const currentMenteeProfile = mentees.find(m => m.email === matches[menteePreferredMentor]);
                         const potentialMenteeProfile = mentees.find(m => m.email === mentee.email);
 
-                        // Prioritise mentees with a lower declinedRequests count
                         if (currentMenteeProfile && potentialMenteeProfile) {
-                            const isNewMenteePreferred = (potentialMenteeIndex < currentMenteeIndex) &&
-                            (
-                                currentMenteeProfile.profileInfo.declinedRequestsCount <= 3 &&
-                                potentialMenteeProfile.profileInfo.declinedRequestsCount > currentMenteeProfile.profileInfo.declinedRequestsCount);                    
+                            const isCurrentMenteeLessPreferred = currentMenteeProfile.profileInfo.declinedRequestsCount > 2 &&
+                                potentialMenteeProfile.profileInfo.declinedRequestsCount < currentMenteeProfile.profileInfo.declinedRequestsCount;
 
-                            if (isNewMenteePreferred) { // If the new mentee is preferred over the current one
-                                matches[menteePreferredMentor] = mentee.email; // Replace the current mentee with the new one
+                            if (isCurrentMenteeLessPreferred && potentialMenteeIndex < currentMenteeIndex) {
+                                // Replace the current mentee with the new one if the new mentee is preferred
+                                matchedMentees.delete(matches[menteePreferredMentor]);
+                                matches[menteePreferredMentor] = mentee.email;
+                                matchedMentees.add(mentee.email);
                             }
                         }
                     } else {
@@ -52,3 +53,4 @@ function galeShapley(menteePreferences, mentorPreferences, mentees, mentors) {
 }
 
 module.exports = galeShapley;
+
