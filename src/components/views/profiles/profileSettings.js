@@ -621,7 +621,7 @@ const Profile = () => {
 
                                 />
                             </p>
-                            <Tooltip className="tooltip-text" text="The methods you're happy to receive/give mentoring.">
+                            <Tooltip className="tooltip-text" text="Your Coach Credential level.">
                                 <img src={moreInfo} alt="More Info" className="more-info-icon" />
                             </Tooltip>
                         </div>)}
