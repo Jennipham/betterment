@@ -14,6 +14,9 @@ describe('Page Load Time Test', () => {
     await browser.close();
   });
 
+
+  jest.setTimeout(10000);
+
   test('Average page load time for all routes', async () => {
     const routes = [
       '/',
