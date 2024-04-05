@@ -30,6 +30,8 @@ describe('galeShapley function', () => {
       'mentor1@example.com': 'mentee2@example.com', // Matches mentee2 (less declined requests)
       'mentor2@example.com': 'mentee1@example.com',
     };
+    console.log('Expected Matches:', expectedMatches);
+    console.log('Actual Matches:', matches);
 
     // Expect the galeShapley function to return the expected matches
     expect(matches).toEqual(expectedMatches);
