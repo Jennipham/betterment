@@ -1462,7 +1462,7 @@ const matchLogic = async (domainFilter = null) => {
 };
 
 
-// Scheduled matching on the 1st, 14th and 28th of ever month at 00:00
+// Scheduled matching on the 1st, 14th and 28th of every month at 00:00
 cron.schedule('0 0 1,14,28 * *', async () => {
     try {
         console.log('Running scheduled matching process for all accounts...');
@@ -1475,7 +1475,7 @@ cron.schedule('0 0 1,14,28 * *', async () => {
 
 
 // Minute then hour
-// cron.schedule('45 16 * * *', async () => {
+// cron.schedule('32 20 * * *', async () => {
 //     try {
 //         console.log('Running matching process for @test.com accounts...');
 //         await matchLogic("test.com"); // Pass "test.com" as the domain

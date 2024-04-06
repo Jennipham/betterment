@@ -417,7 +417,7 @@ const Dashboard = () => {
         <>
             <Header />
             <div className="dashboard-container">
-                <h1 className='insights-header'>Programme Dashboard</h1>
+                <h1 className='insights-header'>Program Dashboard</h1>
 
                 <div className="chart-container">
                     <div className="chart-item">
