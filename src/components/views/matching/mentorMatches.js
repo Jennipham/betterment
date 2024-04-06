@@ -167,11 +167,12 @@ const MentorMatches = () => {
         const officeLocation = sessionStorage.getItem('officeLocation') || '';
         const developmentAreas = sessionStorage.getItem('developmentAreas') || [];
         const mentoringMethods = sessionStorage.getItem('mentoringMethods') || [];
+        const traits = sessionStorage.getItem('traits') || [];
         const department = sessionStorage.getItem('department') || '';
         const languages = sessionStorage.getItem('languages') || [];
         const admin = sessionStorage.getItem('admin') || '';
 
-        setUser({ firstName, lastName, userType, email, jobRole, officeLocation, developmentAreas, department, mentoringMethods, languages, admin, });
+        setUser({ firstName, lastName, userType, email, jobRole, officeLocation,traits, developmentAreas, department, mentoringMethods, languages, admin, });
         // console.log('User Information:', { firstName, lastName, userType, email, jobRole, officeLocation, developmentAreas, mentoringMethods, languages });
     }, []);
 
@@ -241,6 +242,7 @@ const MentorMatches = () => {
                         userType: user.userType,
                         language: selectedLanguages.join(','),
                         developmentAreas: selectedDevelopmentAreas.join(','),
+                        traits: user.traits.join(','),
                         mentoringMethods: selectedMethods.join(','),
                         department: user.department,
                         officeLocation: selectedLocation,
@@ -372,6 +374,7 @@ const MentorMatches = () => {
                     developmentAreas: response.data.profile.profileInfo.developmentAreas || [],
                     mentoringMethods: response.data.profile.profileInfo.mentoringMethods || [],
                     languages: response.data.profile.profileInfo.languages || [],
+                    traits: response.data.profile.profileInfo.traits || [],
                     admin: response.data.profile.profileInfo.admin || '',
                     department: response.data.profile.profileInfo.department || '',
 

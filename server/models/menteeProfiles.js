@@ -21,6 +21,7 @@ const menteeProfileSchema = new mongoose.Schema({
         languages:[String],
         developmentAreas:[String],
         mentoringMethods: [String],
+        traits:[String],
         sentRequests: [
             {
                 receiverEmail: { type: String, required: true },

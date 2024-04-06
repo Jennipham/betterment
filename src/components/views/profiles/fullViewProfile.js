@@ -125,6 +125,7 @@ const FullProfile = () => {
 
                         </div>
                         <div className="profile-info">
+                        <p className='full-user-info'>Traits: {matchProfile && matchProfile.profileInfo.traits ? matchProfile.profileInfo.traits.join(', ') : ''}</p>
                         <p className='full-user-info'>Development Areas: {matchProfile && matchProfile.profileInfo.developmentAreas ? matchProfile.profileInfo.developmentAreas.join(', ') : ''}</p>
                         <p className='full-user-info'>Methods of Mentoring: {matchProfile && matchProfile.profileInfo.mentoringMethods ? mapValuesToLabels(matchProfile.profileInfo.mentoringMethods, methodOptions).join(', ') : ''}</p>
                         {matchProfile && matchProfile.userType === 'mentor' && (

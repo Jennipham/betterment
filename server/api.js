@@ -187,6 +187,7 @@ router.post('/getProfile', async (req, res) => {
                         capacity: '1',
                         officeLocation: '',
                         languages: [],
+                        traits:[],
                         developmentAreas: [],
                         mentoringMethods: [],
                         sentRequests: [],
@@ -218,6 +219,7 @@ router.post('/getProfile', async (req, res) => {
                         level: '',
                         officeLocation: '',
                         languages: [],
+                        traits:[],
                         developmentAreas: [],
                         mentoringMethods: [],
                         sentRequests: [],
@@ -270,7 +272,7 @@ const calculateArraySimilarityScore = (array1, array2) => {
 };
 router.get('/getPotentialMatches', async (req, res) => {
     try {
-        const { email, userType, language, department, officeLocation, developmentAreas, mentoringMethods } = req.query;
+        const { email, userType, language,traits, department, officeLocation, developmentAreas, mentoringMethods } = req.query;
 
         // Extract domain from the email
         const emailParts = email.split('@');
@@ -321,6 +323,7 @@ router.get('/getPotentialMatches', async (req, res) => {
                 calculateSimilarityScore(department, profileInfo.department) +
                 calculateSimilarityScore(officeLocation, profileInfo.officeLocation) +
                 calculateArraySimilarityScore(developmentAreas, profileInfo.developmentAreas) +
+                calculateArraySimilarityScore(traits, profileInfo.traits) +
                 calculateArraySimilarityScore(mentoringMethods, profileInfo.mentoringMethods);
 
             if (userType === 'mentee') {
@@ -399,7 +402,7 @@ router.post('/getManagerProfile', async (req, res) => {
 
 
 router.post('/profile', async (req, res) => {
-    const { signUpDate, jobRole, department, officeLocation, capacity, languages, level, developmentAreas, mentoringMethods, email, userType, sentRequests, receivedRequests, available, shortlistOrder, matchedInCurrentRound,
+    const { signUpDate, jobRole, department, officeLocation, capacity, languages,traits, level, developmentAreas, mentoringMethods, email, userType, sentRequests, receivedRequests, available, shortlistOrder, matchedInCurrentRound,
         declinedRequestsCount, matches, admin, } = req.body;
 
     try {
@@ -419,6 +422,7 @@ router.post('/profile', async (req, res) => {
                         capacity,
                         officeLocation,
                         languages,
+                        traits,
                         developmentAreas,
                         mentoringMethods,
                         sentRequests,
@@ -440,6 +444,7 @@ router.post('/profile', async (req, res) => {
                     officeLocation,
                     capacity,
                     languages,
+                    traits,
                     developmentAreas,
                     mentoringMethods,
                     sentRequests,
@@ -468,6 +473,7 @@ router.post('/profile', async (req, res) => {
                         capacity,
                         level,
                         languages,
+                        traits,
                         developmentAreas,
                         mentoringMethods,
                         sentRequests,
@@ -491,6 +497,7 @@ router.post('/profile', async (req, res) => {
                     capacity,
                     level,
                     languages,
+                    traits,
                     developmentAreas,
                     mentoringMethods,
                     sentRequests,

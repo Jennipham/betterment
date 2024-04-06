@@ -95,6 +95,19 @@ const departmentOptions = [
     { value: 'Design', label: 'Design' },
 ]
 
+const traitOptions = [
+    { value: 'Active', label: 'Active' },
+    { value: 'Cheerful', label: 'Cheer' },
+    { value: 'Creative', label: 'Creative' },
+    { value: 'Artistic', label: 'Artistic' },
+    { value: 'Foodie', label: 'Foodie' },
+    { value: 'Sports', label: 'Sports' },
+    { value: 'Gaming', label: 'Gaming' },
+    { value: 'Bookworm', label: 'Bookworm' },
+    { value: 'Fitness', label: 'Fitness' },
+    { value: 'Techie', label: 'Techie' },
+]
+
 
 const customStyles = {
     control: (provided) => ({
@@ -152,13 +165,14 @@ const Profile = () => {
         const officeLocation = sessionStorage.getItem('officeLocation') || '';
         const developmentAreas = sessionStorage.getItem('developmentAreas') || '';
         const mentoringMethods = sessionStorage.getItem('mentoringMethods') || '';
+        const traits = sessionStorage.getItem('traits') || '';
         const level = sessionStorage.getItem('level') || '';
         const languages = sessionStorage.getItem('languages') || '';
         const sentRequests = sessionStorage.getItem('sentRequests') || '';
         const receivedRequests = sessionStorage.getItem('receivedRequests') || '';
         const matchedUp = sessionStorage.getItem('matchedUp') || '';
 
-        setUser({ firstName, lastName, userType, email, jobRole, officeLocation, developmentAreas, mentoringMethods, level, languages, sentRequests, receivedRequests, matchedUp });
+        setUser({ firstName, lastName, userType, email, jobRole, officeLocation, developmentAreas, mentoringMethods, traits, level, languages, sentRequests, receivedRequests, matchedUp });
     }, []);
 
 
@@ -171,6 +185,7 @@ const Profile = () => {
         languages: [],
         developmentAreas: [],
         mentoringMethods: [],
+        traits: [],
     });
 
     const [isEditingJobRole, setIsEditingJobRole] = useState(false);
@@ -201,7 +216,7 @@ const Profile = () => {
                     languages: response.data.profile.profileInfo.languages || [], // Ensure 'languages' is an array
                     developmentAreas: response.data.profile.profileInfo.developmentAreas || [], // Ensure 'developmentAreas' is an array
                     mentoringMethods: response.data.profile.profileInfo.mentoringMethods || [], // Ensure 'mentoringMethods' is an array
-
+                    traits: response.data.profile.profileInfo.traits || [],
 
                 }));
                 sessionStorage.setItem('profile', JSON.stringify(response.data.profile.profileInfo));
@@ -388,8 +403,8 @@ const Profile = () => {
 
     return (
         <>
-        <Header/>
-    
+            <Header />
+
             <div className='profile-page'>
 
                 {saveMessage && (
@@ -433,7 +448,7 @@ const Profile = () => {
                                             value={isEditingJobRole ? jobRoleInput : formData.jobRole}
                                             onChange={(e) => setJobRoleInput(e.target.value)}
                                         />
-                                        <img className='save-button'  src={tick} alt="Save" onClick={handleSaveAttributeClick} />
+                                        <img className='save-button' src={tick} alt="Save" onClick={handleSaveAttributeClick} />
                                         <img className="cancel-button" src={cross} alt="Cancel" onClick={() => setIsEditingJobRole(false)} />
                                     </>
                                 ) : (
@@ -506,7 +521,7 @@ const Profile = () => {
                                             value={isEditingCapacity ? capacityInput : formData.capacity}
                                             onChange={(e) => setCapacityInput(e.target.value)}
                                         />
-                                        <img className='save-button'  src={tick} alt="Save" onClick={handleSaveAttributeClick} />
+                                        <img className='save-button' src={tick} alt="Save" onClick={handleSaveAttributeClick} />
                                         <img className="cancel-button" src={cross} alt="Cancel" onClick={() => setIsEditingCapacity(false)} />
                                     </>
                                 ) : (
@@ -604,27 +619,54 @@ const Profile = () => {
                             </Tooltip>
                         </div>
 
-                        {user.userType === "mentor" && (
                         <div className='editable-container'>
 
                             <p className='dropdown-title'>
-                                Coaching Credentials:
+                                Traits & Interests:
                                 <Select
-                                    isMulti={false}
-                                    options={credentialOptions}
-                                    placeholder="Select Mentor Credentials"
+                                    isMulti={true}
+                                    options={traitOptions}
+                                    placeholder="Select Traits and Interests"
                                     styles={customStyles}
-                                    value={formData.level ? { value: formData.level, label: formData.level } : null}
-                                    onChange={(selectedOption) =>
-                                        handleInputChange('level', selectedOption.value)
+                                    value={
+                                        formData.traits
+                                            ? formData.traits.map((trait) => ({
+                                                value: trait,
+                                                label: trait,
+                                            }))
+                                            : null
                                     }
-
+                                    onChange={(selectedOptions) =>
+                                        handleMultiInputChange('traits', selectedOptions.map(option => option.value))
+                                    }
                                 />
                             </p>
-                            <Tooltip className="tooltip-text" text="Your Coach Credential level.">
+                            <Tooltip text="Your personality traits and interests.">
                                 <img src={moreInfo} alt="More Info" className="more-info-icon" />
                             </Tooltip>
-                        </div>)}
+                        </div>
+
+                        {user.userType === "mentor" && (
+                            <div className='editable-container'>
+
+                                <p className='dropdown-title'>
+                                    Coaching Credentials:
+                                    <Select
+                                        isMulti={false}
+                                        options={credentialOptions}
+                                        placeholder="Select Mentor Credentials"
+                                        styles={customStyles}
+                                        value={formData.level ? { value: formData.level, label: formData.level } : null}
+                                        onChange={(selectedOption) =>
+                                            handleInputChange('level', selectedOption.value)
+                                        }
+
+                                    />
+                                </p>
+                                <Tooltip className="tooltip-text" text="Your Coach Credential level.">
+                                    <img src={moreInfo} alt="More Info" className="more-info-icon" />
+                                </Tooltip>
+                            </div>)}
                     </div>
                 </div>
                 {loading ? (

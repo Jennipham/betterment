@@ -163,11 +163,12 @@ const MenteeMatches = () => {
         const officeLocation = sessionStorage.getItem('officeLocation') || '';
         const developmentAreas = sessionStorage.getItem('developmentAreas') || [];
         const mentoringMethods = sessionStorage.getItem('mentoringMethods') || [];
+        const traits = sessionStorage.getItem('traits') || [];
         const department = sessionStorage.getItem('department') || '';
         const languages = sessionStorage.getItem('languages') || [];
         const admin = sessionStorage.getItem('admin') || '';
 
-        setUser({ firstName, lastName, userType, email, jobRole, officeLocation, developmentAreas, department, mentoringMethods, languages, admin, });
+        setUser({ firstName, lastName, userType, email, jobRole, officeLocation, developmentAreas, department,traits, mentoringMethods, languages, admin, });
         // console.log('User Information:', { firstName, lastName, userType, email, jobRole, officeLocation, developmentAreas, mentoringMethods, languages });
     }, []);
 
@@ -237,6 +238,7 @@ const MenteeMatches = () => {
                         developmentAreas: selectedDevelopmentAreas.join(','),
                         mentoringMethods: selectedMethods.join(','),
                         department: user.department,
+                        traits: user.traits.join(','),
                         officeLocation: selectedLocation,
                     },
                 });
@@ -274,7 +276,7 @@ const MenteeMatches = () => {
         if (matchingMethod && matchingMethod === 'Algorithm') {
             fetchAlgorithmMatches();
         }
-    }, [user, selectedLanguages, selectedDevelopmentAreas, selectedMethods, matchingMethod,selectedLocation]);
+    }, [user, selectedLanguages,selectedDevelopmentAreas, selectedMethods, matchingMethod,selectedLocation]);
     
     
 
@@ -369,6 +371,7 @@ const MenteeMatches = () => {
                     developmentAreas: response.data.profile.profileInfo.developmentAreas || [],
                     mentoringMethods: response.data.profile.profileInfo.mentoringMethods || [],
                     languages: response.data.profile.profileInfo.languages || [],
+                    traits: response.data.profile.profileInfo.traits || [],
                     admin: response.data.profile.profileInfo.admin || '',
                     department: response.data.profile.profileInfo.department || '',
 
@@ -560,6 +563,7 @@ const MenteeMatches = () => {
                 developmentAreas: selectedDevelopmentAreas,
                 mentoringMethods: selectedMethods,
                 officeLocation: selectedLocation,
+
             };
 
             // Send a PUT request to update the user's profile
