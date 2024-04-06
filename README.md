@@ -36,7 +36,7 @@ Starts the server and establishes a database connection.
 
 ### Testing the Application
 
-Run system tests with:
+Run system tests for the front end and server in their respective directories with:
 
 #### `npm test`
 Launches the test runner in interactive watch mode.
