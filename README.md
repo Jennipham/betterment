@@ -25,7 +25,7 @@ Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
 ### Starting the Server
 
-In the project terminal, navigate to the server directory:
+In another project terminal, navigate to the server directory:
 
 #### `cd server`
 
