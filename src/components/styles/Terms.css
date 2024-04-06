@@ -1,6 +1,6 @@
 .terms-page {
     display: flex;
-     height: 100vh;
+     height: 100%;
     padding: 20px;
     margin-top: -30px;
      background-color: #3BBED1;
@@ -20,4 +20,8 @@
     background-color: white;
     padding: 10px;
     border-radius: 10px;
+}
+
+.methods-list {
+    font-family: 'agrandir wide light', sans-serif;
 }
