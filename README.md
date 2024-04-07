@@ -48,7 +48,7 @@ Navigate to the system's Login Page (Link should be in the top right of the App 
 Manager Account View with access to the System's Analytics Dashboard.
 
 #### `Email: th@vodafone.com`
-Mentor Account who has been matched - Access to Profile Settings and Integrated Page
+Mentor Account who has been matched - Access to Profile Settings and User Feedback Questionnaire
 
 #### `Email: ldr@bham.com`
 Mentee Account who has not yet been matched - Access to Profile Settings, Match Potentials Page and Shortlist Page
