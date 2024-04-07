@@ -19,19 +19,23 @@ const Help = () => {
     const faqData = [
         {
             question: "What is BetterMent?",
-            answer: "BetterMent is an online platform that takes user profile information and matches employees to executive mentors within an organisation. BetterMent aims to optimise match pairing as opposed to just match suggestions for users in order to optimise mentoring initiatives for mentees,mentors and the wider organisation."
+            answer: "BetterMent is an online platform that takes user profile information and matches employees to executive mentors within an organisation. BetterMent aims to optimise match pairing to maximise program benefit for mentees, mentors and the wider organisation."
         },
         {
             question: "How does matching work?",
-            answer: "Betterment provides 3 methods of matching. The first is random allocation. The second is manual matching where users can filter through and choose their match. The final method is the Betterment Algorithm which creates a similarity score between profiles for users to add their preferred matches to a shortlist. Users can order this shortlist in order of match preference and after 2 weeks this will be fed into the Gale-Shapely Algorithm where matches will be allocated."
+            answer: "Betterment provides 3 methods of matching: Random allocation, Manual matching, and Algorithmic Matching. The final method uses Betterment's intelligent matching Algorithm which creates a similarity score between profiles for users to add their preferred matches to a shortlist. Users can order this shortlist in order of match preference and after 2 weeks this will be fed into the Gale-Shapely Algorithm where matches will be allocated."
         },
         {
             question: "How is the matching method picked?",
             answer: "Your manager will decide which matching method they would like for your organisation. If they have not chosen yet then this will default to Betterment's Algorithm."
         },
         {
+            question: "Which factors are considered in matching?",
+            answer: "The system considers professional facotrs such as your job role, department, office location and coaching qualification levels and also considers personal factors such as preferred mentoring styles, personality traits, interests and hobbies."
+        },
+        {
             question: "What do I do once potential matches are displayed?",
-            answer: "If your matching method has not been set to random, you may request a match with a potential match where they can either decline or accept. All of your requests will be displayed in your shortlist where you may order your requests in order of preference."
+            answer: "You may request a match with a potential match where they can either decline or accept. All of your requests will be displayed in your shortlist where you may order your requests in order of preference."
         },
         {
             question: "What is Blind Matching?",
@@ -39,7 +43,7 @@ const Help = () => {
         },
         {
             question: "I've been matched, what now?",
-            answer: "Congratulations! Once Betterment has found you a match, you can choose to contact your match which will open up an email template for you to send to your mentor. You will also be notified to complete a user experience questionnaire. 2 weeks after you have been matched, your account will be automatically deleted."
+            answer: "Congratulations! Once Betterment has found you a match, you can choose to contact your match which will open up an email template for you to send to your mentor. You will also be notified to complete a user experience questionnaire."
         },
     ];
 
