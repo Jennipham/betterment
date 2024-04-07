@@ -55,7 +55,7 @@ const mentorProfileSchema = new mongoose.Schema({
             {
                 requestId: {
                     type: mongoose.Schema.Types.ObjectId,
-                    ref: 'MentorProfiles',  // Reference to the MenteeProfiles collection
+                    ref: 'MentorProfiles',
                     required: true,
                 }
             }

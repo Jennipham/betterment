@@ -84,7 +84,7 @@ router.post('/signup', async (req, res) => {
                 ? new MenteeProfile({ email, userType })
                 : new MentorProfile({ email, userType });
 
-            // If domain is available, try to find corresponding admin
+            // Find corresponding admin from domain
             if (domain) {
                 const adminProfile = await ManagerProfile.findOne({
                     email: { $regex: new RegExp(`@${domain}$`, 'i') },
@@ -146,7 +146,7 @@ router.post('/login', async (req, res) => {
             return res.status(404).json({ loggedIn: false, error: 'User not found' });
         }
 
-        // Compare the provided password with the stored hashed password
+        // Compare the password with the stored hashed password
         const passwordMatch = await bcrypt.compare(password, user.password);
 
         if (passwordMatch) {
@@ -263,7 +263,6 @@ function calculateSimilarityScore(attribute1, attribute2) {
 // Function to calculate similarity score for two arrays
 const calculateArraySimilarityScore = (array1, array2) => {
     if (!Array.isArray(array1) || !Array.isArray(array2)) {
-        // Handle the case where either array1 or array2 is not an array
         return 0;
     }
 
@@ -306,7 +305,7 @@ router.get('/getPotentialMatches', async (req, res) => {
             : await MentorProfile.findOne({ email: currentUserEmail });
 
         if (currentUserProfile && currentUserProfile.profileInfo.matches.length > 0) {
-            // The user has matches, find the corresponding profiles
+            // The user is matched, find the corresponding profiles
             const matchedUserEmails = currentUserProfile.profileInfo.matches.map(match => userType === 'mentee' ? match.mentorEmail : match.menteeEmail);
             const matchedProfiles = userType === 'mentee'
                 ? await MentorProfile.find({ email: { $in: matchedUserEmails } })
@@ -525,11 +524,10 @@ router.get('/getUserDetails', async (req, res) => {
     const { email } = req.query;
 
     try {
-        // Find the user by email
+        // Find user by email
         const user = await User.findOne({ email });
 
         if (user) {
-            // Send the user details in the response
             res.json({ user });
         } else {
             res.status(404).json({ error: 'User not found' });
@@ -544,7 +542,6 @@ router.get('/getAdminMatchingSettings', async (req, res) => {
     try {
         const { email } = req.query;
 
-        // Check if the email is provided
         if (!email) {
             return res.status(400).json({ error: 'Email is required' });
         }
@@ -552,15 +549,13 @@ router.get('/getAdminMatchingSettings', async (req, res) => {
         // Find the admin profile by email
         const adminProfile = await ManagerProfile.findOne({ email });
 
-        // Check if the admin profile exists
         if (!adminProfile) {
             return res.status(404).json({ error: 'Admin profile not found' });
         }
 
-        // Extract blindMatching and matchingMethod from the admin profile
+        // Retrieve blindMatching and matchingMethod from the admin profile
         const { blindMatching, matchingMethod } = adminProfile.profileInfo;
 
-        // Send the extracted values as the response
         res.json({ blindMatching, matchingMethod });
     } catch (error) {
         console.error('Error fetching admin matching settings:', error);
@@ -586,7 +581,7 @@ router.get('/getRandomMentorProfile', async (req, res) => {
             'profileInfo.matches': { $exists: true, $ne: [] },
         });
 
-        // If a match exists, return the matched mentor profile
+        // If match exists, return the matched mentor profile
         if (existingMatch) {
             const mentorEmail = existingMatch.profileInfo.matches[0].mentorEmail;
             const matchedMentorProfile = await MentorProfile.findOne({ 'email': mentorEmail });
@@ -611,7 +606,7 @@ router.get('/getRandomMentorProfile', async (req, res) => {
             return res.status(404).json({ error: 'No available mentors with the specified domain' });
         }
 
-        // Choose a random mentor profile
+        // Choose random mentor profile
         const randomMentorProfile = availableMentorProfiles[Math.floor(Math.random() * availableMentorProfiles.length)];
 
         // Set both the mentee and mentor as not available
@@ -634,14 +629,11 @@ router.get('/getRandomMentorProfile', async (req, res) => {
 });
 
 
-
-
-
 router.get('/getFilteredMentorProfile', async (req, res) => {
     try {
         const { email, language, developmentAreas, mentoringMethods } = req.query;
 
-        // Extract domain from the email
+        // Extract domain from email
         const emailParts = email ? email.split('@') : [];
         const domain = emailParts.length === 2 ? emailParts[1] : null;
 
@@ -672,7 +664,7 @@ router.get('/getFilteredMentorProfile', async (req, res) => {
 
         const menteeProfile = await MenteeProfile.findOne({ email });
         if (menteeProfile && menteeProfile.profileInfo.matches.length > 0) {
-            // The mentee has matches, find the corresponding mentors
+            // The mentee has matches, find corresponding mentors
             const mentorEmails = menteeProfile.profileInfo.matches.map(match => match.mentorEmail);
             const mentorsWithMatches = await MentorProfile.find({ email: { $in: mentorEmails } });
             return res.json({ profiles: mentorsWithMatches, isMatch: true });
@@ -726,7 +718,7 @@ router.get('/getFilteredMenteeProfile', async (req, res) => {
 
         const mentorProfile = await MentorProfile.findOne({ email });
         if (mentorProfile && mentorProfile.profileInfo.matches.length > 0) {
-            // The mentor has matches, find the corresponding mentees
+            // The mentor has matches, find corresponding mentees
             const menteeEmails = mentorProfile.profileInfo.matches.map(match => match.menteeEmail);
             const menteesWithMatches = await MenteeProfile.find({ email: { $in: menteeEmails } });
             return res.json({ profiles: menteesWithMatches, isMatch: true });
@@ -751,7 +743,7 @@ router.get('/getRandomMenteeProfile', async (req, res) => {
     try {
         const { email } = req.query;
 
-        // Extract domain from the email
+        // Extract domain from email
         const emailParts = email.split('@');
         const domain = emailParts.length === 2 ? emailParts[1] : null;
 
@@ -759,7 +751,7 @@ router.get('/getRandomMenteeProfile', async (req, res) => {
             return res.status(400).json({ error: 'Invalid email format' });
         }
 
-        // Check if the mentor already has a match
+        // Check if mentor already has a match
         const existingMatch = await MentorProfile.findOne({
             'email': email,
             'profileInfo.matches': { $exists: true, $ne: [] },
@@ -859,7 +851,6 @@ router.post('/requestMatch', async (req, res) => {
         senderProfile.profileInfo.sentRequests.push({ receiverEmail });
         receiverProfile.profileInfo.receivedRequests.push({ senderEmail });
 
-        // Save the changes to the database
         await senderProfile.save();
         await receiverProfile.save();
 
@@ -944,7 +935,6 @@ router.post('/getShortlistOrder', async (req, res) => {
     try {
         let profileModel;
 
-        // Choose the appropriate model based on user type
         if (userType === 'mentee') {
             profileModel = MenteeProfile;
         } else if (userType === 'mentor') {
@@ -973,7 +963,6 @@ router.post('/updateRequestOrder', async (req, res) => {
 
         let UserProfileModel;
 
-        // Choose the appropriate model based on userType
         if (userType === 'mentee') {
             UserProfileModel = MenteeProfile;
         } else if (userType === 'mentor') {
@@ -985,7 +974,7 @@ router.post('/updateRequestOrder', async (req, res) => {
         // Find the user profile by email and userType
         const userProfile = await UserProfileModel.findOne({
             email,
-            userType, // Updated query
+            userType,
         });
         // Update the order information in the user's profile
         if (userProfile) {
@@ -1017,7 +1006,7 @@ router.delete('/cancelRequest/:receiverEmail', async (req, res) => {
                 return res.status(404).json({ error: 'Profile not found' });
             }
 
-            // Check if the request is in shortlistOrder
+            // Check if request is in shortlistOrder
             const isInShortlist = profile.profileInfo.shortlistOrder.some(item => item.requestId.equals(receiverEmail));
 
             const updateOperations = {
@@ -1056,7 +1045,7 @@ router.delete('/cancelRequest/:receiverEmail', async (req, res) => {
                 return res.status(404).json({ error: 'Profile not found' });
             }
 
-            // Check if the request is in shortlistOrder
+            // Check if request is in shortlistOrder
             const isInShortlist = profile.profileInfo.shortlistOrder.some(item => item.requestId.equals(receiverEmail));
 
             const updateOperations = {
@@ -1233,7 +1222,7 @@ router.put('/updateUserProfile', async (req, res) => {
                 return res.status(404).json({ error: 'User profile not found' });
             }
 
-            // Update profile fields based on the received data
+            // Update profile fields
             Object.keys(data).forEach((field) => {
                 profile.profileInfo[field] = data[field];
             });
@@ -1249,7 +1238,7 @@ router.put('/updateUserProfile', async (req, res) => {
                 return res.status(404).json({ error: 'User profile not found' });
             }
 
-            // Update profile fields based on the received data
+            // Update profile fields
             Object.keys(data).forEach((field) => {
                 profile.profileInfo[field] = data[field];
             });
@@ -1313,7 +1302,7 @@ router.post('/logout', async (req, res) => {
     const token = tokenHeader.split(' ')[1];
 
     try {
-        // Check if the token is in the blacklist
+        // Check if token is in the blacklist
         if (blacklist.has(token)) {
             res.status(401).json({ error: 'Token is already invalidated' });
             return;
@@ -1386,7 +1375,7 @@ const matchLogic = async (domainFilter = null) => {
                 const sentRequest = await MenteeProfile.findOne({ 'profileInfo.sentRequests._id': item.requestId }, 'profileInfo.sentRequests.$');
                 if (sentRequest) {
                     if (!sentRequest.profileInfo.sentRequests[0].accepted) {
-                        // If the request is not accepted, remove it from the shortlistOrder
+                        // If request is not accepted, remove it from the shortlistOrder
                         await MenteeProfile.findOneAndUpdate(
                             { 'email': mentee.email },
                             { $pull: { 'profileInfo.shortlistOrder': { 'requestId': item.requestId } } }
@@ -1397,7 +1386,7 @@ const matchLogic = async (domainFilter = null) => {
             }
         }
 
-        // Fetch and process each mentor's shortlist (similar to mentees)
+        // Fetch and process each mentor's shortlist
         for (const mentor of mentorsShortlist) {
             for (const item of mentor.profileInfo.shortlistOrder) {
                 allRequestIds.push(item.requestId);
@@ -1439,7 +1428,7 @@ const matchLogic = async (domainFilter = null) => {
             declinedRequestsCount: mentor.profileInfo.declinedRequestsCount,
         }));
 
-        // Implement Gale-Shapley algorithm
+        // Gale-Shapley algorithm
         const matches = galeShapley(menteePreferences, mentorPreferences, menteesShortlist, mentorsShortlist);
         console.log(matches);
 
@@ -1470,7 +1459,7 @@ const matchLogic = async (domainFilter = null) => {
 
 
 // Scheduled matching on the 1st, 14th and 28th of every month at 00:00
-cron.schedule('0 0 1,14,28 * *', async () => {
+cron.schedule('0 0 14,28 * *', async () => {
     try {
         console.log('Running scheduled matching process for all accounts...');
         await matchLogic();
@@ -1550,7 +1539,6 @@ router.get('/matched-stats/:adminEmail', async (req, res) => {
         // Get the number of mentees with at least one match
         const menteeMatchesCount = menteeProfiles.filter(profile => profile.profileInfo.matches.length > 0).length;
 
-        // Return the information in an appropriate format
         res.json({
             totalUsers,
             mentorCount,
@@ -1597,10 +1585,9 @@ router.get('/average-signup-duration/:adminEmail', async (req, res) => {
             return acc + duration;
         }, 0);
 
-        // Calculate the average sign-up duration in days
+        // Calculate average sign-up duration in days
         const averageSignupDuration = totalSignupDuration / (totalUsers * 24 * 60 * 60 * 1000);
 
-        // Return the information in an appropriate format
         res.json({
             totalUsers,
             averageSignupDurationDays: averageSignupDuration,
@@ -1611,7 +1598,6 @@ router.get('/average-signup-duration/:adminEmail', async (req, res) => {
     }
 });
 
-// Example endpoint for department stats
 router.get('/department-stats/:adminEmail', async (req, res) => {
     try {
         const adminEmail = req.params.adminEmail;
@@ -1652,10 +1638,8 @@ router.get('/department-stats/:adminEmail', async (req, res) => {
             };
         });
 
-        // Wait for all promises to resolve
         const resolvedDepartmentStats = await Promise.all(departmentStats);
 
-        // Return the information in an appropriate format
         res.json({
             departmentStats: resolvedDepartmentStats,
         });
@@ -1705,10 +1689,8 @@ router.get('/development-area-stats/:adminEmail', async (req, res) => {
             };
         });
 
-        // Wait for all promises to resolve
         const resolvedDevelopmentAreaStats = await Promise.all(developmentAreaStats);
 
-        // Return the information in an appropriate format
         res.json({
             developmentAreaStats: resolvedDevelopmentAreaStats,
         });
@@ -1718,7 +1700,6 @@ router.get('/development-area-stats/:adminEmail', async (req, res) => {
     }
 });
 
-// Example endpoint for department stats
 router.get('/location-stats/:adminEmail', async (req, res) => {
     try {
         const adminEmail = req.params.adminEmail;
@@ -1726,13 +1707,13 @@ router.get('/location-stats/:adminEmail', async (req, res) => {
         // Extract domain from admin email
         const domain = adminEmail.split('@')[1];
 
-        // Get all mentor departments with the same domain and available
+        // Get all mentor location with the same domain and available
         const mentorLocations = await MentorProfile.distinct('profileInfo.officeLocation', {
             'email': { $regex: new RegExp(`@${domain}$`, 'i') },
             'profileInfo.available': true,
         });
 
-        // Get all mentee departments with the same domain and available
+        // Get all mentee location with the same domain and available
         const menteeLocations = await MenteeProfile.distinct('profileInfo.officeLocation', {
             'email': { $regex: new RegExp(`@${domain}$`, 'i') },
             'profileInfo.available': true,
@@ -1741,7 +1722,7 @@ router.get('/location-stats/:adminEmail', async (req, res) => {
         // Combine and remove duplicates
         const allLocations = [...new Set([...mentorLocations, ...menteeLocations])];
 
-        // Get user count for each department
+        // Get user count for each location
         const locationStats = allLocations.map(async (location) => {
             const mentorCount = await MentorProfile.countDocuments({
                 'profileInfo.officeLocation': location,
@@ -1759,10 +1740,8 @@ router.get('/location-stats/:adminEmail', async (req, res) => {
             };
         });
 
-        // Wait for all promises to resolve
         const resolvedLocationStats = await Promise.all(locationStats);
 
-        // Return the information in an appropriate format
         res.json({
             locationStats: resolvedLocationStats,
         });
@@ -1805,7 +1784,6 @@ router.get('/match-data-by-date/:adminEmail', async (req, res) => {
             return acc;
         }, {});
 
-        // Return the match count by date
         res.json(matchCountByDate);
     } catch (error) {
         console.error('Error fetching match data by date:', error);

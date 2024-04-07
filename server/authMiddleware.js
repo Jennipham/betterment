@@ -11,7 +11,7 @@ const authenticateUser = async (req, res, next) => {
         return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    const token = authHeader.substring(7); // Remove 'Bearer ' from the beginning
+    const token = authHeader.substring(7);
 
     try {
         const decoded = jwt.verify(token, secretKey);

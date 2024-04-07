@@ -1,5 +1,5 @@
 const express = require('express');
-const cors = require('cors'); // Import the cors middleware
+const cors = require('cors');
 const bodyParser = require('body-parser');
 const https = require('https');
 const fs = require('fs');
@@ -8,7 +8,7 @@ const app = express();
 const db = require('./db');
 const api = require('./api');
 
-app.use(cors()); // Enable CORS for all routes
+app.use(cors());
 app.use(bodyParser.json());
 
 app.get('/', (req, res) => {

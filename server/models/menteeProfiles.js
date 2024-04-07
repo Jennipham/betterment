@@ -54,7 +54,7 @@ const menteeProfileSchema = new mongoose.Schema({
             {
                 requestId: {
                     type: mongoose.Schema.Types.ObjectId,
-                    ref: 'MenteeProfiles',  // Reference to the MenteeProfiles collection
+                    ref: 'MenteeProfiles',
                     required: true,
                 }
             }
