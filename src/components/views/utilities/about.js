@@ -133,7 +133,7 @@ const About = () => {
                                     Sign Up to join BetterMent's network of organisations
                                 </h3>
                             </div>
-                            <div className="card">
+                            <div className="card-coach">
                                 <p>2. Set your Preferences</p>
                                 <img src={preferences} alt="preferences" />
                                 <h3>
