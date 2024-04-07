@@ -50,8 +50,11 @@ Manager Account View with access to the System's Analytics Dashboard.
 #### `Email: th@vodafone.com`
 Mentor Account who has been matched - Access to Profile Settings and Integrated Page
 
+#### `Email: ldr@bham.com`
+Mentee Account who has not yet been matched - Access to Profile Settings, Match Potentials Page and Shortlist Page
+
 #### `Password: 123`
-Password for accounts to see user views.
+Password for all accounts to see user views.
 
 
 
