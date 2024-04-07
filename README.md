@@ -41,7 +41,7 @@ Run system tests for the front end and server in their respective directories wi
 #### `npm test`
 Launches the test runner in interactive watch mode.
 
-### Login Credential for User Views
+### Login Credentials for User Views
 Navigate to the system's Login Page (Link should be in the top right of the App Homepage)
 
 #### `Email: ml@bham.com`
