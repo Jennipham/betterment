@@ -56,16 +56,12 @@ const SentRequest = ({ request, onRemoveRequest }) => {
             } catch (error) {
                 console.error('Error fetching data:', error);
                 if (error.response && error.response.status === 404) {
-                    // Handle 404 error if needed
-                } else {
-                    // Handle other errors
-                }
+                } 
             }
         };
 
-        // Call the fetchMatchProfile function
         fetchMatchProfile();
-    }, [request.receiverEmail]); // Add dependencies to the dependency array
+    }, [request.receiverEmail]);
 
     const fetchAdminMatchSettings = async () => {
         try {
@@ -81,7 +77,6 @@ const SentRequest = ({ request, onRemoveRequest }) => {
             }
         } catch (error) {
             console.error('Error fetching admin match settings:', error);
-            // Handle error if necessary
         }
     };
 
@@ -94,17 +89,15 @@ const SentRequest = ({ request, onRemoveRequest }) => {
     const handleCancelClick = async () => {
         setLoading(true);
         try {
-            // Make API call to delete the email from sentRequests
+            // Delete the email from sentRequests
             await axios.delete(`https://localhost:3001/cancelRequest/${request.receiverEmail}`, {
                 data: { email: email, userType: userType }
             });
-            // Update the UI by removing the request from the list
-            onRemoveRequest(request.receiverEmail);  // Pass the correct email here
+            onRemoveRequest(request.receiverEmail);
             setLoading(false);
         } catch (error) {
             setLoading(false);
             console.error('Error deleting request:', error);
-            // Handle error if the API call fails
         }
     };
 

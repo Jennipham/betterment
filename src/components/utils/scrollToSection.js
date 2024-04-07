@@ -14,7 +14,6 @@ const ScrollToSection = ({ text, targetPage, updateTargetPage, hideScroll }) => 
         if (element) {
             const targetTop = element.getBoundingClientRect().top + window.scrollY;
 
-            // Scroll to the targetTop
             window.scrollTo({ top: targetTop, behavior: 'smooth' });
         }
     };

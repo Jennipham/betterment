@@ -23,23 +23,18 @@ h1 {
     font-family: 'agrandir wide light', sans-serif;
     font-size: 54px;
     margin: 10px 0;
-    /* Adjust margin for spacing */
 }
 
 h5 {
     font-family: 'agrandir wide light', sans-serif;
     font-size: 20px;
     margin: 0;
-    /* Remove margin-bottom for tighter spacing */
 }
 
 .image img {
     max-width: 100%;
-    /* Ensure the image is responsive by scaling with its container */
     height: auto;
-    /* Maintain aspect ratio */
     max-height: 400px;
-    /* Limit the image height for larger screens */
 }
 
 .get-started-button {

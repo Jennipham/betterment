@@ -46,7 +46,7 @@ const Requests = () => {
     };
 
     useEffect(() => {
-        // Fetch the number of days until the next match from the backend
+        // Fetch the number of days until the next match
         const fetchDaysUntilNextMatch = async () => {
             try {
                 const response = await axios.get('https://localhost:3001/getNextMatchDay');
@@ -81,7 +81,7 @@ const Requests = () => {
                     }
                 }
     
-                // Fetch received requests directly using user information
+                // Fetch received requests
                 const receivedResponse = await axios.post('https://localhost:3001/getReceivedRequests', {
                     email,
                     userType,
@@ -169,7 +169,6 @@ const Requests = () => {
             ...receivedRequests.map(request => ({ ...request, type: 'received' })),
             ...sentRequests.map(request => ({ ...request, type: 'sent' })),
         ].filter(request => {
-            // Check if the request object contains all the required properties
             if (
                 request &&
                 request._id &&
@@ -195,14 +194,14 @@ const Requests = () => {
                 });
     
                 if (shortlistOrderResponse.data.shortlistOrder.length === 0) {
-                    // No shortlist order, set sortedRequests to combinedRequests directly
+                    // No shortlist order, set sortedRequests to combinedRequests
                     setAllRequests(combinedRequests);
                 } else {
                     // Sort the combined requests based on the order in shortlistOrder
                     const shortlistOrderIds = shortlistOrderResponse.data.shortlistOrder.map(orderItem => orderItem.requestId);
-                    // Filter out the shortlisted requests from combinedRequests
+                    // Filter out the shortlisted requests
                     const shortlistedRequests = combinedRequests.filter(request => shortlistOrderIds.includes(request._id));
-                    // Filter out the unmatched requests from combinedRequests
+                    // Filter out the unmatched requests
                     const unmatchedRequests = combinedRequests.filter(request => !shortlistOrderIds.includes(request._id));
                     // Sort the shortlisted requests based on the order in shortlistOrder
                     const sortedShortlistRequests = shortlistOrderResponse.data.shortlistOrder.map(orderItem => {
@@ -266,7 +265,6 @@ const Requests = () => {
         setShortlistLoading(true);
 
         try {
-            // Extract the order information from allRequests and send it to the server
             const orderInformation = allRequests.map((request, index) => ({
                 requestId: request && request._id ? request._id : `undefined-${index}`,
                 type: request ? request.type : 'unknown',
@@ -284,7 +282,6 @@ const Requests = () => {
                 setSuccessMessage("");
             }, 5000);
 
-            // Cleanup timeout on component unmount
             return () => clearTimeout(timeoutId);
 
             console.log('Successfully updated order on the server');

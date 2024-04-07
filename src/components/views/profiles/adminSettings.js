@@ -28,17 +28,17 @@ const matchingMethodOptions = [
 const customStyles = {
     control: (provided) => ({
         ...provided,
-        backgroundColor: 'white', // Change the background color of the control
+        backgroundColor: 'white',
         fontFamily: 'agrandir wide light, sans- serif',
         fontWeight: 'bold',
     }),
     placeholder: (provided) => ({
         ...provided,
-        color: 'black', // Change the color of the placeholder text
+        color: 'black',
     }),
     option: (provided) => ({
         ...provided,
-        color: 'black', // Change the color of the dropdown options
+        color: 'black',
     }),
 };
 
@@ -55,7 +55,6 @@ const AdminSettings = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Retrieve user information from sessionStorage
         const firstName = sessionStorage.getItem('firstName');
         const lastName = sessionStorage.getItem('lastName');
         const userType = sessionStorage.getItem('userType');
@@ -135,7 +134,6 @@ const AdminSettings = () => {
         setLoading(true);
 
         try {
-            // Send the form data to the backend API endpoint
             const updatedOrgName = isEditingOrgName ? orgNameInput.trim() : formData.orgName.trim();
             const updatedMatchingMethod = isEditingMatchingMethod ? matchingMethodInput.trim() : formData.matchingMethod.trim();
             const updatedBlindMatching = isEditingBlindMatching ? blindMatchingInput.trim() : formData.blindMatching.trim();
@@ -151,7 +149,6 @@ const AdminSettings = () => {
 
             });
 
-            // Update formData with the response from the server
             setFormData((prevData) => ({
                 ...prevData,
                 orgName: response.data.orgName || updatedOrgName,
@@ -183,7 +180,6 @@ const AdminSettings = () => {
                 setSaveMessage(null);
             }, 5000);
 
-            // Handle error, show a message, etc.
         }
     };
 
@@ -191,7 +187,6 @@ const AdminSettings = () => {
         setLoading(true);
 
         try {
-            // Send the form data to the backend API endpoint
             const updatedOrgName = isEditingOrgName ? orgNameInput.trim() : formData.orgName.trim();
             const updatedMatchingMethod = isEditingMatchingMethod ? matchingMethodInput.trim() : formData.matchingMethod.trim();
             const updatedBlindMatching = isEditingBlindMatching ? blindMatchingInput.trim() : formData.blindMatching.trim();
@@ -207,7 +202,6 @@ const AdminSettings = () => {
 
             });
 
-            // Update formData with the response from the server
             setFormData((prevData) => ({
                 ...prevData,
                 orgName: response.data.orgName || updatedOrgName,
@@ -238,7 +232,6 @@ const AdminSettings = () => {
                 setSaveMessage(null);
             }, 5000);
 
-            // Handle error, show a message, etc.
         }
     };
 

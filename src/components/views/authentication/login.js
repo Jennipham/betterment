@@ -40,7 +40,7 @@ const Login = () => {
                 sessionStorage.setItem('email', email);
 
 
-                // Set the token in the Axios headers for subsequent requests
+                // Set the token in the Axios headers
                 axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
                 
                     userType === 'admin' ?

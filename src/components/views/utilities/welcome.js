@@ -11,8 +11,8 @@ const Welcome = () => {
 
     const navigate = useNavigate();
 
-    const location = useLocation(); // Use useLocation hook to access the state
-    const user = location.state?.user || { fname: 'Guest' }; // Default to 'Guest' if user information is not available 
+    const location = useLocation();
+    const user = location.state?.user || { fname: 'Guest' };
     const { userType, email } = user;
 
     const [isModalOpen, setIsModalOpen] = useState(false);

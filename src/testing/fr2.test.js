@@ -31,7 +31,6 @@ describe('The system must allow users to log in and log out.', () => {
       page.click('button[type="submit"]'),
     ]);
   
-    // Verify successful login redirection
     const url = page.url();
     expect(url).toBe('http://localhost:3000/menteematches');
   });
@@ -50,7 +49,6 @@ describe('The system must allow users to log in and log out.', () => {
       page.click('button[type="submit"]'),
     ]);
   
-    // Verify successful login redirection
     const url = page.url();
     expect(url).toBe('http://localhost:3000/mentormatches');
   });
@@ -69,7 +67,6 @@ describe('The system must allow users to log in and log out.', () => {
       page.click('button[type="submit"]'),
     ]);
   
-    // Verify successful login redirection
     const url = page.url();
     expect(url).toBe('http://localhost:3000/dashboard');
   });
@@ -115,7 +112,6 @@ describe('The system must allow users to log in and log out.', () => {
   });
 
   test('Successful Logout - Mentee', async () => {
-    // Open a new page and navigate to the login page
     const page = await browser.newPage();
     await page.goto('http://localhost:3000/login');
   
@@ -136,16 +132,14 @@ describe('The system must allow users to log in and log out.', () => {
     // Click on the logout link
     await Promise.all([
       page.waitForNavigation({ waitUntil: 'load' }),
-      page.click('a[href="/"]'), // Assuming the logout link redirects to '/'
+      page.click('a[href="/"]'),
     ]);
   
-    // Verify successful logout redirection
     const urlAfterLogout = page.url();
     expect(urlAfterLogout).toBe('http://localhost:3000/');
   });
 
   test('Successful Logout - Mentor', async () => {
-    // Open a new page and navigate to the login page
     const page = await browser.newPage();
     await page.goto('http://localhost:3000/login');
   
@@ -166,10 +160,9 @@ describe('The system must allow users to log in and log out.', () => {
     // Click on the logout link
     await Promise.all([
       page.waitForNavigation({ waitUntil: 'load' }),
-      page.click('a[href="/"]'), // Assuming the logout link redirects to '/'
+      page.click('a[href="/"]'),
     ]);
   
-    // Verify successful logout redirection
     const urlAfterLogout = page.url();
     expect(urlAfterLogout).toBe('http://localhost:3000/');
   });
@@ -189,17 +182,15 @@ describe('The system must allow users to log in and log out.', () => {
       page.click('button[type="submit"]'),
     ]);
   
-    // Verify successful login redirection
     const urlAfterLogin = page.url();
     expect(urlAfterLogin).toBe('http://localhost:3000/dashboard');
   
     // Click on the logout link
     await Promise.all([
       page.waitForNavigation({ waitUntil: 'load' }),
-      page.click('a[href="/"]'), // Assuming the logout link redirects to '/'
+      page.click('a[href="/"]'),
     ]);
   
-    // Verify successful logout redirection
     const urlAfterLogout = page.url();
     expect(urlAfterLogout).toBe('http://localhost:3000/');
   });

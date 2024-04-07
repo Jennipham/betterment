@@ -37,11 +37,9 @@ const ReceivedRequest = ({ request, onDecline }) => {
                 userType: userType,
             });
 
-            // Trigger the decline callback with the request data
             onDecline(request);
         } catch (error) {
             console.error('Error declining request:', error);
-            // Handle error if the API call fails
         }
     };
 
@@ -80,16 +78,12 @@ const ReceivedRequest = ({ request, onDecline }) => {
             } catch (error) {
                 console.error('Error fetching data:', error);
                 if (error.response && error.response.status === 404) {
-                    // Handle 404 error if needed
-                } else {
-                    // Handle other errors
-                }
+                } 
             }
         };
 
-        // Call the fetchMatchProfile function
         fetchMatchProfile();
-    }, [request.senderEmail]); // Add dependencies to the dependency array
+    }, [request.senderEmail]);
 
     const fetchAdminMatchSettings = async () => {
         try {
@@ -105,7 +99,6 @@ const ReceivedRequest = ({ request, onDecline }) => {
             }
         } catch (error) {
             console.error('Error fetching admin match settings:', error);
-            // Handle error if necessary
         }
     };
 

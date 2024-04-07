@@ -13,10 +13,8 @@ function Home() {
 
 
     const updateTargetPage = () => {
-        // Determine the next target page based on the current target page
         const nextTargetPage = currentTargetPage === 'about-section' ? 'faq-section' : 'about-section';
 
-        // Update the target page
         setCurrentTargetPage(nextTargetPage);
     };
 

@@ -88,7 +88,6 @@ h4 {
 .card-container {
     display: flex;
     flex-wrap: wrap;
-    /* Allow cards to wrap on smaller screens */
     justify-content: center;
 }
 
@@ -96,7 +95,6 @@ h4 {
 .card-coach {
     flex: 1;
     max-width: 300px;
-    /* Limit the maximum width of the cards */
     background-color: #007785;
     border-radius: 20px;
     padding: 15px;
@@ -104,7 +102,6 @@ h4 {
     font-weight: bolder;
     text-align: center;
     margin: 10px;
-    /* Add margin to separate cards */
 }
 
 .card-coach {
@@ -122,7 +119,6 @@ h4 {
 .card-coach p {
     font-family: 'agrandir wide light', sans-serif;
     font-size: 18px;
-    /* Adjust font size for responsiveness */
     font-weight: bolder;
     margin-top: 10px;
 }

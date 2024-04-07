@@ -48,7 +48,7 @@ const Dashboard = () => {
 
 
     useEffect(() => {
-        // Fetch matched the stats for numer of users matched/not matched
+        // Fetch matched the stats for number of users matched/not matched
         const fetchUserCountStats = async () => {
             try {
                 const adminEmail = user.email;
@@ -98,12 +98,10 @@ const Dashboard = () => {
             console.error('Error fetching matched stats:', error);
         }
         finally {
-            // Set loading to false once data is fetched (whether successful or not)
             setMatchedLoading(false);
         }
     };
 
-    // Call the function
     useEffect(() => {
         fetchMatchedStats();
     }, []);
@@ -164,12 +162,10 @@ const Dashboard = () => {
         } catch (error) {
             console.error('Error fetching signup duration stats:', error);
         } finally {
-            // Set loading to false once data is fetched (whether successful or not)
             setSignupDurationLoading(false);
         }
     };
 
-    // Call the function
     useEffect(() => {
         fetchSignupDurationStats();
     }, []);

@@ -86,7 +86,6 @@ const FullProfile = () => {
             }
         } catch (error) {
             console.error('Error fetching admin match settings:', error);
-            // Handle error if necessary
         }
     };
 

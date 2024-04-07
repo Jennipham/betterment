@@ -119,7 +119,7 @@ const MentorMatches = () => {
     useEffect(() => {
         if (matchingMethod === "Algorithm") {
             let currentRank = 1;
-            let lastScore = highestScore; // Start with the highest score
+            let lastScore = highestScore;
 
             const newRankedProfiles = menteeProfile.map(mentee => {
                 let rank;
@@ -254,7 +254,6 @@ const MentorMatches = () => {
         
                 const menteeProfilesWithNames = await Promise.all(
                     response.data.profiles.map(async (mentee) => {
-                        // Determine the email based on the match status
                         const emailToFetch = isMatch ? mentee.email : mentee._doc.email;
                         
                         const userDetailsResponse = await fetchNames(emailToFetch);
@@ -318,7 +317,6 @@ const MentorMatches = () => {
                     const isMatch = response.data.isMatch;
                     setHasMatch(isMatch);
 
-                    // Fetch names for each mentor profile
                     const menteeProfilesWithNames = await Promise.all(
                         response.data.profiles.map(async (mentee) => {
                             const userDetailsResponse = await fetchNames(mentee.email);
@@ -347,7 +345,6 @@ const MentorMatches = () => {
             }
         };
 
-        // Only fetch when the matching method is manual
         if (matchingMethod === 'Manual') {
             setIsLoadingProfiles(true);
             fetchManualMatches();
@@ -366,7 +363,6 @@ const MentorMatches = () => {
 
                 sessionStorage.setItem('profile', JSON.stringify(response.data.profile.profileInfo));
 
-                // Update the user state with the latest jobRole
                 setUser((prevUser) => ({
                     ...prevUser,
                     jobRole: response.data.profile.profileInfo.jobRole || '',
@@ -494,7 +490,7 @@ const MentorMatches = () => {
             <input
                 type="checkbox"
                 checked={isSelected}
-                onChange={() => selectProps.onChange({ label })} // Use selectProps.onChange
+                onChange={() => selectProps.onChange({ label })}
             />
             <span onClick={() => selectProps.onChange({ label })}>{label}</span>
         </div>
@@ -538,14 +534,14 @@ const MentorMatches = () => {
         setSuccessMessage(message);
         setTimeout(() => {
             setSuccessMessage('');
-        }, 5000); // 5000 milliseconds (5 seconds)
+        }, 5000); 
     };
 
     const handleErrorMessage = (message) => {
         setErrorMessage(message);
         setTimeout(() => {
             setErrorMessage('');
-        }, 5000); // 5000 milliseconds (5 seconds)
+        }, 5000);
     };
 
 
@@ -553,7 +549,6 @@ const MentorMatches = () => {
         try {
             setLoading(true);
 
-            // Prepare the data to be saved
             const dataToSave = {
                 languages: selectedLanguages,
                 developmentAreas: selectedDevelopmentAreas,
@@ -561,14 +556,13 @@ const MentorMatches = () => {
                 officeLocation: selectedLocation,
             };
 
-            // Send a PUT request to update the user's profile
+            // Update the user's profile
             const response = await axios.put('https://localhost:3001/updateUserProfile', {
                 email: user.email,
                 userType: user.userType,
                 data: dataToSave,
             });
 
-            // Handle the response, update state, or perform any additional actions if needed
             console.log('Profile updated successfully:', response.data);
             setLoading(false);
             handleSuccessMessage('Profile Successfully Updated!');
@@ -595,15 +589,13 @@ const MentorMatches = () => {
         }, []);
     }
 
+    // Email Template
     const handleContactMatch = (matchEmail, menteeFname) => {
-        // Replace these variables with actual values
-        const userEmail = user.email; // User's email
-        const subject = 'We have been matched on BetterMent!'; // Subject of the email
+        const subject = 'We have been matched on BetterMent!';
 
         const body = `Dear ${menteeFname}, \n \n I hope this message finds you well. I'm excited about our mentoring partnership on BetterMent and would like to schedule our first meeting. \n \n Best regards,\n ${user.firstName}.`;
         const mailtoLink = `mailto:${matchEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
-        // Open the default email client with the pre-filled email template
         window.location.href = mailtoLink;
     };
 

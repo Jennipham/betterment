@@ -50,7 +50,7 @@ describe('The system must allow users to register a new account.', () => {
         await page.click(`.signUpButton`);
 
         await page.waitForSelector('[name="fname"]');
-        const email = 'ak@test.com'; // Uses existing email
+        const email = 'ak@test.com';
 
         await page.type('[name="fname"]', 'John');
         await page.type('[name="sname"]', 'Doe');

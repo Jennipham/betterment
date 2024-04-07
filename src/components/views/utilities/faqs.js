@@ -8,7 +8,7 @@ const Faqs = ({ faqData }) => {
 
     const toggleAccordion = (index) => {
         if (index === activeIndex) {
-            setActiveIndex(null); // Close the accordion if it's already open
+            setActiveIndex(null);
         } else {
             setActiveIndex(index); // Open the clicked accordion
         }
@@ -34,7 +34,6 @@ const Faqs = ({ faqData }) => {
             header.addEventListener('click', toggleAnswer);
         });
 
-        // Cleanup: remove event listeners when the component unmounts
         return () => {
             faqHeaders.forEach((header) => {
                 header.removeEventListener('click', toggleAnswer);

@@ -1,4 +1,3 @@
-/* Profile.css */
 
 .profile-page {
     background-color: #3BBED1;
@@ -7,9 +6,7 @@
 
 .edit-icon {
     width: 20px;
-    /* Set the desired width */
     height: 20px;
-    /* Set the desired height */
     cursor: pointer;
     float: right;
 }
@@ -18,7 +15,6 @@
     text-align: center;
 }
 
-/* Profile heading styles */
 .profile-heading {
     font-size: 3em;
     margin-bottom: -20px;
@@ -26,7 +22,6 @@
 
 }
 
-/* Account type styles */
 .account-type {
     font-size: 1em;
     color: #3BBED1;
@@ -36,13 +31,11 @@
     border-radius: 10px;
 }
 
-/* Container styles */
 .profile-container {
     display: flex;
     justify-content: space-around;
 }
 
-/* Box styles */
 .profile-settings-box {
     width: 45%;
     padding: 20px;
@@ -54,7 +47,6 @@
 
 }
 
-/* Editable attribute styles */
 .editable-attribute {
     display: flex;
     align-items: center;
@@ -77,7 +69,6 @@
 
 }
 
-/* Dropdown styles */
 .dropdown {
     width: 100%;
     padding: 5px;
@@ -86,7 +77,6 @@
 
 .custom-select .Select-option {
     color: green;
-    /* Change the color of the dropdown options */
 }
 
 .save-info {
@@ -195,7 +185,6 @@
     width: 100%;
 }
 
-/* Tooltip container */
 .tooltip {
     position: relative;
     display: inline-block;
@@ -208,7 +197,6 @@
 }
 
 
-/* Show the tooltip text on hover */
 .tooltip:hover .tooltip-text {
     visibility: visible;
     opacity: 1;

@@ -3,7 +3,6 @@
     justify-content: space-between;
     align-items: center;
     min-height: 100vh;
-    /* Use min-height to ensure it takes up at least the full viewport height */
     padding: 20px;
     background-color: #3BBED1;
 }
@@ -14,13 +13,11 @@
     flex-direction: column;
     align-items: flex-start;
     padding: 20px;
-    /* Add padding for spacing on larger screens */
 }
 
 .left-section img {
     max-width: 100%;
     height: auto;
-    /* Maintain aspect ratio of the image */
 }
 
 .bottom-image {
@@ -33,14 +30,12 @@
     flex-direction: column;
     align-items: center;
     padding: 20px;
-    /* Add padding for spacing on larger screens */
 }
 
 .signButtons {
     display: flex;
     gap: 10px;
     width: 80%;
-    /* Use 100% width for responsiveness */
     margin-top: 20px;
     margin-bottom: 20px;
     justify-content: center;
@@ -78,14 +73,10 @@ h7 {
     font-weight: bolder;
     text-align: right;
     max-width: 100%;
-    /* Make sure text doesn't overflow */
     font-size: 3.5vw;
-    /* Use viewport units for font size */
     color: #fff;
     margin: 0;
-    /* Remove default margin */
     padding-left: 2rem;
-    /* Use 'rem' units for padding */
 }
 
 form {
@@ -93,16 +84,13 @@ form {
     flex-direction: column;
     gap: 10px;
     width: 100%;
-    /* Use 100% width for responsiveness */
 }
 
 input {
     font-family: 'agrandir wide light', sans-serif;
     font-size: 1.6vw;
-    /* Use viewport units for font size */
     font-weight: bold;
     padding: 1rem;
-    /* Use 'rem' units for padding */
     border: 1px solid #ccc;
     border-radius: 18px;
 }
@@ -111,9 +99,7 @@ button[type="submit"] {
     margin-top: 10px;
     background-color: #007785;
     color: #fff;
-    /* Ensure the text is readable */
     padding: 10px 20px;
-    /* Increase padding for larger screens */
 }
 
 p {
@@ -130,10 +116,8 @@ h8 {
     text-align: right;
     max-width: 100%;
     font-size: 2.5vw;
-    /* Use viewport units for font size */
     color: #fff;
     margin-left: 4rem;
-    /* Use 'rem' units for margin */
 }
 
 h9 {
@@ -142,7 +126,6 @@ h9 {
     font-weight: bold;
     width: 100%;
     font-size: 1.2em;
-    /* Use viewport units for font size */
     color: #fff;
 }
 
@@ -150,9 +133,7 @@ h9 {
     color: white;
     background-color: rgb(167, 25, 25);
     font-size: 1vw;
-    /* Use viewport units for font size */
     padding: 0.4rem 0.7rem;
-    /* Use 'rem' units for padding */
     border-radius: 18px;
     width: fit-content;
 }

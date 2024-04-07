@@ -112,17 +112,17 @@ const traitOptions = [
 const customStyles = {
     control: (provided) => ({
         ...provided,
-        backgroundColor: 'white', // Change the background color of the control
+        backgroundColor: 'white',
         fontFamily: 'agrandir wide light, sans- serif',
         fontWeight: 'bold',
     }),
     placeholder: (provided) => ({
         ...provided,
-        color: 'black', // Change the color of the placeholder text
+        color: 'black',
     }),
     option: (provided) => ({
         ...provided,
-        color: 'black', // Change the color of the dropdown options
+        color: 'black',
     }),
 };
 
@@ -213,9 +213,9 @@ const Profile = () => {
                 setFormData((prevData) => ({
                     ...prevData,
                     ...response.data.profile.profileInfo,
-                    languages: response.data.profile.profileInfo.languages || [], // Ensure 'languages' is an array
-                    developmentAreas: response.data.profile.profileInfo.developmentAreas || [], // Ensure 'developmentAreas' is an array
-                    mentoringMethods: response.data.profile.profileInfo.mentoringMethods || [], // Ensure 'mentoringMethods' is an array
+                    languages: response.data.profile.profileInfo.languages || [],
+                    developmentAreas: response.data.profile.profileInfo.developmentAreas || [],
+                    mentoringMethods: response.data.profile.profileInfo.mentoringMethods || [],
                     traits: response.data.profile.profileInfo.traits || [],
 
                 }));
@@ -265,7 +265,6 @@ const Profile = () => {
         setLoading(true);
 
         try {
-            // Send the form data to the backend API endpoint
             const updatedJobRole = isEditingJobRole ? jobRoleInput.trim() : formData.jobRole.trim();
             const updatedDepartment = isEditingDepartment ? departmentInput.trim() : formData.department.trim();
             const updatedCapacity = isEditingCapacity ? capacityInput.trim() : formData.capacity.trim();
@@ -280,7 +279,6 @@ const Profile = () => {
 
             });
 
-            // Update formData with the response from the server
             setFormData((prevData) => ({
                 ...prevData,
                 jobRole: response.data.jobRole || updatedJobRole,
@@ -321,7 +319,6 @@ const Profile = () => {
         setLoading(true);
 
         try {
-            // Send the form data to the backend API endpoint
             const updatedJobRole = isEditingJobRole ? jobRoleInput.trim() : formData.jobRole.trim();
             const updatedDepartment = isEditingDepartment ? departmentInput.trim() : formData.department.trim();
             const updatedCapacity = isEditingCapacity ? capacityInput.trim() : formData.capacity.trim();
@@ -335,8 +332,6 @@ const Profile = () => {
                 capacity: updatedCapacity,
 
             });
-
-            // Update formData with the response from the server
             setFormData((prevData) => ({
                 ...prevData,
                 jobRole: response.data.jobRole || updatedJobRole,
@@ -381,7 +376,7 @@ const Profile = () => {
                     return;
                 }
 
-                // Fetch received requests directly using user information
+                // Fetch received requests using user information
                 const receivedResponse = await axios.post('https://localhost:3001/getReceivedRequests', {
                     email: user.email,
                     userType: user.userType,

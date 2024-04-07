@@ -62,7 +62,6 @@ const SignUp = () => {
 
             return response.data.exists;
         } catch (error) {
-            // Handle network or server errors
             setLoading(false);
             console.error('Error checking email:', error);
             return false;
@@ -113,7 +112,6 @@ const SignUp = () => {
             if (response.status === 201) {
                 const { token, firstName, lastName, userType, email, } = response.data;
 
-                // Store the token in sessionStorage instead of localStorage
                 sessionStorage.setItem('token', token);
 
                 // Store user information in sessionStorage
@@ -123,7 +121,7 @@ const SignUp = () => {
                 sessionStorage.setItem('email', email);
 
 
-                // Set the token in the Axios headers for subsequent requests
+                // Set the token in Axios headers
                 axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
                 navigate("/signupSuccess", { state: { user: { fname: firstName, sname: lastName, userType: userType, email: email, } } })
             } else {
@@ -132,7 +130,6 @@ const SignUp = () => {
             }
         } catch (error) {
             console.error('Error:', error);
-            // Handle network or server errors
         }
     };
 

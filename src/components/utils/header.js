@@ -185,7 +185,7 @@ const Header = () => {
 
             </div>
             <div className="nav-links">
-                {location.pathname === '/' ? ( // Check if the user is on the home page
+                {location.pathname === '/' ? (
                     <>
                         <ScrollLink
                             to="about-section"
