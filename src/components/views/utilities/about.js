@@ -3,6 +3,7 @@ import '../../styles/About.css';
 import createProfile from '../../images/create-profile.png';
 import preferences from '../../images/preferences.png';
 import handshake from '../../images/handshake.png';
+import megaphone from '../../images/megaphone.png'
 
 
 
@@ -63,7 +64,7 @@ const About = () => {
                                     Sign Up to join the network of employees to find a mentor
                                 </h3>
                             </div>
-                            <div className="card">
+                            <div className="card-coach">
                                 <p>2. Set Your Preferences</p>
                                 <img src={preferences} alt="preferences" />
                                 <h3>
@@ -72,11 +73,17 @@ const About = () => {
                                 </h3>
                             </div>
                             <div className="card">
-                                <p>3. Get Connected!</p>
+                                <p>3. Have your say</p>
+                                <img className="megaphone" src={megaphone} alt="your-say"  style={{ width: 'auto', height: '175px' }}  />
+                                <h3>
+                                    Express your interest in potential matches by requesting users and declaring an ordered list of your preferences.
+                                </h3>
+                            </div>
+                            <div className="card-coach">
+                                <p>4. Get Connected!</p>
                                 <img src={handshake} alt="get-connected" />
                                 <h3>
-                                Our matching algorithm will provide you with a list of the
-                                    most compatible employees to get you matched!
+                                Our matching algorithm will consider your match preferences, your potential matches' preferences and factors surrounding program engagement to allocate you to the most appropriate mentor!
                                 </h3>
                             </div>
                         </>
@@ -92,7 +99,7 @@ const About = () => {
                                     employee
                                 </h3>
                             </div>
-                            <div className="card-coach">
+                            <div className="card">
                                 <p>2. Set your Preferences</p>
                                 <img src={preferences} alt="preferences" />
                                 <h3>
@@ -102,11 +109,17 @@ const About = () => {
                                 </h3>
                             </div>
                             <div className="card-coach">
-                                <p>3. Get Connected!</p>
+                                <p>3. Have your say</p>
+                                <img className="megaphone" src={megaphone} alt="your-say"  style={{ width: 'auto', height: '175px' }}  />
+                                <h3>
+                                    Express your interest in potential matches by requesting users and declaring an ordered list of your preferences.
+                                </h3>
+                            </div>
+                            <div className="card">
+                                <p>4. Get Connected!</p>
                                 <img src={handshake} alt="get-connected" />
                                 <h3>
-                                    Our matching algorithm will provide you with a list of the
-                                    most compatible employees to get you matched!
+                                Our matching algorithm will consider your match preferences, your potential matches' preferences and factors surrounding program engagement to allocate you to the most appropriate mentee!
                                 </h3>
                             </div>
                         </>
