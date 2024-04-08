@@ -139,7 +139,7 @@ const Requests = () => {
                     userType,
                 });
     
-                // Filter out sent requests to users who have available: false and are not declined
+                // Filter out sent requests to users who are not available
                 const filteredSentRequests = await Promise.all(sentResponse.data.sentRequests.map(async (request) => {
                     const receiverProfileResponse = await axios.post('https://localhost:3001/getProfile', {
                         email: request.receiverEmail,
@@ -284,7 +284,6 @@ const Requests = () => {
 
             return () => clearTimeout(timeoutId);
 
-            console.log('Successfully updated order on the server');
         } catch (error) {
             console.error('Error updating order on the server:', error);
         }

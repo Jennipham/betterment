@@ -256,6 +256,7 @@ router.post('/getProfile', async (req, res) => {
     }
 });
 
+// If the attributes match, return 1
 function calculateSimilarityScore(attribute1, attribute2) {
     return attribute1 === attribute2 ? 1 : 0;
 }
